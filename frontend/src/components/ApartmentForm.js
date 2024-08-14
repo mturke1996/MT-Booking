@@ -25,7 +25,7 @@ const ApartmentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/apartments', formData);
+      const response = await axios.post('http://localhost:5000/api/apartments', formData);
       alert('Apartment added successfully: ' + response.data.message);
       setFormData({
         Adresse: '',
