@@ -65,13 +65,37 @@ app.post("/login", (req, res) => {
           { id: user.id, username: user.username },
           secretKey
         );
-        res.json({ message: "you are successfully logged in" });
+        res.json({ message: "you are successfully logged in", token });
       } else {
         res.status(400).send("Invalid username or password");
       }
     }
   });
 });
+// API endpoint to get user details
+app.get("/user/:id", (req, res) => {
+  const userId = req.params.id;
+
+  const query = `
+    SELECT u.id, u.username, u.email, u.name, u.lastname, 
+           d.address, d.phone, d.birthdate, d.gender, d.occupation, d.profile_picture
+    FROM users u
+    LEFT JOIN user_details d ON u.id = d.user_id
+    WHERE u.id = ?
+  `;
+
+  db.get(query, [userId], (err, user) => {
+    if (err) {
+      console.error("Database error:", err.message);
+      return res.status(500).send("Internal server error");
+    }
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.json(user);
+  });
+});
+
 
 // API endpoint to add a new apartment
 app.post("/api/apartments", (req, res) => {
@@ -121,6 +145,7 @@ app.post("/api/apartments", (req, res) => {
     }
   );
 });
+
 // API endpoint to get apartments
 app.get("/api/apartments", (req, res) => {
   const query = "SELECT * FROM Wohnungen";
@@ -134,6 +159,24 @@ app.get("/api/apartments", (req, res) => {
     }
   });
 });
+
+// API endpoint to get apartment details by ID
+app.get('/api/apartments/:id', (req, res) => {
+    const { id } = req.params;
+    const query = "SELECT * FROM Wohnungen WHERE \"Wohnungs-ID\" = ?";
+
+    db.get(query, [id], (err, row) => {
+        if (err) {
+            console.error("Error fetching apartment details:", err);
+            res.status(500).json({ error: "Database error" });
+        } else if (!row) {
+            res.status(404).json({ error: "Apartment not found" });
+        } else {
+            res.status(200).json(row);
+        }
+    });
+});
+
 
 // بدء تشغيل الخادم
 app.listen(Port, () => {

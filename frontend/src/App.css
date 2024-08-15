@@ -569,6 +569,95 @@ button:hover {
   background-color: #e5533d;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+/* profile  */
+
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.profile-header {
+  position: relative;
+  padding: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid #007bff;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.profile-name {
+  font-size: 2.5rem;
+  margin: 10px 0;
+  color: #333;
+}
+
+.profile-title {
+  font-size: 1.2rem;
+  color: #777;
+}
+
+.profile-actions {
+  margin: 20px 0;
+}
+
+.profile-button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button {
+  background-color: #007bff;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+
+.contact-button {
+  background-color: #28a745;
+}
+
+.contact-button:hover {
+  background-color: #218838;
+}
+
+.profile-info {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.info-item {
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.info-value {
+  color: #333;
+}
 /* statistic */
 .statistic {
   width: 100%;
@@ -673,47 +762,41 @@ button:hover {
 }
 /* Apartment Box */
 .apartment-box {
-  width: 100%;
-  max-width: 350px;
-  height: auto;
-  margin: 35px auto 20px;
+  display: flex;
+  flex-direction: column;
   border: 1px solid #ddd;
   border-radius: 8px;
-  overflow: hidden;
+  background-color: #fff;
   -webkit-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
   -moz-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
   box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
-  transition: transform 0.3s;
-  margin: 20px auto; 
+  width: 100%;
+  height: 500px;
+  max-width: 350px;
+  margin: 0 auto;
+  margin-top: 35px;
 }
-
-.apartment-box:hover {
-  transform: translateY(-5px);
+.apartment-image{
+  height: 76%;
 }
-
 /* Apartment Image */
-.apartment-image {
-  height: 350px;
-}
-
 .apartment-image img {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
 }
 
 /* Apartment Info */
 .apartment-info {
-  height: 24%;
+  padding: 15px;
   background-color: #ffffff;
-  padding: 25px 20px;
+  border-top: 1px solid #ddd;
 }
 
 .apartment-title p {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
-  line-height: 20px;
+  line-height: 24px;
   margin: 0;
   color: #333;
 }
@@ -729,12 +812,6 @@ button:hover {
 }
 
 .price {
-  width: 50%;
-  height: 50%;
-  float: left;
-}
-
-.price p {
   font-size: 18px;
   font-weight: 700;
   color: #ffcc01;
@@ -742,11 +819,8 @@ button:hover {
 }
 
 .details-item {
-  width: 25%;
-  height: 100%;
   display: flex;
   align-items: center;
-  float: right;
 }
 
 .details-item img {
@@ -758,9 +832,10 @@ button:hover {
 .details-item p {
   font-size: 13px;
   color: #919eb1;
-  padding: 15px 0 0 10px;
   margin: 0;
 }
+
+
 
 /* Search Apartments */
 .search-apartments {
