@@ -20,6 +20,87 @@ body {
   overflow-x: hidden;
   transition: opacity 1s;
 }
+a:focus,
+a:hover {
+    text-decoration: none;
+    color: #FFCC01;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+::selection {
+    background: #1F373D;
+    color: #fff;
+    text-shadow: none;
+}
+::-moz-selection {
+    background: #1F373D;
+    color: #fff;
+    text-shadow: none;
+}
+::-webkit-selection {
+    background: #1F373D;
+    color: #fff;
+    text-shadow: none;
+}
+:active,
+:focus {
+    outline: none !important;
+}
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.center {
+  margin: 0 auto;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.uppercase {
+    text-transform: uppercase;
+}
+.white-text {
+    color: #FFF;
+}
+.light-bg {
+    background-color: #fff;
+}
+.yellow-bg {
+  background-color: #FFCC01;
+}
+.pointer {
+  cursor: pointer;
+}
+.hide {
+  display: none;
+}
+.show {
+  display: block;
+}
+.slide {
+  left: 0;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
 
 /* Typography */
 h1 {
@@ -564,3 +645,171 @@ button:hover {
   margin: 0px;
   padding: 0px;
 }
+/* Apartment */
+/* Apartment Section */
+.apartments {
+  background-color: #f6f5f4;
+  padding: 60px 0 70px;
+  text-align: center; /* Center the content */
+}
+
+.apartments h2 {
+  margin-bottom: 35px;
+  font-size: 24px;
+  color: #333;
+  line-height: 1.4;
+}
+/* Custom Flex Row */
+.custom-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.custom-col-4 {
+  flex: 1 1 30%; 
+  max-width: 300px; 
+  margin: 10px;
+}
+/* Apartment Box */
+.apartment-box {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  margin: 35px auto 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  -webkit-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
+  -moz-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
+  box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
+  transition: transform 0.3s;
+  margin: 20px auto; 
+}
+
+.apartment-box:hover {
+  transform: translateY(-5px);
+}
+
+/* Apartment Image */
+.apartment-image {
+  height: 350px;
+}
+
+.apartment-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Apartment Info */
+.apartment-info {
+  height: 24%;
+  background-color: #ffffff;
+  padding: 25px 20px;
+}
+
+.apartment-title p {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 20px;
+  margin: 0;
+  color: #333;
+}
+
+/* Apartment Details */
+.apartment-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  border-top: 1px solid #eee;
+}
+
+.price {
+  width: 50%;
+  height: 50%;
+  float: left;
+}
+
+.price p {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffcc01;
+  margin: 0;
+}
+
+.details-item {
+  width: 25%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  float: right;
+}
+
+.details-item img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.details-item p {
+  font-size: 13px;
+  color: #919eb1;
+  padding: 15px 0 0 10px;
+  margin: 0;
+}
+
+/* Search Apartments */
+.search-apartments {
+  position: relative;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  padding: 10px 15px;
+  width: 700px !important;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.search-btn {
+  padding: 10px 20px;
+  margin-left: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-btn:hover {
+  background-color: #0056b3;
+}
+
+.search-all-btn {
+  margin-left: 40px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+/* Flex Center Utility */
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+
