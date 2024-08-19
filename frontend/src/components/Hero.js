@@ -5,8 +5,8 @@ import "../App.css";
 function Hero() {
   // إعداد الحالة لتخزين مدخلات البحث
   const [location, setLocation] = useState("");
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
+  // const [checkInDate, setCheckInDate] = useState("");
+  // const [checkOutDate, setCheckOutDate] = useState("");
   const [guests, setGuests] = useState(1);
   const [searchResults, setSearchResults] = useState([]);
 
@@ -31,8 +31,8 @@ function Hero() {
       navigate("/Searchitem", {
         state: {
           location,
-          checkInDate,
-          checkOutDate,
+          // checkInDate,
+          // checkOutDate,
           guests,
           results: filteredResults,
         },
@@ -58,7 +58,7 @@ function Hero() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
-              <input
+              {/* <input
                 type="date"
                 placeholder="Check-in"
                 value={checkInDate}
@@ -69,7 +69,7 @@ function Hero() {
                 placeholder="Check-out"
                 value={checkOutDate}
                 onChange={(e) => setCheckOutDate(e.target.value)}
-              />
+              /> */}
               <input
                 type="number"
                 placeholder="Guests"

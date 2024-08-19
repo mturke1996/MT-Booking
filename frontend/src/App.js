@@ -1,5 +1,3 @@
-// src/App.js
-
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
@@ -9,11 +7,12 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import ApartmentForm from "./components/ApartmentForm";
-import SearchItem from "./components/SearchItem";
+// import SearchItem from "./components/SearchItem";
 import List from "./components/List";
+import ApartmentDetails from "./components/ApartmentDetails";
 function App() {
   const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
 
   const handleLogout = () => {
     setToken(null);
@@ -34,6 +33,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/addApartment" element={<ApartmentForm />} />
           <Route path="/Searchitem" element={<List />} />
+          <Route path="/apartment/:id" element={<ApartmentDetails />} />
 
           {/* Add more routes here */}
         </Routes>

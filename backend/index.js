@@ -176,7 +176,34 @@ app.get('/api/apartments/:id', (req, res) => {
         }
     });
 });
+// Get reviews for an apartment
+app.get('/apartment/:id/reviews', (req, res) => {
+  const { id } = req.params;
+  db.all('SELECT * FROM bewertung WHERE wohnungsId = ?', [id], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to retrieve reviews' });
+    }
+    res.json(rows);
+  });
+});
 
+// Post a new review
+app.post('/apartment/:id/reviews', (req, res) => {
+  const { id } = req.params;
+  const { benutzerId, bewertung, kommentar } = req.body;
+
+  // Basic validation
+  if (!benutzerId || !bewertung || !kommentar) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  db.run('INSERT INTO bewertung (benutzerId, wohnungsId, bewertung, kommentar) VALUES (?, ?, ?, ?)', [benutzerId, id, bewertung, kommentar], function (err) {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to post review' });
+    }
+    res.json({ bewertungId: this.lastID, benutzerId, wohnungsId: id, bewertung, kommentar });
+  });
+});
 
 // بدء تشغيل الخادم
 app.listen(Port, () => {

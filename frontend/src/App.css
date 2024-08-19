@@ -545,13 +545,13 @@ button:hover {
 }
 
 .search-bar input[type="text"],
-.search-bar input[type="date"],
+/* .search-bar input[type="date"], */
 .search-bar input[type="number"] {
   padding: 0.75rem;
   font-size: 1rem;
   border-radius: 20px;
   border: 1px solid #ddd;
-  width: 150px;
+  width: 210px;
 }
 
 .search-bar button {
@@ -665,6 +665,7 @@ button:hover {
   padding: 145px 0px 80px 0px;
   text-align: center;
   margin-top: 100px;
+  background-color: #F6F5F4;
 }
 .statistic h3 {
   padding: 15px 0px 50px 0px;
@@ -737,7 +738,7 @@ button:hover {
 /* Apartment */
 /* Apartment Section */
 .apartments {
-  background-color: #f6f5f4;
+  background-color: #f8f9fa;
   padding: 60px 0 70px;
   text-align: center; /* Center the content */
 }
