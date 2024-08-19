@@ -51,7 +51,7 @@ export default function Apartment() {
             </div>
           ))}
         </div>
-        <div className="custom-row">
+        {/* <div className="custom-row">
           <div className="custom-col-12">
             <div className="search lux-shadow search-apartment">
               <input
@@ -62,7 +62,7 @@ export default function Apartment() {
               <button className="search-btn left">Search</button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
