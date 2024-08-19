@@ -9,6 +9,8 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import ApartmentForm from "./components/ApartmentForm";
+import SearchItem from "./components/SearchItem";
+import List from "./components/List";
 function App() {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null); 
@@ -31,6 +33,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/addApartment" element={<ApartmentForm />} />
+          <Route path="/Searchitem" element={<List />} />
 
           {/* Add more routes here */}
         </Routes>
