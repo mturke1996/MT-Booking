@@ -4,24 +4,30 @@ import axios from "axios";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { DateRange } from "react-date-range";
-import "react-date-range/dist/styles.css"; // import the default styles
-import "react-date-range/dist/theme/default.css"; // import the default theme
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { format } from "date-fns";
+import "../App.css";
 
 const ApartmentDetails = () => {
   const { id } = useParams();
   const [apartment, setApartment] = useState(null);
   const [images, setImages] = useState([]);
-  const [date, setDate] = useState([{
-    startDate: new Date(),
-    endDate: new Date(),
-    key: 'selection'
-  }]);
+  const [date, setDate] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
   const [openDate, setOpenDate] = useState(false);
   const [options, setOptions] = useState({
     adult: 1,
     children: 0,
-    room: 1
+    room: 1,
   });
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   useEffect(() => {
     axios
@@ -46,156 +52,166 @@ const ApartmentDetails = () => {
 
   const handleSearchSubmit = () => {
     // Implement the search submit logic here
-    console.log("Search clicked", { date, options });
+    console.log("Search clicked", { date, options, minPrice, maxPrice });
   };
 
-  if (!apartment)
-    return (
-      <p style={{ marginTop: "300px", textAlign: "center" }}>Loading...</p>
-    );
-
   const renderAmenities = () => {
+    const amenities = [
+      { icon: "🌐", label: "Wi-Fi" },
+      { icon: "🅿️", label: "Parking" },
+      { icon: "🏊", label: "Pool" },
+      { icon: "🐾", label: "Pets Allowed" },
+      { icon: "🛏️", label: `${apartment?.Zimmeranzahl} Bedrooms` },
+    ];
+
     return (
-      <div className="flex flex-wrap gap-4 mt-4">
-        <div className="flex items-center space-x-2">
-          <span className="text-xl">🌐</span>
-          <span>Wi-Fi</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-xl">🅿️</span>
-          <span>Parking</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-xl">🏊</span>
-          <span>Pool</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-xl">🐾</span>
-          <span>Pets Allowed</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-xl">🛏️</span>
-          <span>{apartment.Zimmeranzahl} Bedrooms</span>
-        </div>
+      <div className="amenities">
+        {amenities.map((amenity, index) => (
+          <div key={index} className="amenity-item">
+            <span className="text-xl">{amenity.icon}</span>
+            <span>{amenity.label}</span>
+          </div>
+        ))}
       </div>
     );
   };
 
+  if (!apartment)
+    return (
+      <p
+        className="loading"
+        style={{ marginTop: "300px", textAlign: "center" }}
+      >
+        Loading...
+      </p>
+    );
+
   return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">{apartment.Adresse}</h2>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="relative">
-          <Carousel showThumbs={false} infiniteLoop autoPlay>
-            {images.map(
-              (img, index) =>
-                img && (
-                  <div key={index} className="rounded-lg overflow-hidden">
-                    <img
-                      src={img}
-                      alt={`Apartment image ${index + 1}`}
-                      className="w-full h-64 object-cover"
-                    />
-                  </div>
-                )
-            )}
-          </Carousel>
+    <div className="listContainer">
+      <div className="listWrapper">
+        <div className="details flex-1">
+          <h2 className="text-3xl font-bold mb-6">{apartment.Adresse}</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="carousel-container relative">
+              <Carousel showThumbs={false} infiniteLoop autoPlay>
+                {images.map(
+                  (img, index) =>
+                    img && (
+                      <div
+                        key={index}
+                        className="carousel-item rounded-lg overflow-hidden"
+                      >
+                        <img
+                          src={img}
+                          alt={`Apartment image ${index + 1}`}
+                          className="carousel-image w-full h-64 object-cover"
+                        />
+                      </div>
+                    )
+                )}
+              </Carousel>
+            </div>
+            <div
+              className="details-info"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div style={{ width: "65%" }}>
+                <h3 className="text-2xl font-semibold mb-4">Details</h3>
+                <p>
+                  <strong>Rooms:</strong> {apartment.Zimmeranzahl}
+                </p>
+                <p>
+                  <strong>Size:</strong> {apartment["Fläche (m²)"]} m²
+                </p>
+                <p>
+                  <strong>Rent:</strong> {apartment["Monatliche Miete"]} €/month
+                </p>
+                <p className="mt-4">
+                  <strong>Description:</strong> {apartment.Beschreibung}
+                </p>
+              </div>
+            </div>
+            <div className="amenities-section">
+              <h3 className="text-2xl font-semibold mb-4">Amenities</h3>
+              {renderAmenities()}
+            </div>
+            <div className="reviews-section mt-8">
+              <h3 className="text-2xl font-semibold mb-4">Reviews</h3>
+              {/* <Reviews apartmentId={id} /> */}
+            </div>
+          </div>
         </div>
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-2xl font-semibold mb-4">Details</h3>
-            <p>
-              <strong>Rooms:</strong> {apartment.Zimmeranzahl}
-            </p>
-            <p>
-              <strong>Size:</strong> {apartment["Fläche (m²)"]} m²
-            </p>
-            <p>
-              <strong>Rent:</strong> {apartment["Monatliche Miete"]} €/month
-            </p>
-            <p className="mt-4">
-              <strong>Description:</strong> {apartment.Beschreibung}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-semibold mb-4">Amenities</h3>
-            {renderAmenities()}
-          </div>
-          <div className="bg-gray-100 p-4 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Search</h3>
-            <div className="flex flex-col gap-4">
-              <div>
+        <div className="listSearch" style={{ width: "40%" }}>
+          <div className="listWrapper">
+            <div className="listSearch">
+              <h1 className="lsTitle">Booking</h1>
+              <div className="lsItem">
                 <label>Check-in Date</label>
                 <span
                   onClick={() => setOpenDate(!openDate)}
-                  className="block mt-1 cursor-pointer"
+                  className="date-selector block mt-1 cursor-pointer"
                 >
-                  {`${date[0].startDate.toLocaleDateString()} to ${date[0].endDate.toLocaleDateString()}`}
+                  {`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
+                    date[0].endDate,
+                    "MM/dd/yyyy"
+                  )}`}
                 </span>
                 {openDate && (
                   <DateRange
                     onChange={handleDateChange}
                     minDate={new Date()}
                     ranges={date}
+                    className="date-range"
                   />
                 )}
               </div>
-              <div>
+              <div className="lsItem">
                 <label>Options</label>
-                <div className="space-y-2 mt-2">
-                  <div>
-                    <span className="block">Min price <small>per night</small></span>
-                    <input type="number" className="w-full mt-1 p-2 border rounded" />
-                  </div>
-                  <div>
-                    <span className="block">Max price <small>per night</small></span>
-                    <input type="number" className="w-full mt-1 p-2 border rounded" />
-                  </div>
-                  <div>
-                    <span className="block">Adult</span>
+                <div className="lsOptions">
+                  <div className="lsOptionItem">
+                    <span className="lsOptionText">Adult</span>
                     <input
                       type="number"
                       min={1}
-                      className="w-full mt-1 p-2 border rounded"
+                      className="lsOptionInput"
                       value={options.adult}
-                      onChange={(e) => setOptions({ ...options, adult: e.target.value })}
+                      onChange={(e) =>
+                        setOptions({ ...options, adult: e.target.value })
+                      }
                     />
                   </div>
-                  <div>
-                    <span className="block">Children</span>
+                  <div className="lsOptionItem">
+                    <span className="lsOptionText">Children</span>
                     <input
                       type="number"
                       min={0}
-                      className="w-full mt-1 p-2 border rounded"
+                      className="lsOptionInput"
                       value={options.children}
-                      onChange={(e) => setOptions({ ...options, children: e.target.value })}
+                      onChange={(e) =>
+                        setOptions({ ...options, children: e.target.value })
+                      }
                     />
                   </div>
-                  <div>
-                    <span className="block">Room</span>
+                  <div className="lsOptionItem">
+                    <span className="lsOptionText">Room</span>
                     <input
                       type="number"
                       min={1}
-                      className="w-full mt-1 p-2 border rounded"
+                      className="lsOptionInput"
                       value={options.room}
-                      onChange={(e) => setOptions({ ...options, room: e.target.value })}
+                      onChange={(e) =>
+                        setOptions({ ...options, room: e.target.value })
+                      }
                     />
                   </div>
                 </div>
               </div>
-              <button
-                onClick={handleSearchSubmit}
-                className="w-full bg-blue-500 text-white py-2 rounded"
-              >
-                Search
+              <button className="search-button" onClick={handleSearchSubmit}>
+                Booking
               </button>
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-8">
-        <h3 className="text-2xl font-semibold mb-4">Reviews</h3>
-        {/* <Reviews apartmentId={id} /> */}
       </div>
     </div>
   );

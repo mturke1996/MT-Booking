@@ -29,7 +29,6 @@ const SearchItem = ({ apartment}) => {
           <span className="siPrice">{`${apartment["Monatliche Miete"]}€`}</span>
           <span className="siTaxOp">Includes taxes and fees</span>
           <button className="siCheckButton">
-            {/* استخدام معرف الشقة لتمريره كمعامل في الرابط */}
             <Link to={`/apartment/${apartment["Wohnungs-ID"]}`}>See availability</Link>
           </button>
         </div>
