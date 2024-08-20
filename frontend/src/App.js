@@ -13,33 +13,33 @@ import List from "./components/List";
 import ApartmentDetails from "./components/ApartmentDetails";
 
 function App() {
-  const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("authToken"));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("authToken");
-    if (savedToken) {
-      setToken(savedToken);
-
-      // استدعاء API للحصول على بيانات المستخدم
+    if (token && !user) {
       axios
         .get("http://localhost:5000/user", {
-          headers: { Authorization: `Bearer ${savedToken}` },
+          headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          setUser(response.data); // استرجاع بيانات المستخدم من الاستجابة
+          setUser(response.data);
+          localStorage.setItem("user", JSON.stringify(response.data));
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
-          // التعامل مع الأخطاء هنا، مثل تسجيل خروج المستخدم إذا كان التوكن غير صالح
+          setToken(null);
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("user");
         });
     }
-  }, []);
+  }, [token, user]);
 
   const handleLogout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem("authToken"); // حذف التوكن من localStorage عند تسجيل الخروج
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
   };
 
   return (
@@ -58,8 +58,7 @@ function App() {
           <Route path="/addApartment" element={<ApartmentForm />} />
           <Route path="/Searchitem" element={<List />} />
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
-
-          {/* Add more routes here */}
+          {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>
       </div>
     </Router>

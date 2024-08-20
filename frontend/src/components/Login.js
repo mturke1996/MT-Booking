@@ -27,9 +27,12 @@ export default function Login({ setToken, setUser }) {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setUser(userResponse.data); // تخزين بيانات المستخدم
+      setUser(userResponse.data); // تخزين بيانات المستخدم في الحالة
 
-      navigate("/");
+      // تخزين بيانات المستخدم في localStorage
+      localStorage.setItem("user", JSON.stringify(userResponse.data));
+
+      navigate("/"); // الانتقال إلى الصفحة الرئيسية بعد تسجيل الدخول
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed, please try again.");

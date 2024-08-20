@@ -8,6 +8,7 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
+import Reviews from './Reviews';
 import "../App.css";
 
 const ApartmentDetails = () => {
@@ -73,6 +74,7 @@ const ApartmentDetails = () => {
       { icon: "🏊", label: "Pool" },
       { icon: "🐾", label: "Pets Allowed" },
       { icon: "🛏️", label: `${apartment?.Zimmeranzahl} Bedrooms` },
+      { icon: "📷", label: "überwachung" },
     ];
 
     return (
@@ -146,9 +148,14 @@ const ApartmentDetails = () => {
               <h3 className="text-2xl font-semibold mb-4">Amenities</h3>
               {renderAmenities()}
             </div>
+            <br/>
+            <br/>
+            <br/>
+            <hr/>
             <div className="reviews-section mt-8">
               <h3 className="text-2xl font-semibold mb-4">Reviews</h3>
-              {/* <Reviews apartmentId={id} /> */}
+              <br/>
+              <Reviews apartmentId={id} />
             </div>
           </div>
         </div>

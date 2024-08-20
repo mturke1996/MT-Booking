@@ -17,17 +17,18 @@ app.use(bodyParser.json());
 
 // Middleware للتحقق من صحة التوكن
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) return res.sendStatus(401); // لا يوجد توكن، الرجوع بحالة 401
+  if (!token) return res.sendStatus(401); // لا يوجد توكن
 
   jwt.verify(token, secretKey, (err, user) => {
-    if (err) return res.sendStatus(403); // التوكن غير صالح أو منتهي، الرجوع بحالة 403
-    req.user = user; // تخزين بيانات المستخدم في الطلب
-    next(); // الانتقال إلى الخطوة التالية
+    if (err) return res.sendStatus(403); // التوكن غير صالح
+    req.user = user; // تخزين بيانات المستخدم
+    next();
   });
 }
+
 
 // الاتصال بقاعدة البيانات SQLite
 const db = new sqlite3.Database("./mtbookig-bank.db", (err) => {
@@ -43,7 +44,7 @@ app.post("/register", (req, res) => {
     return res.status(400).send("Username and password are required");
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 5); // تقليل عدد جولات التشفير
+  const hashedPassword = bcrypt.hashSync(password, 10); // استخدام جولات تشفير أكثر أمانًا
   db.run(
     "INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)",
     [username, hashedPassword, email, name, lastname],
@@ -80,7 +81,7 @@ app.post("/login", (req, res) => {
           secretKey,
           { expiresIn: "1h" } // التوكن صالح لمدة ساعة
         );
-        res.json({ message: "you are successfully logged in", token });
+        res.json({ message: "You are successfully logged in", token });
       } else {
         res.status(400).send("Invalid username or password");
       }
@@ -92,18 +93,23 @@ app.post("/login", (req, res) => {
 app.get("/user", authenticateToken, (req, res) => {
   const userId = req.user.id;
 
-  db.get("SELECT id, username, email, name, lastname FROM users WHERE id = ?", [userId], (err, user) => {
-    if (err) {
-      console.error("Error fetching user data:", err.message);
-      return res.status(500).send("Internal server error");
+  db.get(
+    "SELECT id, username, email, name, lastname FROM users WHERE id = ?",
+    [userId],
+    (err, user) => {
+      if (err) {
+        console.error("Error fetching user data:", err.message);
+        return res.status(500).send("Internal server error");
+      }
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      res.json(user);
     }
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-    res.json(user);
-  });
+  );
 });
-// API endpoint to get user details
+
+// استرجاع بيانات المستخدم بالتفصيل
 app.get("/user/:id", (req, res) => {
   const userId = req.params.id;
 
@@ -127,7 +133,7 @@ app.get("/user/:id", (req, res) => {
   });
 });
 
-// API endpoint to add a new apartment
+// إضافة شقة جديدة
 app.post("/api/apartments", (req, res) => {
   const {
     Adresse,
@@ -176,7 +182,7 @@ app.post("/api/apartments", (req, res) => {
   );
 });
 
-// API endpoint to get apartments
+// الحصول على جميع الشقق
 app.get("/api/apartments", (req, res) => {
   const query = "SELECT * FROM Wohnungen";
 
@@ -190,34 +196,35 @@ app.get("/api/apartments", (req, res) => {
   });
 });
 
-// API endpoint to get apartment details by ID
-app.get('/api/apartments/:id', (req, res) => {
-    const { id } = req.params;
-    const query = "SELECT * FROM Wohnungen WHERE \"Wohnungs-ID\" = ?";
+// الحصول على تفاصيل شقة حسب ID
+app.get("/api/apartments/:id", (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM Wohnungen WHERE "Wohnungs-ID" = ?';
 
-    db.get(query, [id], (err, row) => {
-        if (err) {
-            console.error("Error fetching apartment details:", err);
-            res.status(500).json({ error: "Database error" });
-        } else if (!row) {
-            res.status(404).json({ error: "Apartment not found" });
-        } else {
-            res.status(200).json(row);
-        }
-    });
+  db.get(query, [id], (err, row) => {
+    if (err) {
+      console.error("Error fetching apartment details:", err);
+      res.status(500).json({ error: "Database error" });
+    } else if (!row) {
+      res.status(404).json({ error: "Apartment not found" });
+    } else {
+      res.status(200).json(row);
+    }
+  });
 });
-// Add a new booking
-app.post('/api/bookings', (req, res) => {
+
+// إضافة حجز جديد
+app.post("/api/bookings", (req, res) => {
   const { apartmentId, startDate, endDate, adult, children, room } = req.body;
 
   // التحقق من جميع الحقول المطلوبة
   if (!apartmentId || !startDate || !endDate || !adult || !children || !room) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   // التحقق من تنسيق التواريخ
   if (isNaN(Date.parse(startDate)) || isNaN(Date.parse(endDate))) {
-    return res.status(400).json({ error: 'Invalid date format' });
+    return res.status(400).json({ error: "Invalid date format" });
   }
 
   // إدراج الحجز في قاعدة البيانات
@@ -226,54 +233,68 @@ app.post('/api/bookings', (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(query, [apartmentId, startDate, endDate, adult, children, room], function(err) {
-    if (err) {
-      console.error('Error inserting booking:', err.message);
-      return res.status(500).json({ error: 'Database error' });
+  db.run(
+    query,
+    [apartmentId, startDate, endDate, adult, children, room],
+    function (err) {
+      if (err) {
+        console.error("Error inserting booking:", err.message);
+        return res.status(500).json({ error: "Database error" });
+      }
+      res
+        .status(200)
+        .json({ message: "Booking added successfully", id: this.lastID });
     }
-    res.status(200).json({ message: 'Booking added successfully', id: this.lastID });
-  });
+  );
 });
 
-
-// Get all bookings
+// الحصول على جميع الحجوزات
 app.get("/api/bookings", (req, res) => {
   const query = "SELECT * FROM bookings";
 
   db.all(query, [], (err, rows) => {
     if (err) {
-      throw err;
+      console.error("Error fetching bookings:", err);
+      res.status(500).json({ error: "Database error" });
+    } else {
+      res.status(200).json(rows);
     }
-    res.json(rows);
   });
 });
-// Get reviews for an apartment
-app.get('/apartment/:id/reviews', (req, res) => {
-  const { id } = req.params;
-  db.all('SELECT * FROM bewertung WHERE wohnungsId = ?', [id], (err, rows) => {
+
+// الحصول على مراجعات الشقة
+app.get('/api/apartments/:id/reviews', (req, res) => {
+  const apartmentId = req.params.id;
+  db.all('SELECT * FROM Reviews WHERE apartmentId = ?', [apartmentId], (err, rows) => {
     if (err) {
-      return res.status(500).json({ error: 'Failed to retrieve reviews' });
+      console.error("Error fetching reviews:", err.message);
+      return res.status(500).json({ error: err.message });
     }
-    res.json(rows);
+    res.status(200).json(rows);
   });
 });
 
-// Post a new review
-app.post('/apartment/:id/reviews', (req, res) => {
-  const { id } = req.params;
-  const { benutzerId, bewertung, kommentar } = req.body;
+// إضافة تقييم لشقة
+app.post('/api/apartments/:id/reviews', authenticateToken, (req, res) => {
+  const { kommentar, bewertung } = req.body;
+  const apartmentId = req.params.id;
+  const benutzerId = req.user.username; // استخدام اسم المستخدم من التوكن
 
-  // Basic validation
-  if (!benutzerId || !bewertung || !kommentar) {
-    return res.status(400).json({ error: 'Missing required fields' });
+  if (!kommentar || !bewertung) {
+    return res.status(400).json({ error: "Kommentar and bewertung are required" });
   }
 
-  db.run('INSERT INTO bewertung (benutzerId, wohnungsId, bewertung, kommentar) VALUES (?, ?, ?, ?)', [benutzerId, id, bewertung, kommentar], function (err) {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to post review' });
+  db.run(
+    'INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)',
+    [apartmentId, benutzerId, bewertung, kommentar],
+    function(err) {
+      if (err) {
+        console.error("Error adding review:", err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(201).json({ bewertungId: this.lastID, apartmentId, benutzerId, bewertung, kommentar });
     }
-    res.json({ bewertungId: this.lastID, benutzerId, wohnungsId: id, bewertung, kommentar });
-  });
+  );
 });
 
 // بدء تشغيل الخادم
