@@ -206,7 +206,47 @@ app.get('/api/apartments/:id', (req, res) => {
         }
     });
 });
+// Add a new booking
+app.post('/api/bookings', (req, res) => {
+  const { apartmentId, startDate, endDate, adult, children, room } = req.body;
 
+  // التحقق من جميع الحقول المطلوبة
+  if (!apartmentId || !startDate || !endDate || !adult || !children || !room) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // التحقق من تنسيق التواريخ
+  if (isNaN(Date.parse(startDate)) || isNaN(Date.parse(endDate))) {
+    return res.status(400).json({ error: 'Invalid date format' });
+  }
+
+  // إدراج الحجز في قاعدة البيانات
+  const query = `
+    INSERT INTO bookings (apartmentId, startDate, endDate, adult, children, room)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  db.run(query, [apartmentId, startDate, endDate, adult, children, room], function(err) {
+    if (err) {
+      console.error('Error inserting booking:', err.message);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(200).json({ message: 'Booking added successfully', id: this.lastID });
+  });
+});
+
+
+// Get all bookings
+app.get("/api/bookings", (req, res) => {
+  const query = "SELECT * FROM bookings";
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    res.json(rows);
+  });
+});
 // Get reviews for an apartment
 app.get('/apartment/:id/reviews', (req, res) => {
   const { id } = req.params;

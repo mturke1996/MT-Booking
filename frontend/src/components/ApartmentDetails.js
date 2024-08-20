@@ -1,3 +1,4 @@
+// src/components/ApartmentDetails.js
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -26,8 +27,6 @@ const ApartmentDetails = () => {
     children: 0,
     room: 1,
   });
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
 
   useEffect(() => {
     axios
@@ -51,8 +50,20 @@ const ApartmentDetails = () => {
   };
 
   const handleSearchSubmit = () => {
-    // Implement the search submit logic here
-    console.log("Search clicked", { date, options, minPrice, maxPrice });
+    axios.post('http://localhost:5000/api/bookings', {
+      apartmentId: id, 
+      startDate: format(date[0].startDate, "yyyy-MM-dd"),
+      endDate: format(date[0].endDate, "yyyy-MM-dd"),
+      adult: options.adult,
+      children: options.children,
+      room: options.room
+    })
+    .then(response => {
+      console.log('Booking successful:', response.data);
+    })
+    .catch(error => {
+      console.error('Error booking apartment:', error);
+    });
   };
 
   const renderAmenities = () => {
@@ -115,7 +126,7 @@ const ApartmentDetails = () => {
               className="details-info"
               style={{ display: "flex", justifyContent: "space-between" }}
             >
-              <div >
+              <div>
                 <h3 className="text-2xl font-semibold mb-4">Details</h3>
                 <p>
                   <strong>Rooms:</strong> {apartment.Zimmeranzahl}
