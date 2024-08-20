@@ -1,6 +1,7 @@
 // src/components/ApartmentCard.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom"; // استيراد Link
 import "../App.css";
 
 const ApartmentCard = ({ id }) => {
@@ -30,24 +31,26 @@ const ApartmentCard = ({ id }) => {
   if (!apartment) return <div>No apartment found</div>;
 
   return (
-    <div className="apartment-box">
-      <div className="apartment-image">
-        <img src={apartment.img1} alt={apartment.Adresse} />
-      </div>
-      <div className="apartment-info">
-        <div className="apartment-title">
-          <p>{apartment.Adresse}</p>
+    <Link to={`/apartment/${id}`} className="apartment-link">
+      <div className="apartment-box">
+        <div className="apartment-image">
+          <img src={apartment.img1} alt={apartment.Adresse} />
+        </div>
+        <div className="apartment-info">
+          <div className="apartment-title">
+            <p>{apartment.Adresse}</p>
+          </div>
+        </div>
+        <div className="apartment-details">
+          <div className="price">
+            <p>${apartment["Monatliche Miete"]}</p>
+          </div>
+          <div className="details-item">
+            <p>{apartment.Zimmeranzahl} BD</p>
+          </div>
         </div>
       </div>
-      <div className="apartment-details">
-        <div className="price">
-          <p>${apartment["Monatliche Miete"]}</p>
-        </div>
-        <div className="details-item">
-          <p>{apartment.Zimmeranzahl} BD</p>
-        </div>
-      </div>
-    </div>
+    </Link>
   );
 }
 

@@ -1,45 +1,52 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // استيراد useNavigate
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 function Hero() {
-  // إعداد الحالة لتخزين مدخلات البحث
-  const [location, setLocation] = useState("");
-  // const [checkInDate, setCheckInDate] = useState("");
-  // const [checkOutDate, setCheckOutDate] = useState("");
-  const [guests, setGuests] = useState(1);
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [apartments, setApartments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const navigate = useNavigate(); // إنشاء دالة التنقل
+  const navigate = useNavigate();
 
-  // دالة للبحث عن الشقق
-  const handleSearch = async () => {
-    try {
-      // إرسال طلب HTTP لجلب البيانات
-      const response = await fetch("http://localhost:5000/api/apartments");
-      const data = await response.json();
-
-      // تصفية النتائج بناءً على المدخلات
-      const filteredResults = data.filter((apartment) => {
-        return apartment.Adresse.toLowerCase().includes(location.toLowerCase());
-      });
-
-      // تحديث حالة النتائج
-      setSearchResults(filteredResults);
-
-      // التنقل إلى صفحة /Searchitem مع تمرير البيانات
-      navigate("/Searchitem", {
-        state: {
-          location,
-          // checkInDate,
-          // checkOutDate,
-          guests,
-          results: filteredResults,
-        },
-      });
-    } catch (error) {
-      console.error("Error fetching search results:", error);
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      fetchApartments();
     }
+  }, [searchQuery]);
+
+  const fetchApartments = () => {
+    setIsLoading(true);
+    setError(null);
+
+    fetch(`http://localhost:5000/api/apartments`)
+      .then((response) => response.json())
+      .then((data) => {
+        const filteredData = data.filter((apartment) =>
+          apartment.Adresse.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setApartments(filteredData);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setError("Error fetching apartments");
+        setIsLoading(false);
+      });
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    fetchApartments();
+
+    // التنقل إلى صفحة النتائج مع تمرير الشقق المصفاة
+    navigate("/Searchitem", {
+      state: { results: apartments },
+    });
   };
 
   return (
@@ -54,49 +61,15 @@ function Hero() {
             <div>
               <input
                 type="text"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Enter Address"
+                value={searchQuery}
+                onChange={handleSearchChange}
               />
-              {/* <input
-                type="date"
-                placeholder="Check-in"
-                value={checkInDate}
-                onChange={(e) => setCheckInDate(e.target.value)}
-              />
-              <input
-                type="date"
-                placeholder="Check-out"
-                value={checkOutDate}
-                onChange={(e) => setCheckOutDate(e.target.value)}
-              /> */}
-              <input
-                type="number"
-                placeholder="Guests"
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                min="1"
-              />
-              <button onClick={handleSearch}>Search</button>
+              <button onClick={handleSearchSubmit}>Search</button>
             </div>
           </div>
         </div>
       </header>
-      <div className="search-results">
-        {searchResults.length > 0 ? (
-          searchResults.map((apartment) => (
-            <div key={apartment["Wohnungs-ID"]} className="search-item">
-              <h2>{apartment.Adresse}</h2>
-              <p>Rooms: {apartment.Zimmeranzahl}</p>
-              <p>Area: {apartment["Fläche (m²)"]} m²</p>
-              <p>Price: {apartment["Monatliche Miete"]} per month</p>
-              <img src={apartment.img1} alt={apartment.Beschreibung} />
-            </div>
-          ))
-        ) : (
-          <p></p>
-        )}
-      </div>
     </div>
   );
 }
