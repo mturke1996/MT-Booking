@@ -115,7 +115,7 @@ const ApartmentDetails = () => {
               className="details-info"
               style={{ display: "flex", justifyContent: "space-between" }}
             >
-              <div style={{ width: "65%" }}>
+              <div >
                 <h3 className="text-2xl font-semibold mb-4">Details</h3>
                 <p>
                   <strong>Rooms:</strong> {apartment.Zimmeranzahl}
@@ -124,7 +124,7 @@ const ApartmentDetails = () => {
                   <strong>Size:</strong> {apartment["Fläche (m²)"]} m²
                 </p>
                 <p>
-                  <strong>Rent:</strong> {apartment["Monatliche Miete"]} €/month
+                  <strong>Rent:</strong> {apartment["Monatliche Miete"]} €/per Night
                 </p>
                 <p className="mt-4">
                   <strong>Description:</strong> {apartment.Beschreibung}

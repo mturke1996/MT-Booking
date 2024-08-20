@@ -15,6 +15,20 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
+// Middleware للتحقق من صحة التوكن
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) return res.sendStatus(401); // لا يوجد توكن، الرجوع بحالة 401
+
+  jwt.verify(token, secretKey, (err, user) => {
+    if (err) return res.sendStatus(403); // التوكن غير صالح أو منتهي، الرجوع بحالة 403
+    req.user = user; // تخزين بيانات المستخدم في الطلب
+    next(); // الانتقال إلى الخطوة التالية
+  });
+}
+
 // الاتصال بقاعدة البيانات SQLite
 const db = new sqlite3.Database("./mtbookig-bank.db", (err) => {
   if (err) console.error("Database connection error:", err.message);
@@ -63,13 +77,30 @@ app.post("/login", (req, res) => {
       if (isValid) {
         const token = jwt.sign(
           { id: user.id, username: user.username },
-          secretKey
+          secretKey,
+          { expiresIn: "1h" } // التوكن صالح لمدة ساعة
         );
         res.json({ message: "you are successfully logged in", token });
       } else {
         res.status(400).send("Invalid username or password");
       }
     }
+  });
+});
+
+// استرجاع بيانات المستخدم بناءً على التوكن
+app.get("/user", authenticateToken, (req, res) => {
+  const userId = req.user.id;
+
+  db.get("SELECT id, username, email, name, lastname FROM users WHERE id = ?", [userId], (err, user) => {
+    if (err) {
+      console.error("Error fetching user data:", err.message);
+      return res.status(500).send("Internal server error");
+    }
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.json(user);
   });
 });
 // API endpoint to get user details
@@ -95,7 +126,6 @@ app.get("/user/:id", (req, res) => {
     res.json(user);
   });
 });
-
 
 // API endpoint to add a new apartment
 app.post("/api/apartments", (req, res) => {
@@ -176,6 +206,7 @@ app.get('/api/apartments/:id', (req, res) => {
         }
     });
 });
+
 // Get reviews for an apartment
 app.get('/apartment/:id/reviews', (req, res) => {
   const { id } = req.params;

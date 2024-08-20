@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 
-
 function Navbar({ user, onLogout }) {
   return (
     <nav className="navbar">
@@ -15,7 +14,7 @@ function Navbar({ user, onLogout }) {
           <Link to="/">Home</Link>
         </li>
         <li>
-          <Link to="#">Destinations</Link>
+          <Link to="/Weather">Weather</Link>
         </li>
         <li>
           <Link to="#">Blog</Link>
@@ -53,13 +52,13 @@ function Navbar({ user, onLogout }) {
                 </li>
                 <li>
                   <Link to="/addApartment" className="profile-link">
-                    Add New Appartment
+                    Add New Apartment
                   </Link>
                 </li>
                 <li>
-                  <li onClick={onLogout} className="logout-button">
+                  <button onClick={onLogout} className="logout-button">
                     Logout
-                  </li>
+                  </button>
                 </li>
               </ul>
             </div>
