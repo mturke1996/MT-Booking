@@ -384,15 +384,200 @@ img {
 .dropdown-menu li a {
   text-decoration: none;
 }
+/* إخفاء زر Menu والقائمة على الشاشات الكبيرة */
+.mobile-menu-button,
+.mobile-menu {
+  display: none;
+}
 
-/* تنسيق الهيرو */
+/* عند الشاشات الصغيرة، عرض زر Menu والقائمة العمودية */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none; /* إخفاء الروابط الأفقية على الشاشات الصغيرة */
+  }
+
+  .mobile-menu-button {
+    display: block;
+    background-color: #01a6ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .mobile-menu li {
+    margin: 10px 0;
+  }
+
+  .mobile-menu li a {
+    padding: 10px 15px;
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+
+  .mobile-menu li a:hover {
+    background-color: #f0f0f0;
+    color: #01a6ff;
+  }
+
+  .user-info {
+    display: none; /* إخفاء user-info على الشاشات الصغيرة */
+  }
+}
+
+/* لتحسين مظهر الصندوق الذي يحتوي على عناصر تسجيل الدخول */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  margin-top: 100px;
+}
+
+.login-box {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* لتنسيق العناوين في الصندوق */
+.login-box h4 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* لتحسين مظهر الحقول */
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* لتحسين مظهر زر تسجيل الدخول
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+} */
+
+.login-button:hover {
+  background-color: #45a049;
+}
+
+/* لتحسين مظهر رابط التسجيل */
+.register-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.register-link a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+/* لتحسين مظهر الصندوق الذي يحتوي على عناصر التسجيل */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  margin-top: 100px;
+}
+
+.register-box {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* لتنسيق العناوين في الصندوق */
+.register-box h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* لتحسين مظهر الحقول */
+.register-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* لتحسين مظهر زر التسجيل */
+.register-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #01a6ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.register-button:hover {
+  background-color: #00695c;
+}
+
+/* تأثيرات إضافية لتجربة مستخدم أفضل */
+.register-box input:focus {
+  border-color: #00796b;
+  outline: none;
+}/* قسم الهيرو */
 .hero {
   background-image: url("https://www.figma.com/file/cmum8VIERiRtKP8j3lvO7i/image/abd989eced9fb6b56fa98039123e828fd548e386");
   background-size: cover;
   background-position: center;
   color: #fff;
   text-align: center;
-  padding: 20rem 2rem; /* زيادة المساحة لزيادة تأثير النص */
+  padding: 10rem 2rem; /* تقليل المساحة للتوافق مع الهواتف */
   position: relative;
   height: 100vh;
   overflow: hidden; /* منع تجاوز المحتوى */
@@ -412,20 +597,20 @@ img {
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 700px; /* تحسين العرض لجعل النصوص أكثر تركيزًا */
+  max-width: 700px;
   margin: 0 auto;
   padding: 1rem;
 }
 
 .hero h1 {
-  font-size: 4.5rem;
+  font-size: 3rem; /* تقليل حجم النص ليكون مناسبًا للهواتف */
   margin-bottom: 1rem;
   color: #ffdd57;
   text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* تأثير ظل أكثر وضوحًا */
 }
 
 .hero p {
-  font-size: 1.75rem;
+  font-size: 1.25rem; /* تقليل حجم النص ليكون أكثر قابلية للقراءة على الشاشات الصغيرة */
   margin-bottom: 2rem;
   max-width: 600px;
   margin-left: auto;
@@ -436,7 +621,7 @@ img {
 
 .hero button {
   padding: 1rem 2rem; /* زيادة الحشو للزر */
-  font-size: 1.2rem;
+  font-size: 1rem; /* تقليل حجم الخط */
   border-radius: 25px; /* تحسين شكل الزر ليبدو أكثر أناقة */
   border: none;
   background-color: #ff6347;
@@ -464,6 +649,27 @@ img {
 
 .hero-content {
   animation: slide-in 1s ease-out;
+}
+
+/* إعدادات خاصة بالهواتف المحمولة */
+@media (max-width: 768px) {
+  .hero {
+    padding: 5rem 1rem; /* تقليل المساحة لتناسب الهواتف المحمولة */
+  }
+
+  .hero h1 {
+    font-size: 2.5rem; /* تقليل حجم النص ليكون مناسبًا للهواتف */
+  }
+
+  .hero p {
+    font-size: 1.15rem; /* تقليل حجم النص */
+    margin-bottom: 1.5rem;
+  }
+
+  .hero button {
+    padding: 0.8rem 1.5rem; /* تقليل الحشو للزر */
+    font-size: 0.9rem; /* تقليل حجم النص */
+  }
 }
 
 /* Weather  */
@@ -544,7 +750,6 @@ img {
 }
 /* Weather  */
 /* profile  */
-
 .profile-container {
   max-width: 800px;
   margin: 40px auto;
@@ -1302,4 +1507,144 @@ a:hover {
 
 .newsletter-btn:hover {
   background-color: #0056b3;
+}
+/* General styling */
+.agents {
+  padding: 40px 0;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+.agents-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.agents-title {
+
+  margin-bottom: 40px;
+}
+
+.agents-title h3 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.agents-title p {
+  font-size: 1em;
+  color: #666;
+}
+
+/* Agent grid layout */
+.agents-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.agent-card {
+  flex: 1 1 100%;
+  max-width: 100%;
+  background: #fff;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.agent-card:hover {
+  transform: translateY(-5px);
+}
+
+@media (min-width: 768px) {
+  .agent-card {
+    flex: 1 1 48%;
+    max-width: 48%;
+  }
+}
+
+@media (min-width: 992px) {
+  .agent-card {
+    flex: 1 1 30%;
+    max-width: 30%;
+  }
+}
+
+.agent-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.agent-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.agent-role {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.agent-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.agent-name {
+  font-size: 1.1em;
+  color: #333;
+}
+
+.agent-social a {
+  margin: 0 5px;
+}
+
+.agent-social img {
+  width: 24px;
+  height: 24px;
+  transition: opacity 0.2s ease;
+}
+
+.agent-social a:hover img {
+  opacity: 0.7;
+}
+/* قاعدة عامة للأزرار */
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button:hover {
+  transform: scale(1.05); /* تكبير الأزرار عند التمرير فوقها */
+}
+
+/* زر الدفع */
+.pay-button {
+  background-color: #4CAF50; /* لون أخضر */
+}
+
+.pay-button:hover {
+  background-color: #45a049; /* لون أخضر أغمق عند التمرير فوقه */
+}
+
+/* زر الحذف */
+.delete-button {
+  background-color: #f44336; /* لون أحمر */
+}
+
+.delete-button:hover {
+  background-color: #e53935; /* لون أحمر أغمق عند التمرير فوقه */
 }

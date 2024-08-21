@@ -32,7 +32,7 @@ export default function Login({ setToken, setUser }) {
       // تخزين بيانات المستخدم في localStorage
       localStorage.setItem("user", JSON.stringify(userResponse.data));
 
-      navigate("/"); // الانتقال إلى الصفحة الرئيسية بعد تسجيل الدخول
+      navigate("/"); 
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed, please try again.");
