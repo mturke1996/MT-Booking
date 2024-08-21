@@ -28,6 +28,7 @@ const ApartmentDetails = () => {
     children: 0,
     room: 1,
   });
+  const [bookingMessage, setBookingMessage] = useState(""); // Added state for booking message
 
   useEffect(() => {
     axios
@@ -61,9 +62,11 @@ const ApartmentDetails = () => {
     })
     .then(response => {
       console.log('Booking successful:', response.data);
+      setBookingMessage("Your booking was successful!"); // Set success message
     })
     .catch(error => {
       console.error('Error booking apartment:', error);
+      setBookingMessage("There was an error with your booking. Please try again."); // Set error message
     });
   };
 
@@ -227,6 +230,9 @@ const ApartmentDetails = () => {
               <button className="search-button" onClick={handleSearchSubmit}>
                 Booking
               </button>
+              {bookingMessage && ( // Conditionally render the message
+                <p className="booking-message mt-4">{bookingMessage}</p>
+              )}
             </div>
           </div>
         </div>
