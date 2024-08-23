@@ -17,21 +17,11 @@ function Navbar({ user, onLogout }) {
       </div>
 
       <ul className="navbar-links">
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/Weather">Weather</Link>
-        </li>
-        <li>
-          <Link to="#">Blog</Link>
-        </li>
-        <li>
-          <Link to="#">News</Link>
-        </li>
-        <li>
-          <Link to="#">Contact</Link>
-        </li>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/Weather">Weather</Link></li>
+        <li><Link to="#">Blog</Link></li>
+        <li><Link to="#">News</Link></li>
+        <li><Link to="#">Contact</Link></li>
       </ul>
 
       <div className="user-info">

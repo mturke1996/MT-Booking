@@ -5,6 +5,7 @@ import Apartment from "./Apartment";
 import Footer from "./Footer";
 import Agent from "./Agent";
 
+
 export default function Home() {
   return (
     <div>

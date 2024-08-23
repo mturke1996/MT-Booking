@@ -1,5 +1,6 @@
 import React from 'react';
 import '../App.css';
+import './FAQ.js'
 
 export default function Footer() {
   return (
@@ -29,7 +30,7 @@ export default function Footer() {
             <div className="footer-column footer-section">
               <h5>COMPANY</h5>
               <a href="#">About</a>
-              <a href="#">FAQ</a>
+              <a href="/faq">FAQ</a>
               <a href="#">Contact</a>
               <a href="#">Social</a>
             </div>
