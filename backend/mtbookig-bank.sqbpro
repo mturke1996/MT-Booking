@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/mohtu/OneDrive/Desktop/MT-Booking/backend/mtbookig-bank.db" readonly="0" foreign_keys="" case_sensitive_like="" temp_store="" wal_autocheckpoint="" synchronous=""/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="3281"/><column_width id="4" width="0"/></tab_structure><tab_browse><current_table name="0,0:"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE bookings (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  apartmentId INTEGER,
-  startDate DATE,
-  endDate DATE,
-  adult INTEGER,
-  children INTEGER,
-  room INTEGER,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (apartmentId) REFERENCES Wohnungen(&quot;Wohnungs-ID&quot;)
-);
-</sql><current_tab id="0"/></tab_sql></sqlb_project>
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/mohtu/OneDrive/Desktop/MT-Booking/backend/mtbookig-bank.db" readonly="0" foreign_keys="" case_sensitive_like="" temp_store="" wal_autocheckpoint="" synchronous=""/><attached/><window><main_tabs open="structure browser pragmas query" current="1"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="3589"/><column_width id="4" width="0"/></tab_structure><tab_browse><current_table name="0,0:"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE &quot;bookings&quot; (
+    &quot;id&quot; INTEGER PRIMARY KEY AUTOINCREMENT,
+    &quot;apartmentId&quot; INTEGER,
+    &quot;username&quot; TEXT,  -- إضافة عمود username
+    &quot;startDate&quot; DATE,
+    &quot;endDate&quot; DATE,
+    &quot;adult&quot; INTEGER,
+    &quot;children&quot; INTEGER,
+    &quot;room&quot; INTEGER,
+    &quot;createdAt&quot; TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(&quot;apartmentId&quot;) REFERENCES &quot;Wohnungen&quot;(&quot;Wohnungs-ID&quot;),
+    FOREIGN KEY(&quot;username&quot;) REFERENCES &quot;users&quot;(&quot;username&quot;)  -- تعيين مفتاح خارجي إلى جدول users
+);</sql><current_tab id="0"/></tab_sql></sqlb_project>

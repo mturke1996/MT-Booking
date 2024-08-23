@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import Navbar from "./components/Navbar";
@@ -11,8 +11,6 @@ import Profile from "./components/Profile";
 import ApartmentForm from "./components/ApartmentForm";
 import List from "./components/List";
 import ApartmentDetails from "./components/ApartmentDetails";
-import FAQ from "./components/FAQ";
-import Contact from "./components/Contact";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
@@ -57,12 +55,9 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/Weather" element={<Weather />} />
-          <Route path="/contact" element={<Contact/>}/>
-          <Route path="/faq" element={<FAQ/>}/>
           <Route path="/addApartment" element={<ApartmentForm />} />
           <Route path="/Searchitem" element={<List />} />
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
-
           {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>
       </div>

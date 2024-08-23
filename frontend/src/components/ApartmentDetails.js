@@ -28,7 +28,10 @@ const ApartmentDetails = () => {
     children: 0,
     room: 1,
   });
-  const [bookingMessage, setBookingMessage] = useState(""); // Added state for booking message
+  const [bookingMessage, setBookingMessage] = useState(""); // State for booking message
+
+  // Retrieve user from localStorage or another source
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     axios
@@ -52,8 +55,14 @@ const ApartmentDetails = () => {
   };
 
   const handleSearchSubmit = () => {
+    if (!user) {
+      setBookingMessage("You need to be logged in to make a booking.");
+      return;
+    }
+  
     axios.post('http://localhost:5000/api/bookings', {
-      apartmentId: id, 
+      apartmentId: id,
+      username: user.username,  // Ensure this is set correctly
       startDate: format(date[0].startDate, "yyyy-MM-dd"),
       endDate: format(date[0].endDate, "yyyy-MM-dd"),
       adult: options.adult,
@@ -62,13 +71,14 @@ const ApartmentDetails = () => {
     })
     .then(response => {
       console.log('Booking successful:', response.data);
-      setBookingMessage("Your booking was successful!"); // Set success message
+      setBookingMessage("Your booking was successful!");
     })
     .catch(error => {
       console.error('Error booking apartment:', error);
-      setBookingMessage("There was an error with your booking. Please try again."); // Set error message
+      setBookingMessage("There was an error with your booking. Please try again.");
     });
   };
+  
 
   const renderAmenities = () => {
     const amenities = [

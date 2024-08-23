@@ -213,29 +213,28 @@ app.get("/api/apartments/:id", (req, res) => {
   });
 });
 
-// إضافة حجز جديد
 app.post("/api/bookings", (req, res) => {
-  const { apartmentId, startDate, endDate, adult, children, room } = req.body;
+  const { apartmentId, startDate, endDate, adult, children, room, username } = req.body;
 
-  // التحقق من جميع الحقول المطلوبة
-  if (!apartmentId || !startDate || !endDate || !adult || !children || !room) {
+  // تسجيل البيانات المستلمة للتأكد من صحتها
+  console.log('Received booking data:', req.body);
+
+  if (!apartmentId || !startDate || !endDate || !adult || !children || !room || !username) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  // التحقق من تنسيق التواريخ
   if (isNaN(Date.parse(startDate)) || isNaN(Date.parse(endDate))) {
     return res.status(400).json({ error: "Invalid date format" });
   }
 
-  // إدراج الحجز في قاعدة البيانات
   const query = `
-    INSERT INTO bookings (apartmentId, startDate, endDate, adult, children, room)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO bookings (apartmentId, startDate, endDate, adult, children, room, username)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
     query,
-    [apartmentId, startDate, endDate, adult, children, room],
+    [apartmentId, startDate, endDate, adult, children, room, username],
     function (err) {
       if (err) {
         console.error("Error inserting booking:", err.message);
@@ -247,6 +246,8 @@ app.post("/api/bookings", (req, res) => {
     }
   );
 });
+
+
 
 // الحصول على جميع الحجوزات
 app.get("/api/bookings", (req, res) => {
@@ -261,6 +262,23 @@ app.get("/api/bookings", (req, res) => {
     }
   });
 });
+// حذف حجز
+app.delete("/api/bookings/:id", (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM bookings WHERE id = ?';
+
+  db.run(query, [id], function(err) {
+    if (err) {
+      console.error("Error deleting booking:", err.message);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    res.status(200).json({ message: "Booking deleted successfully" });
+  });
+});
+
 
 // الحصول على مراجعات الشقة
 app.get('/api/apartments/:id/reviews', (req, res) => {
