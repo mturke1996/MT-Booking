@@ -1,4 +1,3 @@
-// src/components/Apartment.js
 import React, { useEffect, useState } from "react";
 import ApartmentCard from "./ApartmentCard";
 import axios from "axios";
@@ -18,7 +17,6 @@ export default function Apartment() {
         const selectedIds = selectedIndices.map(
           (index) => allApartments[index]["Wohnungs-ID"]
         );
-
         setApartmentIds(selectedIds);
         setLoading(false);
       })
@@ -33,7 +31,7 @@ export default function Apartment() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="apartment">
+    <div className="apartments">
       <div className="container">
         <div className="custom-row">
           <div className="custom-col-12">
@@ -51,18 +49,6 @@ export default function Apartment() {
             </div>
           ))}
         </div>
-        {/* <div className="custom-row">
-          <div className="custom-col-12">
-            <div className="search lux-shadow search-apartment">
-              <input
-                type="text"
-                className="search-input left"
-                placeholder="Search Location"
-              />
-              <button className="search-btn left">Search</button>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

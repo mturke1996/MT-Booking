@@ -1,5 +1,5 @@
 import React from "react";
-import "../App.css"; // تأكد من وجود هذا الملف وتحوي الأنماط المخصصة
+import "../App.css"; 
 
 export default function Statistic() {
   return (

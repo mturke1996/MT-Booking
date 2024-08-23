@@ -29,7 +29,7 @@ export default function Login({ setToken, setUser }) {
 
       setUser(userResponse.data); // تخزين بيانات المستخدم في الحالة
 
-      // تخزين بيانات المستخدم في localStorage
+    
       localStorage.setItem("user", JSON.stringify(userResponse.data));
 
       navigate("/"); 

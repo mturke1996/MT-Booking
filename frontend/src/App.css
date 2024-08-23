@@ -749,98 +749,97 @@ img {
   color: #666;
 }
 /* Weather  */
-/* profile  */
 .profile-container {
-  max-width: 800px;
-  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  max-width: 800px;
+  margin: auto;
+  margin-top: 100px;
 }
 
 .profile-header {
-  position: relative;
-  padding: 20px;
+  text-align: center;
+}
+
+.profile-header h1 {
+  margin: 0;
+}
+
+.profile-header p {
+  color: #666;
+}
+
+.profile-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-picture-section {
+  margin-bottom: 20px;
 }
 
 .profile-picture {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  border: 5px solid #007bff;
   object-fit: cover;
-  margin-bottom: 20px;
-}
-
-.profile-name {
-  font-size: 2.5rem;
-  margin: 10px 0;
-  color: #333;
-}
-
-.profile-title {
-  font-size: 1.2rem;
-  color: #777;
-}
-
-.profile-actions {
-  margin: 20px 0;
-}
-
-.profile-button {
-  padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.edit-button {
-  background-color: #007bff;
-}
-
-.edit-button:hover {
-  background-color: #0056b3;
-}
-
-.contact-button {
-  background-color: #28a745;
-}
-
-.contact-button:hover {
-  background-color: #218838;
+  border: 2px solid #ddd;
 }
 
 .profile-info {
-  margin-top: 30px;
-  text-align: left;
+  width: 100%;
+  max-width: 600px;
 }
 
 .info-item {
-  margin: 15px 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
 }
 
 .info-label {
   font-weight: bold;
-  color: #555;
 }
 
 .info-value {
-  color: #333;
+  margin: 0;
 }
+
+.profile-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-button:hover {
+  background-color: #0056b3;
+}
+
+input[type="text"], input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+
 /* statistic */
 .statistic {
   width: 100%;
-  height: calc(764px- 64px);
+  height: calc(764px - 64px);
   padding: 145px 0px 80px 0px;
   text-align: center;
   margin-top: 100px;
@@ -916,12 +915,24 @@ img {
   margin: 0px;
   padding: 0px;
 }
-/* Apartment */
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .custom-col-lg-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .statistic-box {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
 /* Apartment Section */
 .apartments {
   background-color: #f8f9fa;
   padding: 60px 0 70px;
-  text-align: center; /* Center the content */
+  text-align: center;
 }
 
 .apartments h2 {
@@ -930,6 +941,7 @@ img {
   color: #333;
   line-height: 1.4;
 }
+
 /* Custom Flex Row */
 .custom-row {
   display: flex;
@@ -938,10 +950,44 @@ img {
 }
 
 .custom-col-4 {
-  flex: 1 1 30%; 
-  max-width: 300px; 
+  flex: 1 1 30%;
+  max-width: 300px;
   margin: 10px;
 }
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .custom-col-4 {
+    flex: 1 1 100%; /* Take full width on small screens */
+    max-width: 100%;
+  }
+
+  .apartments h2 {
+    font-size: 20px; /* Smaller font size for small screens */
+  }
+
+  .apartment-box {
+    height: auto; /* Allow the box height to adjust automatically */
+  }
+
+  .apartment-image {
+    height: auto; /* Adjust image height to fit content */
+  }
+
+  .apartment-info,
+  .apartment-details {
+    padding: 10px; /* Reduce padding on small screens */
+  }
+
+  .price {
+    font-size: 16px; /* Adjust font size */
+  }
+
+  .details-item p {
+    font-size: 12px; /* Adjust font size */
+  }
+}
+
 /* Apartment Box */
 .apartment-box {
   display: flex;
@@ -949,26 +995,24 @@ img {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  -webkit-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
-  -moz-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
-  box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
+  box-shadow: 0px 2px 8px 0px rgba(24, 49, 56, 0.15);
   width: 100%;
   height: 500px;
   max-width: 350px;
   margin: 0 auto;
   margin-top: 35px;
 }
-.apartment-image{
+
+.apartment-image {
   height: 76%;
 }
-/* Apartment Image */
+
 .apartment-image img {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-/* Apartment Info */
 .apartment-info {
   padding: 15px;
   background-color: #ffffff;
@@ -983,7 +1027,6 @@ img {
   color: #333;
 }
 
-/* Apartment Details */
 .apartment-details {
   display: flex;
   justify-content: space-between;
@@ -1016,7 +1059,6 @@ img {
   color: #919eb1;
   margin: 0;
 }
-
 
 
 /* Search Apartments */

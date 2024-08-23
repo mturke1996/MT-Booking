@@ -56,7 +56,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route
             path="/profile"
-            element={user ? <Profile /> : <Navigate to="/login" />}
+            element={user ? <Profile user={user} /> : <Navigate to="/login" />}
           />
           <Route
             path="/Weather"
@@ -70,7 +70,7 @@ function App() {
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
           <Route
             path="/mybooking"
-            element={user ? <MyBooking username={user?.username} /> : <Navigate to="/login" />}
+            element={user ? <MyBooking user={user} /> : <Navigate to="/login" />}
           />
           {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>

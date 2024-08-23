@@ -6,7 +6,6 @@ function Hero() {
   const navigate = useNavigate();
 
   const handleGetStartedClick = () => {
-    // التنقل إلى صفحة البحث أو أي صفحة أخرى
     navigate("/Searchitem");
   };
 
