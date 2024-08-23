@@ -21,7 +21,7 @@ function Navbar({ user, onLogout }) {
         <li><Link to="/Weather">Weather</Link></li>
         <li><Link to="#">Blog</Link></li>
         <li><Link to="#">News</Link></li>
-        <li><Link to="#">Contact</Link></li>
+        <li><Link to="/contact">Contact</Link></li>
       </ul>
 
       <div className="user-info">

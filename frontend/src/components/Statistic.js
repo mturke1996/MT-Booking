@@ -12,17 +12,10 @@ export default function Statistic() {
             Statistics
           </h3>
           <p>
-            In this space market-facing, yet UI work flows, or bake it in. Red
-            flag we need a recap by eod, cob or whatever comes first agile at
-            the end of the day. Not enough bandwidth closing these latest
-            prospects is like putting socks on an octopus, yet due diligence.
-          </p>
-          <p>
-            We need to get all stakeholders up to speed and in the right place
-            hard stop, or technologically savvy or pre launch. Pro-sumer
-            software commitment to the cause offline this discussion and wiggle
-            room blue sky. Beef up teams were able to drive adoption and
-            awareness. Screw the pooch killing it.
+          With our booking app, you can complete your booking in under 2 minutes,
+           with 95% confirmed instantly, making your experience quick and hassle-free. Trusted by users worldwide, our app boasts a 4.8-star rating,
+            backed by thousands of positive reviews. You’ll also gain access to deals you won’t find anywhere else, available 24/7, with personalized recommendations tailored to your preferences. 
+            Plus, enjoy the peace of mind with secure payments and responsive customer support that resolves 90% of issues within 24 hours. As a bonus, you’ll earn rewards with every booking, making your next trip even more affordable.
           </p>
         </div>
         <div className="custom-col-12 custom-col-lg-6 statistic-wrapper">
