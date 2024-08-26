@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "../App.css";
 
-const MyBooking = ({ username }) => {
+const MyBooking = ({ user }) => {
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [apartments, setApartments] = useState({});
@@ -20,9 +20,9 @@ const MyBooking = ({ username }) => {
   }, []);
 
   useEffect(() => {
-    if (username) {
+    if (user.username) {
       const filtered = bookings.filter(
-        (booking) => booking.username === username
+        (booking) => booking.username === user.username
       );
       setFilteredBookings(filtered);
 
@@ -46,7 +46,7 @@ const MyBooking = ({ username }) => {
       const apartmentIds = filtered.map((booking) => booking.apartmentId);
       fetchApartmentDetails(apartmentIds);
     }
-  }, [username, bookings]);
+  }, [user, bookings]);
 
   const handleDelete = async (bookingId) => {
     try {
@@ -164,7 +164,7 @@ const MyBooking = ({ username }) => {
           })
         ) : (
           <p className="text-gray-500 text-center">
-            No bookings found for {username}.
+            No bookings found for {user.username}.
           </p>
         )}
       </div>

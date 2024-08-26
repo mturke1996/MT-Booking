@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import Navbar from "./components/Navbar";
@@ -12,6 +17,10 @@ import ApartmentForm from "./components/ApartmentForm";
 import List from "./components/List";
 import ApartmentDetails from "./components/ApartmentDetails";
 import Contact from "./components/Contact";
+import FAQ from "./components/FAQ";
+import MyBooking from "./components/MyBooking";
+import CityGuide from "./components/CityGuide";
+import TravelBudgetPlanner from "./components/TravelBudgetPlanner";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
@@ -54,11 +63,34 @@ function App() {
             element={<Login setToken={setToken} setUser={setUser} />}
           />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/city" element={<CityGuide />} />
+          <Route path="/budget" element={<TravelBudgetPlanner />} />
+          <Route
+            path="/profile"
+            element={user ? <Profile user={user} /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/Weather"
+            element={user ? <Weather /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/addApartment"
+            element={user ? <ApartmentForm /> : <Navigate to="/login" />}
+          />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/Searchitem" element={<List />} />
+          <Route path="/apartment/:id" element={<ApartmentDetails />} />
+          <Route
+            path="/mybooking"
+            element={
+              user ? <MyBooking user={user} /> : <Navigate to="/login" />
+            }
+          />
+          {/* <Route path="/profile" element={<Profile />} />
           <Route path="/Weather" element={<Weather />} />
           <Route path="/addApartment" element={<ApartmentForm />} />
           <Route path="/Searchitem" element={<List />} />
-          <Route path="/contact" element={<Contact/>}/>
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
           {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>

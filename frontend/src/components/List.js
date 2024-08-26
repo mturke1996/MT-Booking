@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../App.css";
 import { format } from "date-fns";
 import { DateRange } from "react-date-range";
-import "react-date-range/dist/styles.css"; // استيراد الأنماط الأساسية
-import "react-date-range/dist/theme/default.css"; // استيراد الثيم الافتراضي
-import SearchItem from "./SearchItem"; // استيراد SearchItem
+import "react-date-range/dist/styles.css"; // Import basic styles
+import "react-date-range/dist/theme/default.css"; // Import default theme
+import SearchItem from "./SearchItem";
 
 function List() {
+  // State hooks
   const [date, setDate] = useState([
     { startDate: new Date(), endDate: new Date(), key: "selection" },
   ]);
@@ -17,6 +18,7 @@ function List() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Fetch apartments when searchQuery changes
   useEffect(() => {
     fetchApartments();
   }, [searchQuery]);
@@ -58,11 +60,11 @@ function List() {
   };
 
   return (
-    <div>
-      <div className="listContainer">
-        <div className="listWrapper">
-          <div className="listSearch">
-            <h1 className="lsTitle">Search</h1>
+    <div className="listContainer">
+      <div className="listWrapper">
+        <div className="listSearch">
+          <h1 className="lsTitle">Search</h1>
+          <form onSubmit={handleSearchSubmit}>
             <div className="lsItem">
               <label>Destination</label>
               <input
@@ -91,57 +93,34 @@ function List() {
             <div className="lsItem">
               <label>Options</label>
               <div className="lsOptions">
-                <div className="lsOptionItem">
-                  <span className="lsOptionText">
-                    Min price <small>per night</small>
-                  </span>
-                  <input type="number" className="lsOptionInput" />
-                </div>
-                <div className="lsOptionItem">
-                  <span className="lsOptionText">
-                    Max price <small>per night</small>
-                  </span>
-                  <input type="number" className="lsOptionInput" />
-                </div>
-                <div className="lsOptionItem">
-                  <span className="lsOptionText">Adult</span>
-                  <input
-                    type="number"
-                    min={1}
-                    className="lsOptionInput"
-                    placeholder={options.adult}
-                  />
-                </div>
-                <div className="lsOptionItem">
-                  <span className="lsOptionText">Children</span>
-                  <input
-                    type="number"
-                    min={0}
-                    className="lsOptionInput"
-                    placeholder={options.children}
-                  />
-                </div>
-                <div className="lsOptionItem">
-                  <span className="lsOptionText">Room</span>
-                  <input
-                    type="number"
-                    min={1}
-                    className="lsOptionInput"
-                    placeholder={options.room}
-                  />
-                </div>
+                {["Min price", "Max price", "Adult", "Children", "Room"].map((option, index) => (
+                  <div className="lsOptionItem" key={index}>
+                    <span className="lsOptionText">
+                      {option} <small>{option.includes("price") ? "per night" : ""}</small>
+                    </span>
+                    <input
+                      type="number"
+                      className="lsOptionInput"
+                      value={options[option.toLowerCase().replace(" ", "")] || ""}
+                      onChange={(e) => setOptions({
+                        ...options,
+                        [option.toLowerCase().replace(" ", "")]: e.target.value
+                      })}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
-            <button onClick={handleSearchSubmit}>Search</button>
-          </div>
-          <div className="listResult">
-            {isLoading && <p>Loading apartments...</p>}
-            {error && <p>{error}</p>}
-            {apartments.map((apartment) => (
-              <SearchItem key={apartment["Wohnungs-ID"]} apartment={apartment} />
-            ))}
-            {!isLoading && apartments.length === 0 && <p>No apartments found</p>}
-          </div>
+            <button type="submit">Search</button>
+          </form>
+        </div>
+        <div className="listResult">
+          {isLoading && <p>Loading apartments...</p>}
+          {error && <p>{error}</p>}
+          {apartments.map((apartment) => (
+            <SearchItem key={apartment["Wohnungs-ID"]} apartment={apartment} />
+          ))}
+          {!isLoading && apartments.length === 0 && <p>No apartments found</p>}
         </div>
       </div>
     </div>

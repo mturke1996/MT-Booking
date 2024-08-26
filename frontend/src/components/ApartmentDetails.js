@@ -172,7 +172,7 @@ const ApartmentDetails = () => {
             </div>
           </div>
         </div>
-        <div className="listSearch" style={{ width: "40%" }}>
+        <div className="listSearch">
           <div className="listWrapper">
             <div className="listSearch">
               <h1 className="lsTitle">Booking</h1>

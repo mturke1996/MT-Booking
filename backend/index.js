@@ -15,6 +15,12 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
+// مثال على معالج خطأ في Express.js
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ message: "Something went wrong!" });
+});
+
 // Middleware للتحقق من صحة التوكن
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -28,6 +34,7 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
 
 
 // الاتصال بقاعدة البيانات SQLite
@@ -89,6 +96,7 @@ app.post("/login", (req, res) => {
   });
 });
 
+
 // استرجاع بيانات المستخدم بناءً على التوكن
 app.get("/user", authenticateToken, (req, res) => {
   const userId = req.user.id;
@@ -109,27 +117,144 @@ app.get("/user", authenticateToken, (req, res) => {
   );
 });
 
-// استرجاع بيانات المستخدم بالتفصيل
-app.get("/user/:id", (req, res) => {
-  const userId = req.params.id;
+// استرجاع بيانات المستخدم بناءً على الـ user_id
+app.get('/user/:user_id', (req, res) => {
+  const userId = parseInt(req.params.user_id, 10);
 
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid user ID' });
+  }
+
+  db.get(
+    'SELECT id, username, email, name, lastname FROM users WHERE id = ?',
+    [userId],
+    (err, user) => {
+      if (err) {
+        console.error("Error fetching user data:", err.message);
+        return res.status(500).send("Internal server error");
+      }
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      res.json(user);
+    }
+  );
+});
+// إضافة تفاصيل المستخدم الجديدة بناءً على الـ user_id
+app.post('/user/details', (req, res) => {
+  const { user_id, phone, birthdate, profession, address, profile_picture, bio } = req.body;
+
+  // التحقق من وجود userId
+  if (!user_id) {
+    return res.status(400).json({ message: 'User ID is required' });
+  }
+
+  // بناء الاستعلام لإدراج التفاصيل
   const query = `
-    SELECT u.id, u.username, u.email, u.name, u.lastname, 
-           d.address, d.phone, d.birthdate, d.gender, d.occupation, d.profile_picture
-    FROM users u
-    LEFT JOIN user_details d ON u.id = d.user_id
-    WHERE u.id = ?
+    INSERT INTO user_details (user_id, phone, birthdate, profession, address, profile_picture, bio)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.get(query, [userId], (err, user) => {
+  // تنفيذ الاستعلام
+  db.run(query, [user_id, phone, birthdate, profession, address, profile_picture, bio], function (err) {
     if (err) {
-      console.error("Database error:", err.message);
-      return res.status(500).send("Internal server error");
+      console.error("Error adding user details:", err.message); // تسجيل الخطأ
+      return res.status(500).json({ message: 'Internal server error' });
     }
-    if (!user) {
-      return res.status(404).send("User not found");
+    res.status(201).json({ message: 'User details added successfully', id: this.lastID });
+  });
+});
+
+
+// استرجاع تفاصيل المستخدم بناءً على الـ user_id
+app.get('/user/details/:user_id', (req, res) => {
+  const userId = parseInt(req.params.user_id, 10);
+  db.get('SELECT * FROM user_details WHERE user_id = ?', [userId], (err, row) => {
+    if (err) {
+      console.error("Error fetching user details:", err);
+      res.status(500).json({ message: 'Internal server error' });
+    } else if (!row) {
+      res.status(404).json({ message: 'User details not found' });
+    } else {
+      res.json(row);
     }
-    res.json(user);
+  });
+});
+
+
+// تحديث تفاصيل المستخدم// تحديث تفاصيل المستخدم بناءً على الـ user_id في الـ URL
+app.put('/user/details/:user_id', (req, res) => {
+  const userId = parseInt(req.params.user_id, 10);
+  const { phone, birthdate, profession, address, profile_picture, bio } = req.body;
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid User ID' });
+  }
+
+  // إعداد الاستعلام الأساسي
+  let query = 'UPDATE user_details SET ';
+  const updates = [];
+  const params = [];
+
+  // تحقق من الحقول المقدمة وأضفها إلى الاستعلام
+  if (phone) {
+    updates.push('phone = ?');
+    params.push(phone);
+  }
+  if (birthdate) {
+    updates.push('birthdate = ?');
+    params.push(birthdate);
+  }
+  if (profession) {
+    updates.push('profession = ?');
+    params.push(profession);
+  }
+  if (address) {
+    updates.push('address = ?');
+    params.push(address);
+  }
+  if (profile_picture) {
+    updates.push('profile_picture = ?');
+    params.push(profile_picture);
+  }
+  if (bio) {
+    updates.push('bio = ?');
+    params.push(bio);
+  }
+
+  if (updates.length === 0) {
+    return res.status(400).json({ message: 'No fields to update' });
+  }
+
+  // أضف شرط التحديث للمستخدم
+  query += updates.join(', ') + ' WHERE user_id = ?';
+  params.push(userId);
+
+  db.run(query, params, function (err) {
+    if (err) {
+      console.error("Error updating user details:", err.message);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+    res.json({ message: 'User details updated successfully' });
+  });
+});
+
+
+
+
+app.delete("/user/details/:id", (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM user_details WHERE id = ?';
+
+  db.run(query, [id], function(err) {
+    if (err) {
+      console.error("Error deleting booking:", err.message);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    res.status(200).json({ message: "Booking deleted successfully" });
   });
 });
 
@@ -249,11 +374,21 @@ app.post("/api/bookings", (req, res) => {
 
 
 
-// الحصول على جميع الحجوزات
-app.get("/api/bookings", (req, res) => {
-  const query = "SELECT * FROM bookings";
 
-  db.all(query, [], (err, rows) => {
+// الحصول على جميع الحجوزات
+// الحصول على جميع الحجوزات للمستخدم المحدد
+app.get("/api/bookings", (req, res) => {
+  const { username } = req.query; // تأكد من أن username يتم تمريره كمعلمة استعلام
+
+  let query = "SELECT * FROM bookings";
+  let params = [];
+
+  if (username) {
+    query += " WHERE username = ?";
+    params.push(username);
+  }
+
+  db.all(query, params, (err, rows) => {
     if (err) {
       console.error("Error fetching bookings:", err);
       res.status(500).json({ error: "Database error" });
@@ -262,6 +397,8 @@ app.get("/api/bookings", (req, res) => {
     }
   });
 });
+
+
 // حذف حجز
 app.delete("/api/bookings/:id", (req, res) => {
   const { id } = req.params;

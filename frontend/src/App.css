@@ -749,84 +749,70 @@ img {
   color: #666;
 }
 /* Weather  */
-/* profile  */
+/* Profile */
 .profile-container {
-  max-width: 800px;
-  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  background-color: #fff;
+  max-width: 800px;
+  margin: auto;
+  margin-top: 100px;
+  background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
 }
 
 .profile-header {
-  position: relative;
-  padding: 20px;
+  text-align: center;
+}
+
+.profile-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.profile-header p {
+  color: #777;
+  font-size: 1.1em;
+  margin-top: 5px;
+}
+
+.profile-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-picture-section {
+  margin-bottom: 20px;
 }
 
 .profile-picture {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  border: 5px solid #007bff;
   object-fit: cover;
-  margin-bottom: 20px;
+  border: 3px solid #007bff;
+  transition: border-color 0.3s;
 }
 
-.profile-name {
-  font-size: 2.5rem;
-  margin: 10px 0;
-  color: #333;
-}
-
-.profile-title {
-  font-size: 1.2rem;
-  color: #777;
-}
-
-.profile-actions {
-  margin: 20px 0;
-}
-
-.profile-button {
-  padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.edit-button {
-  background-color: #007bff;
-}
-
-.edit-button:hover {
-  background-color: #0056b3;
-}
-
-.contact-button {
-  background-color: #28a745;
-}
-
-.contact-button:hover {
-  background-color: #218838;
+.profile-picture:hover {
+  border-color: #0056b3;
 }
 
 .profile-info {
-  margin-top: 30px;
-  text-align: left;
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .info-item {
-  margin: 15px 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
 }
 
 .info-label {
@@ -835,12 +821,55 @@ img {
 }
 
 .info-value {
+  margin: 0;
   color: #333;
 }
+
+.profile-button {
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.profile-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+input[type="text"], input[type="date"], textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-top: 5px;
+  font-size: 1em;
+  color: #333;
+}
+
+input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+
 /* statistic */
 .statistic {
   width: 100%;
-  height: calc(764px- 64px);
+  height: calc(764px - 64px);
   padding: 145px 0px 80px 0px;
   text-align: center;
   margin-top: 100px;
@@ -916,12 +945,24 @@ img {
   margin: 0px;
   padding: 0px;
 }
-/* Apartment */
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .custom-col-lg-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .statistic-box {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
 /* Apartment Section */
 .apartments {
   background-color: #f8f9fa;
   padding: 60px 0 70px;
-  text-align: center; /* Center the content */
+  text-align: center;
 }
 
 .apartments h2 {
@@ -930,6 +971,7 @@ img {
   color: #333;
   line-height: 1.4;
 }
+
 /* Custom Flex Row */
 .custom-row {
   display: flex;
@@ -938,10 +980,44 @@ img {
 }
 
 .custom-col-4 {
-  flex: 1 1 30%; 
-  max-width: 300px; 
+  flex: 1 1 30%;
+  max-width: 300px;
   margin: 10px;
 }
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .custom-col-4 {
+    flex: 1 1 100%; /* Take full width on small screens */
+    max-width: 100%;
+  }
+
+  .apartments h2 {
+    font-size: 20px; /* Smaller font size for small screens */
+  }
+
+  .apartment-box {
+    height: auto; /* Allow the box height to adjust automatically */
+  }
+
+  .apartment-image {
+    height: auto; /* Adjust image height to fit content */
+  }
+
+  .apartment-info,
+  .apartment-details {
+    padding: 10px; /* Reduce padding on small screens */
+  }
+
+  .price {
+    font-size: 16px; /* Adjust font size */
+  }
+
+  .details-item p {
+    font-size: 12px; /* Adjust font size */
+  }
+}
+
 /* Apartment Box */
 .apartment-box {
   display: flex;
@@ -949,26 +1025,24 @@ img {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  -webkit-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
-  -moz-box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
-  box-shadow: 0px 2px 8px 0px rgba(24,49,56,0.15);
+  box-shadow: 0px 2px 8px 0px rgba(24, 49, 56, 0.15);
   width: 100%;
   height: 500px;
   max-width: 350px;
   margin: 0 auto;
   margin-top: 35px;
 }
-.apartment-image{
+
+.apartment-image {
   height: 76%;
 }
-/* Apartment Image */
+
 .apartment-image img {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-/* Apartment Info */
 .apartment-info {
   padding: 15px;
   background-color: #ffffff;
@@ -983,7 +1057,6 @@ img {
   color: #333;
 }
 
-/* Apartment Details */
 .apartment-details {
   display: flex;
   justify-content: space-between;
@@ -1016,7 +1089,6 @@ img {
   color: #919eb1;
   margin: 0;
 }
-
 
 
 /* Search Apartments */
@@ -1069,320 +1141,446 @@ img {
   align-items: center;
 }
 
-/* Searchitem */
+/* Styles for the search item card */
 .searchItem {
   border: 1px solid lightgray;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 15px;
+  border-radius: 10px;
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  flex-direction: column;
+  gap: 15px;
   margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 }
 
+/* Styles for the image */
 .siImg {
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
   object-fit: cover;
+  border-radius: 10px;
 }
 
+/* Description section styles */
 .siDesc {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex: 2;
 }
 
 .siTitle {
-  font-size: 20px;
+  font-size: 18px;
   color: #0071c2;
+  font-weight: bold;
 }
 
-.siDistance {
-  font-size: 12px;
+.siDistance,
+.siTaxiOp,
+.siSubtitle,
+.siFeatures,
+.siCancelOp,
+.siCancelOpSubtitle {
+  font-size: 14px;
 }
 
 .siTaxiOp {
-  font-size: 12px;
   background-color: #008009;
   color: white;
-  width: max-content;
-  padding: 3px;
+  padding: 5px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.siSubtitle {
+  font-weight: bold;
+}
+
+.siFeatures {
+  font-size: 14px;
+}
+
+.siCancelOp {
+  color: #008009;
+  font-weight: bold;
+}
+
+.siCancelOpSubtitle {
+  color: #008009;
+}
+
+/* Details section styles */
+.siDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: right;
+}
+
+.siRating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.siRating > span {
+  font-weight: 500;
+}
+
+.siRating > button {
+  background-color: #003580;
+  color: white;
+  padding: 5px;
+  font-weight: bold;
+  border: none;
   border-radius: 5px;
 }
 
-.siSubtitle{
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.siFeatures{
-  font-size: 12px;
-}
-
-.siCancelOp{
-  font-size: 12px;
-  color: #008009;
-  font-weight: bold;
-}
-
-.siCancelOpSubtitle{
-  font-size: 12px;
-  color: #008009;
-}
-
-.siDetails {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between
-}
-
-.siRating{
-  display: flex;
-  justify-content: space-between
-}
-
-.siRating>span{
-  font-weight: 500;
-}
-.siRating>button{
- background-color: #003580;
- color: white;
- padding: 5px;
- font-weight: bold;
- border: none;
-}
-
-.siDetailTexts{
-  text-align: right;
+/* Detail texts */
+.siDetailTexts {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  align-items: flex-end;
 }
 
-.siPrice{
-  font-size: 24px;
+.siPrice {
+  font-size: 22px;
+  font-weight: bold;
 }
 
-.siTaxOp{
-  font-size: 12px;
+.siTaxOp {
+  font-size: 14px;
   color: gray;
 }
 
-.siCheckButton{
+/* Check button */
+.siCheckButton {
   background-color: #0071c2;
   color: white;
   font-weight: bold;
-  padding: 10px 5px;
+  padding: 10px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
-} 
-/* list */
+}
+
+/* Responsive styles */
+@media (min-width: 769px) {
+  .searchItem {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .siImg {
+    max-width: 250px; /* Increase the maximum width for larger screens */
+    height: 200px;
+  }
+
+  .siDesc {
+    flex: 2;
+  }
+
+  .siDetails {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .searchItem {
+    padding: 10px;
+  }
+
+  .siImg {
+    height: 150px;
+  }
+
+  .siTitle {
+    font-size: 16px;
+  }
+
+  .siDistance,
+  .siTaxiOp,
+  .siSubtitle,
+  .siFeatures,
+  .siCancelOp,
+  .siCancelOpSubtitle {
+    font-size: 12px;
+  }
+
+  .siPrice {
+    font-size: 20px;
+  }
+
+  .siCheckButton {
+    padding: 8px;
+  }
+}
+/* Base styles for the list container */
 .listContainer {
   display: flex;
   justify-content: center;
+  padding: 20px;
   margin-top: 100px;
 }
 
 .listWrapper {
   width: 100%;
-  max-width: 1024px;
+  max-width: 1200px; /* Increase max-width for larger screens */
   display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
-.listSearch {
-  flex: 1;
-  background-color: #02a6fe;
-  padding: 10px;
-  border-radius: 10px;
-  position: sticky;
-  top: 10px;
-  height: max-content;
-  width: 300px;
-}
-
-.lsTitle {
-  font-size: 20px;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-.lsItem {
+/* Styles for the details section */
+.details {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 10px;
+  gap: 20px;
 }
 
-.lsItem > label {
-  font-size: 12px;
-}
-
-.lsItem > input {
-  height: 30px;
-  border: none;
-  padding: 5px;
-}
-
-.lsItem > span {
-  height: 30px;
-  padding: 5px;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.lsOptions {
-  padding: 10px;
-}
-
-.lsOptionItem {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  color: #555;
-  font-size: 12px;
-}
-
-.lsOptionInput {
-  width: 50px;
-}
-
-.listSearch > button {
-  padding: 10px;
-  background-color: #0071c2;
-  color: white;
-  border: none;
-  width: 100%;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.listResult {
-  flex: 3;
+.details-info {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
 .carousel-container {
-  width: 100%;
-}
-
-.carousel-item {
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
 .carousel-image {
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 500px; /* Ensure images do not exceed this height */
   object-fit: cover;
 }
 
-.details-info {
-  padding: 20px;
-}
-
-.details-title,
-.search-title,
-.amenities-title,
-.reviews-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.description {
-  margin-top: 15px;
-}
-
-.search-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.search-item {
-  margin-bottom: 15px;
-}
-
-.date-selector {
-  display: block;
-  margin-top: 5px;
-  cursor: pointer;
-  color: #007bff;
-}
-
-.search-options {
-  display: flex;
-  flex-direction: column;
-}
-
-.search-option-item {
-  margin-bottom: 15px;
-}
-
-.search-option-text {
-  display: block;
-  font-size: 0.9rem;
-  margin-bottom: 5px;
-}
-
-.search-option-input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.search-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
+/* Amenities section */
 .amenities {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 15px;
 }
 
 .amenity-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  font-size: 14px;
 }
 
-.loading {
-  margin-top: 300px;
+.amenities-section {
+  margin-top: 20px;
+}
+/* Booking section styles */
+.listSearch {
+  background-color: #02a6fe;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; /* Default to column layout for smaller screens */
+  gap: 20px;
+}
+
+.lsTitle {
+  font-size: 24px;
+  color: #fff;
+  margin-bottom: 10px;
   text-align: center;
 }
 
-
-.apartmentItem {
+.lsContent {
   display: flex;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  overflow: hidden;
+  flex-direction: row; /* Row layout for larger screens */
+  gap: 20px;
+  flex-wrap: wrap; /* Allow wrapping for responsiveness */
 }
 
-.apartmentItem img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+.lsItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.apartmentInfo {
+.lsItem > label {
+  font-size: 14px;
+  color: #fff;
+}
+
+.lsItem > input,
+.lsItem > span {
+  height: 40px;
   padding: 10px;
+  border-radius: 5px;
+  border: none;
+  box-sizing: border-box;
 }
+
+.lsItem > input {
+  font-size: 14px;
+  width: 100%;
+}
+
+.lsItem > span {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.lsOptions {
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.lsOptionItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.lsOptionInput {
+  width: 80px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+/* Booking button styling */
+.listSearch > button {
+  padding: 15px;
+  background-color: #0071c2;
+  color: #fff;
+  border: none;
+  width: 100%;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .listSearch {
+    flex-direction: column; /* Column layout for small screens */
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .lsTitle {
+    font-size: 20px;
+  }
+
+  .lsItem > label {
+    font-size: 12px;
+  }
+
+  .lsItem > input,
+  .lsItem > span {
+    height: 35px;
+    font-size: 12px;
+  }
+
+  .lsOptionInput {
+    width: 60px;
+  }
+
+  .listSearch > button {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .listSearch {
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .lsTitle {
+    font-size: 22px;
+  }
+
+  .lsItem > label {
+    font-size: 13px;
+  }
+
+  .lsItem > input,
+  .lsItem > span {
+    height: 38px;
+    font-size: 13px;
+  }
+
+  .lsOptionInput {
+    width: 70px;
+  }
+
+  .listSearch > button {
+    padding: 14px;
+    font-size: 15px;
+  }
+}
+
+
+/* Reviews section */
+.reviews-section {
+  margin-top: 20px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .listWrapper {
+    flex-direction: column;
+  }
+
+  .listSearch {
+    width: 100%;
+  }
+
+  .lsTitle {
+    font-size: 20px;
+  }
+
+  .lsItem > input,
+  .lsItem > span {
+    height: 35px;
+    font-size: 12px;
+  }
+
+  .lsOptions {
+    padding: 5px;
+  }
+
+  .lsOptionItem {
+    font-size: 12px;
+  }
+
+  .lsOptionInput {
+    width: 60px;
+  }
+
+  .listSearch > button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .listResult {
+    gap: 10px;
+  }
+}
+
+
 /* Reviews */
 .reviews-container {
   max-width: 800px;

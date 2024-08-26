@@ -19,8 +19,8 @@ function Navbar({ user, onLogout }) {
       <ul className="navbar-links">
         <li><Link to="/">Home</Link></li>
         <li><Link to="/Weather">Weather</Link></li>
-        <li><Link to="#">Blog</Link></li>
-        <li><Link to="#">News</Link></li>
+        <li><Link to="/city">City</Link></li>
+        <li><Link to="/budget">Budget planner</Link></li>
         <li><Link to="/contact">Contact</Link></li>
       </ul>
 
