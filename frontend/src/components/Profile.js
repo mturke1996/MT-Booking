@@ -120,7 +120,7 @@ export default function Profile({ user }) {
         <div className="profile-info">
           <div className="info-item">
             <span className="info-label">Email:</span>
-            <span className="info-value">{userData.email}</span>
+            <span className="info-value">{user.email}</span>
           </div>
           <div className="info-item">
             <span className="info-label">Phone:</span>

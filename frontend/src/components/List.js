@@ -7,7 +7,7 @@ import "react-date-range/dist/theme/default.css"; // Import default theme
 import SearchItem from "./SearchItem";
 
 function List() {
-  // State hooks
+  // State management
   const [date, setDate] = useState([
     { startDate: new Date(), endDate: new Date(), key: "selection" },
   ]);
@@ -23,6 +23,7 @@ function List() {
     fetchApartments();
   }, [searchQuery]);
 
+  // Function to fetch apartments from the server
   const fetchApartments = () => {
     setIsLoading(true);
     setError(null);
@@ -34,26 +35,31 @@ function List() {
           apartment.Adresse.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setApartments(filteredData);
-        setIsLoading(false);
       })
-      .catch((error) => {
-        setError("Error fetching apartments");
+      .catch(() => {
+        setError("Error fetching apartments.");
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
 
+  // Function to update the date when it changes
   const handleDateChange = (item) => {
     setDate([item.selection]);
   };
 
+  // Function to toggle the date picker
   const toggleOpenDate = () => {
     setOpenDate((prevOpenDate) => !prevOpenDate);
   };
 
+  // Function to update the search query
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
+  // Function to submit the search form
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     fetchApartments();
@@ -63,7 +69,7 @@ function List() {
     <div className="listContainer">
       <div className="listWrapper">
         <div className="listSearch">
-          <h1 className="lsTitle">Search</h1>
+          <h1 className="lsTitle">Search for Apartments</h1>
           <form onSubmit={handleSearchSubmit}>
             <div className="lsItem">
               <label>Destination</label>
@@ -93,22 +99,27 @@ function List() {
             <div className="lsItem">
               <label>Options</label>
               <div className="lsOptions">
-                {["Min price", "Max price", "Adult", "Children", "Room"].map((option, index) => (
-                  <div className="lsOptionItem" key={index}>
-                    <span className="lsOptionText">
-                      {option} <small>{option.includes("price") ? "per night" : ""}</small>
-                    </span>
-                    <input
-                      type="number"
-                      className="lsOptionInput"
-                      value={options[option.toLowerCase().replace(" ", "")] || ""}
-                      onChange={(e) => setOptions({
-                        ...options,
-                        [option.toLowerCase().replace(" ", "")]: e.target.value
-                      })}
-                    />
-                  </div>
-                ))}
+                {["Min price", "Max price", "Adult", "Children", "Room"].map(
+                  (option, index) => (
+                    <div className="lsOptionItem" key={index}>
+                      <span className="lsOptionText">
+                        {option}{" "}
+                        <small>{option.includes("price") ? "per night" : ""}</small>
+                      </span>
+                      <input
+                        type="number"
+                        className="lsOptionInput"
+                        value={options[option.toLowerCase().replace(" ", "")] || ""}
+                        onChange={(e) =>
+                          setOptions({
+                            ...options,
+                            [option.toLowerCase().replace(" ", "")]: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <button type="submit">Search</button>
@@ -117,10 +128,10 @@ function List() {
         <div className="listResult">
           {isLoading && <p>Loading apartments...</p>}
           {error && <p>{error}</p>}
+          {!isLoading && apartments.length === 0 && <p>No apartments found</p>}
           {apartments.map((apartment) => (
             <SearchItem key={apartment["Wohnungs-ID"]} apartment={apartment} />
           ))}
-          {!isLoading && apartments.length === 0 && <p>No apartments found</p>}
         </div>
       </div>
     </div>

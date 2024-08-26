@@ -17,18 +17,29 @@ function Navbar({ user, onLogout }) {
       </div>
 
       <ul className="navbar-links">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/Weather">Weather</Link></li>
-        <li><Link to="#">Blog</Link></li>
-        <li><Link to="#">News</Link></li>
-        <li><Link to="#">Contact</Link></li>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/Weather">Weather</Link>
+        </li>
+        <li>
+          <Link to="#">Blog</Link>
+        </li>
+        <li>
+          <Link to="#">News</Link>
+        </li>
+        <li>
+          <Link to="#">Contact</Link>
+        </li>
       </ul>
 
       <div className="user-info">
         {user ? (
           <>
             <span className="welcome-message">
-              <i className="fa-solid fa-user fa-beat-fade"></i> Hi, {user.username}
+              <i className="fa-solid fa-user fa-beat-fade"></i> Hi,{" "}
+              {user.username}
             </span>
             <div className="user-menu" onClick={toggleMenu}>
               <span className="icon">
@@ -36,7 +47,9 @@ function Navbar({ user, onLogout }) {
                 <span></span>
                 <span></span>
               </span>
-              <ul className={`dropdown-menu ${isMenuOpen ? "visible" : "hidden"}`}>
+              <ul
+                className={`dropdown-menu ${isMenuOpen ? "visible" : "hidden"}`}
+              >
                 <li>
                   <Link to="/profile" className="profile-link">
                     My Profile
@@ -67,12 +80,10 @@ function Navbar({ user, onLogout }) {
         )}
       </div>
 
-      {/* زر Menu يظهر فقط على الهواتف */}
       <button className="mobile-menu-button" onClick={toggleMenu}>
         ☰ Menu
       </button>
 
-      {/* قائمة عمودية تظهر على الهواتف */}
       {isMenuOpen && (
         <ul className="mobile-menu">
           <li>

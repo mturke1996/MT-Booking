@@ -79,12 +79,6 @@ function App() {
               user ? <MyBooking user={user} /> : <Navigate to="/login" />
             }
           />
-          {/* <Route path="/profile" element={<Profile />} />
-          <Route path="/Weather" element={<Weather />} />
-          <Route path="/addApartment" element={<ApartmentForm />} />
-          <Route path="/Searchitem" element={<List />} />
-          <Route path="/apartment/:id" element={<ApartmentDetails />} /> */}
-          {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>
       </div>
     </Router>

@@ -1,6 +1,6 @@
-import React from 'react';
-import '../App.css';
-import './FAQ.js'
+import React from "react";
+import "../App.css";
+import "./FAQ.js";
 
 export default function Footer() {
   return (
@@ -13,14 +13,48 @@ export default function Footer() {
               <h3>Explore Apartments around europe</h3>
             </div>
             <div className="footer-section Newsletter">
-              <input type="text" placeholder="Subscribe To Our Newsletter" className="newsletter-input"/>
+              <input
+                type="text"
+                placeholder="Subscribe To Our Newsletter"
+                className="newsletter-input"
+              />
               <button className="newsletter-btn">Subscribe</button>
             </div>
           </div>
           <div className="footer-bottom">
             <div className="footer-logo footer-section">
               <h4>MT booking</h4>
-              <p>© 2024 - MT booking,<br/>All Right Reserved</p>
+              <p>
+                © 2024 - MT booking,
+                <br />
+                All Right Reserved
+              </p>
+              <div style={{ display: "flex", gap:"10px" }}>
+                <a href="#">
+                  <i
+                    class="fa-brands fa-facebook-f fa-beat"
+                    style={{ color: "#0e4977" }}
+                  ></i>
+                </a>
+                <a href="#">
+                  <i
+                    class="fa-brands fa-twitter fa-beat"
+                    style={{ color: "#0e4977" }}
+                  ></i>
+                </a>
+                <a href="#">
+                  <i
+                    class="fa-brands fa-instagram fa-beat"
+                    style={{ color: "#0e4977" }}
+                  ></i>
+                </a>
+              </div>
+              <div style={{ display: "flex", gap:"10px" }}>
+              <i class="fa-brands fa-cc-visa" style={{ color: "#0e4977" }}></i>
+              <i class="fa-brands fa-cc-mastercard" style={{ color: "#0e4977" }}></i>
+              <i class="fa-brands fa-cc-apple-pay" style={{ color: "#0e4977" }}></i>
+              <i class="fa-brands fa-cc-paypal" style={{ color: "#0e4977" }}></i>
+              </div>
             </div>
             <div className="footer-column footer-section">
               <h5>MT booking</h5>
@@ -39,7 +73,6 @@ export default function Footer() {
               <a href="#">Apartments</a>
               <a href="#">How It Works</a>
             </div>
-          
           </div>
         </div>
       </footer>

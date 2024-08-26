@@ -23,8 +23,8 @@ app.use((err, req, res, next) => {
 
 // Middleware للتحقق من صحة التوكن
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) return res.sendStatus(401); // لا يوجد توكن
 
@@ -34,8 +34,6 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-
-
 
 // الاتصال بقاعدة البيانات SQLite
 const db = new sqlite3.Database("./mtbookig-bank.db", (err) => {
@@ -96,7 +94,6 @@ app.post("/login", (req, res) => {
   });
 });
 
-
 // استرجاع بيانات المستخدم بناءً على التوكن
 app.get("/user", authenticateToken, (req, res) => {
   const userId = req.user.id;
@@ -118,15 +115,15 @@ app.get("/user", authenticateToken, (req, res) => {
 });
 
 // استرجاع بيانات المستخدم بناءً على الـ user_id
-app.get('/user/:user_id', (req, res) => {
+app.get("/user/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
 
   if (isNaN(userId)) {
-    return res.status(400).json({ message: 'Invalid user ID' });
+    return res.status(400).json({ message: "Invalid user ID" });
   }
 
   db.get(
-    'SELECT id, username, email, name, lastname FROM users WHERE id = ?',
+    "SELECT id, username, email, name, lastname FROM users WHERE id = ?",
     [userId],
     (err, user) => {
       if (err) {
@@ -141,12 +138,20 @@ app.get('/user/:user_id', (req, res) => {
   );
 });
 // إضافة تفاصيل المستخدم الجديدة بناءً على الـ user_id
-app.post('/user/details', (req, res) => {
-  const { user_id, phone, birthdate, profession, address, profile_picture, bio } = req.body;
+app.post("/user/details", (req, res) => {
+  const {
+    user_id,
+    phone,
+    birthdate,
+    profession,
+    address,
+    profile_picture,
+    bio,
+  } = req.body;
 
   // التحقق من وجود userId
   if (!user_id) {
-    return res.status(400).json({ message: 'User ID is required' });
+    return res.status(400).json({ message: "User ID is required" });
   }
 
   // بناء الاستعلام لإدراج التفاصيل
@@ -156,97 +161,103 @@ app.post('/user/details', (req, res) => {
   `;
 
   // تنفيذ الاستعلام
-  db.run(query, [user_id, phone, birthdate, profession, address, profile_picture, bio], function (err) {
-    if (err) {
-      console.error("Error adding user details:", err.message); // تسجيل الخطأ
-      return res.status(500).json({ message: 'Internal server error' });
+  db.run(
+    query,
+    [user_id, phone, birthdate, profession, address, profile_picture, bio],
+    function (err) {
+      if (err) {
+        console.error("Error adding user details:", err.message); // تسجيل الخطأ
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res
+        .status(201)
+        .json({ message: "User details added successfully", id: this.lastID });
     }
-    res.status(201).json({ message: 'User details added successfully', id: this.lastID });
-  });
+  );
 });
-
 
 // استرجاع تفاصيل المستخدم بناءً على الـ user_id
-app.get('/user/details/:user_id', (req, res) => {
+app.get("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
-  db.get('SELECT * FROM user_details WHERE user_id = ?', [userId], (err, row) => {
-    if (err) {
-      console.error("Error fetching user details:", err);
-      res.status(500).json({ message: 'Internal server error' });
-    } else if (!row) {
-      res.status(404).json({ message: 'User details not found' });
-    } else {
-      res.json(row);
+  db.get(
+    "SELECT * FROM user_details WHERE user_id = ?",
+    [userId],
+    (err, row) => {
+      if (err) {
+        console.error("Error fetching user details:", err);
+        res.status(500).json({ message: "Internal server error" });
+      } else if (!row) {
+        res.status(404).json({ message: "User details not found" });
+      } else {
+        res.json(row);
+      }
     }
-  });
+  );
 });
 
-
 // تحديث تفاصيل المستخدم// تحديث تفاصيل المستخدم بناءً على الـ user_id في الـ URL
-app.put('/user/details/:user_id', (req, res) => {
+app.put("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
-  const { phone, birthdate, profession, address, profile_picture, bio } = req.body;
+  const { phone, birthdate, profession, address, profile_picture, bio } =
+    req.body;
 
   if (isNaN(userId)) {
-    return res.status(400).json({ message: 'Invalid User ID' });
+    return res.status(400).json({ message: "Invalid User ID" });
   }
 
   // إعداد الاستعلام الأساسي
-  let query = 'UPDATE user_details SET ';
+  let query = "UPDATE user_details SET ";
   const updates = [];
   const params = [];
 
   // تحقق من الحقول المقدمة وأضفها إلى الاستعلام
   if (phone) {
-    updates.push('phone = ?');
+    updates.push("phone = ?");
     params.push(phone);
   }
   if (birthdate) {
-    updates.push('birthdate = ?');
+    updates.push("birthdate = ?");
     params.push(birthdate);
   }
   if (profession) {
-    updates.push('profession = ?');
+    updates.push("profession = ?");
     params.push(profession);
   }
   if (address) {
-    updates.push('address = ?');
+    updates.push("address = ?");
     params.push(address);
   }
   if (profile_picture) {
-    updates.push('profile_picture = ?');
+    updates.push("profile_picture = ?");
     params.push(profile_picture);
   }
   if (bio) {
-    updates.push('bio = ?');
+    updates.push("bio = ?");
     params.push(bio);
   }
 
   if (updates.length === 0) {
-    return res.status(400).json({ message: 'No fields to update' });
+    return res.status(400).json({ message: "No fields to update" });
   }
 
   // أضف شرط التحديث للمستخدم
-  query += updates.join(', ') + ' WHERE user_id = ?';
+  query += updates.join(", ") + " WHERE user_id = ?";
   params.push(userId);
 
   db.run(query, params, function (err) {
     if (err) {
       console.error("Error updating user details:", err.message);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: "Internal server error" });
     }
-    res.json({ message: 'User details updated successfully' });
+    res.json({ message: "User details updated successfully" });
   });
 });
 
-
-
-
 app.delete("/user/details/:id", (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM user_details WHERE id = ?';
+  const query = "DELETE FROM user_details WHERE id = ?";
 
-  db.run(query, [id], function(err) {
+  db.run(query, [id], function (err) {
     if (err) {
       console.error("Error deleting booking:", err.message);
       return res.status(500).json({ error: "Database error" });
@@ -339,12 +350,21 @@ app.get("/api/apartments/:id", (req, res) => {
 });
 
 app.post("/api/bookings", (req, res) => {
-  const { apartmentId, startDate, endDate, adult, children, room, username } = req.body;
+  const { apartmentId, startDate, endDate, adult, children, room, username } =
+    req.body;
 
   // تسجيل البيانات المستلمة للتأكد من صحتها
-  console.log('Received booking data:', req.body);
+  console.log("Received booking data:", req.body);
 
-  if (!apartmentId || !startDate || !endDate || !adult || !children || !room || !username) {
+  if (
+    !apartmentId ||
+    !startDate ||
+    !endDate ||
+    !adult ||
+    !children ||
+    !room ||
+    !username
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -372,11 +392,8 @@ app.post("/api/bookings", (req, res) => {
   );
 });
 
-
-
-
 // الحصول على جميع الحجوزات
-// الحصول على جميع الحجوزات للمستخدم المحدد
+
 app.get("/api/bookings", (req, res) => {
   const { username } = req.query; // تأكد من أن username يتم تمريره كمعلمة استعلام
 
@@ -398,13 +415,12 @@ app.get("/api/bookings", (req, res) => {
   });
 });
 
-
 // حذف حجز
 app.delete("/api/bookings/:id", (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM bookings WHERE id = ?';
+  const query = "DELETE FROM bookings WHERE id = ?";
 
-  db.run(query, [id], function(err) {
+  db.run(query, [id], function (err) {
     if (err) {
       console.error("Error deleting booking:", err.message);
       return res.status(500).json({ error: "Database error" });
@@ -416,38 +432,51 @@ app.delete("/api/bookings/:id", (req, res) => {
   });
 });
 
-
 // الحصول على مراجعات الشقة
-app.get('/api/apartments/:id/reviews', (req, res) => {
+app.get("/api/apartments/:id/reviews", (req, res) => {
   const apartmentId = req.params.id;
-  db.all('SELECT * FROM Reviews WHERE apartmentId = ?', [apartmentId], (err, rows) => {
-    if (err) {
-      console.error("Error fetching reviews:", err.message);
-      return res.status(500).json({ error: err.message });
+  db.all(
+    "SELECT * FROM Reviews WHERE apartmentId = ?",
+    [apartmentId],
+    (err, rows) => {
+      if (err) {
+        console.error("Error fetching reviews:", err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(200).json(rows);
     }
-    res.status(200).json(rows);
-  });
+  );
 });
 
 // إضافة تقييم لشقة
-app.post('/api/apartments/:id/reviews', authenticateToken, (req, res) => {
+app.post("/api/apartments/:id/reviews", authenticateToken, (req, res) => {
   const { kommentar, bewertung } = req.body;
   const apartmentId = req.params.id;
   const benutzerId = req.user.username; // استخدام اسم المستخدم من التوكن
 
   if (!kommentar || !bewertung) {
-    return res.status(400).json({ error: "Kommentar and bewertung are required" });
+    return res
+      .status(400)
+      .json({ error: "Kommentar and bewertung are required" });
   }
 
   db.run(
-    'INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)',
+    "INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)",
     [apartmentId, benutzerId, bewertung, kommentar],
-    function(err) {
+    function (err) {
       if (err) {
         console.error("Error adding review:", err.message);
         return res.status(500).json({ error: err.message });
       }
-      res.status(201).json({ bewertungId: this.lastID, apartmentId, benutzerId, bewertung, kommentar });
+      res
+        .status(201)
+        .json({
+          bewertungId: this.lastID,
+          apartmentId,
+          benutzerId,
+          bewertung,
+          kommentar,
+        });
     }
   );
 });
