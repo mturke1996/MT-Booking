@@ -4,7 +4,7 @@ import "../App.css";
 
 export default function Profile({ user }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isAddingNew, setIsAddingNew] = useState(false); // حالة جديدة لإضافة معلومات جديدة
+  const [isAddingNew, setIsAddingNew] = useState(false);
   const [profileData, setProfileData] = useState({
     birthdate: "",
     profession: "",
@@ -19,17 +19,12 @@ export default function Profile({ user }) {
     email: "",
   });
 
-  // جلب بيانات المستخدم من جدول users
+  // جلب بيانات المستخدم الأساسية
   useEffect(() => {
     if (user) {
       axios.get(`http://localhost:5000/users/${user.Id}`)
         .then(response => {
-          console.log("User data fetched successfully:", response.data);
-          setUserData({
-            name: response.data.name,
-            lastname: response.data.lastname,
-            email: response.data.email,
-          });
+          setUserData(response.data);
         })
         .catch(error => {
           console.error("Error fetching user data:", error.response?.data.message || error.message);
@@ -37,12 +32,11 @@ export default function Profile({ user }) {
     }
   }, [user]);
 
-  // جلب بيانات تفاصيل المستخدم من جدول user_details
+  // جلب بيانات تفاصيل المستخدم
   useEffect(() => {
     if (user) {
       axios.get(`http://localhost:5000/user/details/${user.id}`)
         .then(response => {
-          console.log("User details fetched successfully:", response.data);
           setProfileData(response.data);
         })
         .catch(error => {
@@ -51,16 +45,13 @@ export default function Profile({ user }) {
     }
   }, [user]);
 
+  // تحديث بيانات المستخدم
   const handleEditClick = () => {
-    if (!user) {
-      console.error("User ID is required to edit profile.");
-      return;
-    }
+    if (!user) return;
 
     if (isEditing) {
       axios.put(`http://localhost:5000/user/details/${user.id}`, profileData)
         .then(response => {
-          console.log("User details updated successfully:", response.data);
           setProfileData(response.data);
           setIsEditing(false);
         })
@@ -72,16 +63,13 @@ export default function Profile({ user }) {
     }
   };
 
+  // إضافة بيانات جديدة للمستخدم
   const handleAddNewClick = () => {
-    if (!user || !user.id) {
-      console.error("User ID is required to add new details.");
-      return;
-    }
+    if (!user) return;
 
     if (isAddingNew) {
-      axios.post('http://localhost:5000/user/details', profileData)
+      axios.post('http://localhost:5000/user/details', { ...profileData, user_id: user.id })
         .then(response => {
-          console.log("New user details added successfully:", response.data);
           setProfileData(response.data);
           setIsAddingNew(false);
         })
@@ -93,23 +81,20 @@ export default function Profile({ user }) {
     }
   };
 
+  // تحديث قيمة الحقول في النموذج
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfileData({
-      ...profileData,
+    setProfileData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
   };
 
   return (
     <div className="profile-container">
       <div className="profile-left">
-        <img
-          className="profile-picture"
-          src={profileData.profile_picture}
-          alt="Profile"
-        />
-        {isEditing || isAddingNew ? (
+        <img className="profile-picture" src={profileData.profile_picture} alt="Profile" />
+        {(isEditing || isAddingNew) && (
           <input
             type="text"
             name="profile_picture"
@@ -117,17 +102,17 @@ export default function Profile({ user }) {
             onChange={handleInputChange}
             placeholder="Profile Picture URL"
           />
-        ) : null}
+        )}
       </div>
       <div className="profile-right">
         <h1 className="profile-name">{user.name} {user.lastname}</h1>
         <p className="profile-title">{profileData.profession || "Web Developer | Designer"}</p>
 
         <div className="profile-actions">
-          <button className="profile-button" onClick={handleEditClick} disabled={!user || !user.id}>
+          <button className="profile-button" onClick={handleEditClick} disabled={!user?.id}>
             {isEditing ? "Save Profile" : "Edit Profile"}
           </button>
-          <button className="profile-button" onClick={handleAddNewClick} disabled={!user || !user.id}>
+          <button className="profile-button" onClick={handleAddNewClick} disabled={!user?.id}>
             {isAddingNew ? "Save New Details" : "Add New Details"}
           </button>
         </div>
@@ -139,7 +124,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Phone:</span>
-            {isEditing || isAddingNew ? (
+            {(isEditing || isAddingNew) ? (
               <input
                 type="text"
                 name="phone"
@@ -152,7 +137,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Birthdate:</span>
-            {isEditing || isAddingNew ? (
+            {(isEditing || isAddingNew) ? (
               <input
                 type="date"
                 name="birthdate"
@@ -165,7 +150,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Occupation:</span>
-            {isEditing || isAddingNew ? (
+            {(isEditing || isAddingNew) ? (
               <input
                 type="text"
                 name="profession"
@@ -178,7 +163,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Address:</span>
-            {isEditing || isAddingNew ? (
+            {(isEditing || isAddingNew) ? (
               <input
                 type="text"
                 name="address"
@@ -191,7 +176,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Bio:</span>
-            {isEditing || isAddingNew ? (
+            {(isEditing || isAddingNew) ? (
               <textarea
                 name="bio"
                 value={profileData.bio}

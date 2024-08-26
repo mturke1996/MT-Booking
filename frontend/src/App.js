@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import Navbar from "./components/Navbar";
@@ -11,6 +16,7 @@ import Profile from "./components/Profile";
 import ApartmentForm from "./components/ApartmentForm";
 import List from "./components/List";
 import ApartmentDetails from "./components/ApartmentDetails";
+import MyBooking from "./components/MyBooking";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
@@ -53,7 +59,6 @@ function App() {
             element={<Login setToken={setToken} setUser={setUser} />}
           />
           <Route path="/register" element={<Register />} />
-<<<<<<< HEAD
           <Route
             path="/profile"
             element={user ? <Profile user={user} /> : <Navigate to="/login" />}
@@ -70,15 +75,15 @@ function App() {
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
           <Route
             path="/mybooking"
-            element={user ? <MyBooking user={user} /> : <Navigate to="/login" />}
+            element={
+              user ? <MyBooking user={user} /> : <Navigate to="/login" />
+            }
           />
-=======
-          <Route path="/profile" element={<Profile />} />
+          {/* <Route path="/profile" element={<Profile />} />
           <Route path="/Weather" element={<Weather />} />
           <Route path="/addApartment" element={<ApartmentForm />} />
           <Route path="/Searchitem" element={<List />} />
-          <Route path="/apartment/:id" element={<ApartmentDetails />} />
->>>>>>> 9667d36dd5a68b9dab53ccf8d66fabda88df2865
+          <Route path="/apartment/:id" element={<ApartmentDetails />} /> */}
           {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>
       </div>

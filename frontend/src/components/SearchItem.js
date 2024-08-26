@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 
-const SearchItem = ({ apartment}) => {
+const SearchItem = ({ apartment }) => {
   return (
     <div className="searchItem">
       <img src={apartment.img1} alt={apartment.Adresse} className="siImg" />
@@ -23,13 +23,14 @@ const SearchItem = ({ apartment}) => {
         <div className="siRating">
           <span>Excellent</span>
           <button>{apartment.rating || 8.9}</button>{" "}
-          {/* فرضنا أن لديك خاصية للتقييم */}
         </div>
         <div className="siDetailTexts">
           <span className="siPrice">{`${apartment["Monatliche Miete"]}€`}</span>
           <span className="siTaxOp">Includes taxes and fees</span>
           <button className="siCheckButton">
-            <Link to={`/apartment/${apartment["Wohnungs-ID"]}`}>See availability</Link>
+            <Link to={`/apartment/${apartment["Wohnungs-ID"]}`}>
+              See availability
+            </Link>
           </button>
         </div>
       </div>

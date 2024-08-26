@@ -374,11 +374,21 @@ app.post("/api/bookings", (req, res) => {
 
 
 
-// الحصول على جميع الحجوزات
-app.get("/api/bookings", (req, res) => {
-  const query = "SELECT * FROM bookings";
 
-  db.all(query, [], (err, rows) => {
+// الحصول على جميع الحجوزات
+// الحصول على جميع الحجوزات للمستخدم المحدد
+app.get("/api/bookings", (req, res) => {
+  const { username } = req.query; // تأكد من أن username يتم تمريره كمعلمة استعلام
+
+  let query = "SELECT * FROM bookings";
+  let params = [];
+
+  if (username) {
+    query += " WHERE username = ?";
+    params.push(username);
+  }
+
+  db.all(query, params, (err, rows) => {
     if (err) {
       console.error("Error fetching bookings:", err);
       res.status(500).json({ error: "Database error" });
@@ -387,6 +397,8 @@ app.get("/api/bookings", (req, res) => {
     }
   });
 });
+
+
 // حذف حجز
 app.delete("/api/bookings/:id", (req, res) => {
   const { id } = req.params;
