@@ -11,6 +11,7 @@ import Profile from "./components/Profile";
 import ApartmentForm from "./components/ApartmentForm";
 import List from "./components/List";
 import ApartmentDetails from "./components/ApartmentDetails";
+import Contact from "./components/Contact";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
@@ -57,6 +58,7 @@ function App() {
           <Route path="/Weather" element={<Weather />} />
           <Route path="/addApartment" element={<ApartmentForm />} />
           <Route path="/Searchitem" element={<List />} />
+          <Route path="/contact" element={<Contact/>}/>
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
           {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>
