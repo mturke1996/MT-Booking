@@ -22,42 +22,42 @@ body {
 }
 a:focus,
 a:hover {
-    text-decoration: none;
-    color: #FFCC01;
+  text-decoration: none;
+  color: #ffcc01;
 }
 img {
-    max-width: 100%;
-    height: auto;
+  max-width: 100%;
+  height: auto;
 }
 ::selection {
-    background: #1F373D;
-    color: #fff;
-    text-shadow: none;
+  background: #1f373d;
+  color: #fff;
+  text-shadow: none;
 }
 ::-moz-selection {
-    background: #1F373D;
-    color: #fff;
-    text-shadow: none;
+  background: #1f373d;
+  color: #fff;
+  text-shadow: none;
 }
 ::-webkit-selection {
-    background: #1F373D;
-    color: #fff;
-    text-shadow: none;
+  background: #1f373d;
+  color: #fff;
+  text-shadow: none;
 }
 :active,
 :focus {
-    outline: none !important;
+  outline: none !important;
 }
 .text-left {
-    text-align: left !important;
+  text-align: left !important;
 }
 
 .text-right {
-    text-align: right !important;
+  text-align: right !important;
 }
 
 .text-center {
-    text-align: center !important;
+  text-align: center !important;
 }
 .left {
   float: left;
@@ -74,16 +74,16 @@ img {
   justify-content: center;
 }
 .uppercase {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 .white-text {
-    color: #FFF;
+  color: #fff;
 }
 .light-bg {
-    background-color: #fff;
+  background-color: #fff;
 }
 .yellow-bg {
-  background-color: #FFCC01;
+  background-color: #ffcc01;
 }
 .pointer {
   cursor: pointer;
@@ -100,7 +100,6 @@ img {
   -moz-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
 }
-
 
 /* Typography */
 h1 {
@@ -152,7 +151,6 @@ a {
   position: relative;
   color: #1f373d;
   transition: color 0.3s;
-  
 }
 
 a:focus,
@@ -504,7 +502,7 @@ img {
 }
 
 .register-link a {
-  color: #4CAF50;
+  color: #4caf50;
   text-decoration: none;
 }
 
@@ -570,7 +568,7 @@ img {
 .register-box input:focus {
   border-color: #00796b;
   outline: none;
-}/* قسم الهيرو */
+} /* قسم الهيرو */
 .hero {
   background-image: url("https://www.figma.com/file/cmum8VIERiRtKP8j3lvO7i/image/abd989eced9fb6b56fa98039123e828fd548e386");
   background-size: cover;
@@ -743,7 +741,9 @@ img {
   color: #555;
 }
 
-.temperature, .humidity, .wind-speed {
+.temperature,
+.humidity,
+.wind-speed {
   font-size: 1rem;
   margin-bottom: 5px;
   color: #666;
@@ -844,7 +844,9 @@ img {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-input[type="text"], input[type="date"], textarea {
+input[type="text"],
+input[type="date"],
+textarea {
   width: 100%;
   padding: 10px;
   border-radius: 4px;
@@ -854,7 +856,9 @@ input[type="text"], input[type="date"], textarea {
   color: #333;
 }
 
-input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
@@ -864,7 +868,6 @@ textarea {
   resize: vertical;
   min-height: 100px;
 }
-
 
 /* statistic */
 .statistic {
@@ -1089,7 +1092,6 @@ textarea {
   color: #919eb1;
   margin: 0;
 }
-
 
 /* Search Apartments */
 .search-apartments {
@@ -1532,7 +1534,6 @@ textarea {
   }
 }
 
-
 /* Reviews section */
 .reviews-section {
   margin-top: 20px;
@@ -1580,7 +1581,6 @@ textarea {
   }
 }
 
-
 /* Reviews */
 .reviews-container {
   max-width: 800px;
@@ -1610,11 +1610,13 @@ textarea {
 button {
   cursor: pointer;
 }
+
 /* General footer styling */
 #contact {
-  background-color: #f8f9fa;
-  padding: 40px 0;
-  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #1c1c1c, #2a2a2a);
+  color: #f5f5f5;
+  padding: 60px 0;
+  font-family: "Roboto", sans-serif;
 }
 
 .footer-container {
@@ -1627,15 +1629,16 @@ button {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #444;
 }
 
 .footer-bottom {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding-top: 20px;
+  padding-top: 30px;
+  align-items: flex-start;
 }
 
 .footer-section {
@@ -1643,69 +1646,98 @@ button {
   margin-bottom: 20px;
 }
 
-@media (min-width: 768px) {
-  .footer-section {
-    flex: 1 1 48%;
-    margin-bottom: 0;
-  }
+.footer-contact-info {
+  flex: 1 1 30%;
 }
 
-@media (min-width: 992px) {
-  .footer-column {
-    flex: 1 1 19%;
-  }
-
-  .footer-logo {
-    flex: 1 1 38%;
-  }
+.footer-newsletter {
+  flex: 1 1 30%;
 }
 
-h3, h4, h5 {
-  margin: 0 0 10px;
-  color: #343a40;
+.footer-sitemap {
+  flex: 1 1 30%;
+  margin-top: 20px; /* Align under the newsletter */
 }
 
-p {
-  margin: 0;
-  color: #6c757d;
+.footer-logo {
+  flex: 1 1 28%;
 }
 
-a {
-  display: block;
-  color: #000000;
-  text-decoration: none;
-  margin-bottom: 5px;
+.footer-testimonials {
+  flex: 1 1 28%;
 }
 
-a:hover {
-  color: #0056b3;
-}
-
-.Newsletter {
+.footer-newsletter-box {
   display: flex;
   align-items: center;
+  margin-top: 10px;
 }
 
-.newsletter-input {
-  padding: 10px;
-  border: 1px solid #ced4da;
+.footer-newsletter-input {
+  padding: 12px;
+  border: none;
   border-radius: 4px;
   flex: 1;
   margin-right: 10px;
+  background-color: #333;
+  color: #fff;
 }
 
-.newsletter-btn {
-  padding: 10px 20px;
-  background-color: #007bff;
+.footer-newsletter-btn {
+  padding: 12px 20px;
+  background-color: #00aaff;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.newsletter-btn:hover {
-  background-color: #0056b3;
+.footer-newsletter-btn:hover {
+  background-color: #0088cc;
 }
+
+.footer-social-icons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.footer-payment-icons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.footer-icon {
+  margin-right: 10px;
+  color: #00aaff;
+}
+
+.footer-sitemap a {
+  display: block;
+  color: #cccccc;
+  text-decoration: none;
+  margin-bottom: 5px;
+  transition: color 0.3s;
+}
+
+.footer-sitemap a:hover {
+  color: #00aaff;
+}
+
+.footer-testimonials h4 {
+  margin-bottom: 15px;
+}
+
+.footer-testimonials p {
+  font-style: italic;
+  font-size: 16px;
+  color: #bbbbbb;
+  margin-bottom: 15px;
+}
+
+
 /* General styling */
 .agents {
   padding: 40px 0;
@@ -1720,7 +1752,6 @@ a:hover {
 }
 
 .agents-title {
-
   margin-bottom: 40px;
 }
 
@@ -1831,7 +1862,7 @@ a:hover {
 
 /* زر الدفع */
 .pay-button {
-  background-color: #4CAF50; /* لون أخضر */
+  background-color: #4caf50; /* لون أخضر */
 }
 
 .pay-button:hover {
