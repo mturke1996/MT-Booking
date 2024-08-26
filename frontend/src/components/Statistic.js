@@ -6,11 +6,16 @@ export default function Statistic() {
     <div className="container">
       <div className="custom-row mt-5">
         <div className="custom-col-12 custom-col-lg-6">
+          <br />
+          <br />
           <h3>
             Our’s Company
             <br />
             Statistics
           </h3>
+          <br />
+          <br />
+          <br />
           <p>
           With our booking app, you can complete your booking in under 2 minutes,
            with 95% confirmed instantly, making your experience quick and hassle-free. Trusted by users worldwide, our app boasts a 4.8-star rating,

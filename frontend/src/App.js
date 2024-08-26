@@ -91,7 +91,7 @@ function App() {
           <Route path="/Weather" element={<Weather />} />
           <Route path="/addApartment" element={<ApartmentForm />} />
           <Route path="/Searchitem" element={<List />} />
-          <Route path="/apartment/:id" element={<ApartmentDetails />} />
+          <Route path="/apartment/:id" element={<ApartmentDetails />} /> */}
           {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>
       </div>

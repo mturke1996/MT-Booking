@@ -22,12 +22,16 @@ export default function Profile({ user }) {
   // جلب بيانات المستخدم الأساسية
   useEffect(() => {
     if (user) {
-      axios.get(`http://localhost:5000/users/${user.Id}`)
-        .then(response => {
+      axios
+        .get(`http://localhost:5000/users/${user.Id}`)
+        .then((response) => {
           setUserData(response.data);
         })
-        .catch(error => {
-          console.error("Error fetching user data:", error.response?.data.message || error.message);
+        .catch((error) => {
+          console.error(
+            "Error fetching user data:",
+            error.response?.data.message || error.message
+          );
         });
     }
   }, [user]);
@@ -35,12 +39,16 @@ export default function Profile({ user }) {
   // جلب بيانات تفاصيل المستخدم
   useEffect(() => {
     if (user) {
-      axios.get(`http://localhost:5000/user/details/${user.id}`)
-        .then(response => {
+      axios
+        .get(`http://localhost:5000/user/details/${user.id}`)
+        .then((response) => {
           setProfileData(response.data);
         })
-        .catch(error => {
-          console.error("Error fetching user details:", error.response?.data.message || error.message);
+        .catch((error) => {
+          console.error(
+            "Error fetching user details:",
+            error.response?.data.message || error.message
+          );
         });
     }
   }, [user]);
@@ -50,13 +58,17 @@ export default function Profile({ user }) {
     if (!user) return;
 
     if (isEditing) {
-      axios.put(`http://localhost:5000/user/details/${user.id}`, profileData)
-        .then(response => {
+      axios
+        .put(`http://localhost:5000/user/details/${user.id}`, profileData)
+        .then((response) => {
           setProfileData(response.data);
           setIsEditing(false);
         })
-        .catch(error => {
-          console.error("Error updating user data:", error.response?.data.message || error.message);
+        .catch((error) => {
+          console.error(
+            "Error updating user data:",
+            error.response?.data.message || error.message
+          );
         });
     } else {
       setIsEditing(true);
@@ -68,13 +80,20 @@ export default function Profile({ user }) {
     if (!user) return;
 
     if (isAddingNew) {
-      axios.post('http://localhost:5000/user/details', { ...profileData, user_id: user.id })
-        .then(response => {
+      axios
+        .post("http://localhost:5000/user/details", {
+          ...profileData,
+          user_id: user.id,
+        })
+        .then((response) => {
           setProfileData(response.data);
           setIsAddingNew(false);
         })
-        .catch(error => {
-          console.error("Error adding new user details:", error.response?.data.message || error.message);
+        .catch((error) => {
+          console.error(
+            "Error adding new user details:",
+            error.response?.data.message || error.message
+          );
         });
     } else {
       setIsAddingNew(true);
@@ -93,7 +112,11 @@ export default function Profile({ user }) {
   return (
     <div className="profile-container">
       <div className="profile-left">
-        <img className="profile-picture" src={profileData.profile_picture} alt="Profile" />
+        <img
+          className="profile-picture"
+          src={profileData.profile_picture}
+          alt="Profile"
+        />
         {(isEditing || isAddingNew) && (
           <input
             type="text"
@@ -105,14 +128,26 @@ export default function Profile({ user }) {
         )}
       </div>
       <div className="profile-right">
-        <h1 className="profile-name">{user.name} {user.lastname}</h1>
-        <p className="profile-title">{profileData.profession || "Web Developer | Designer"}</p>
+        <h1 className="profile-name">
+          {user.name} {user.lastname}
+        </h1>
+        <p className="profile-title">
+          {profileData.profession || "Web Developer | Designer"}
+        </p>
 
         <div className="profile-actions">
-          <button className="profile-button" onClick={handleEditClick} disabled={!user?.id}>
+          <button
+            className="profile-button"
+            onClick={handleEditClick}
+            disabled={!user?.id}
+          >
             {isEditing ? "Save Profile" : "Edit Profile"}
           </button>
-          <button className="profile-button" onClick={handleAddNewClick} disabled={!user?.id}>
+          <button
+            className="profile-button"
+            onClick={handleAddNewClick}
+            disabled={!user?.id}
+          >
             {isAddingNew ? "Save New Details" : "Add New Details"}
           </button>
         </div>
@@ -120,11 +155,11 @@ export default function Profile({ user }) {
         <div className="profile-info">
           <div className="info-item">
             <span className="info-label">Email:</span>
-            <span className="info-value">{userData.email}</span>
+            <span className="info-value">{user.email}</span>
           </div>
           <div className="info-item">
             <span className="info-label">Phone:</span>
-            {(isEditing || isAddingNew) ? (
+            {isEditing || isAddingNew ? (
               <input
                 type="text"
                 name="phone"
@@ -137,7 +172,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Birthdate:</span>
-            {(isEditing || isAddingNew) ? (
+            {isEditing || isAddingNew ? (
               <input
                 type="date"
                 name="birthdate"
@@ -150,7 +185,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Occupation:</span>
-            {(isEditing || isAddingNew) ? (
+            {isEditing || isAddingNew ? (
               <input
                 type="text"
                 name="profession"
@@ -163,7 +198,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Address:</span>
-            {(isEditing || isAddingNew) ? (
+            {isEditing || isAddingNew ? (
               <input
                 type="text"
                 name="address"
@@ -176,7 +211,7 @@ export default function Profile({ user }) {
           </div>
           <div className="info-item">
             <span className="info-label">Bio:</span>
-            {(isEditing || isAddingNew) ? (
+            {isEditing || isAddingNew ? (
               <textarea
                 name="bio"
                 value={profileData.bio}
