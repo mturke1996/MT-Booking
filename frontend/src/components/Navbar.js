@@ -24,13 +24,13 @@ function Navbar({ user, onLogout }) {
           <Link to="/Weather">Weather</Link>
         </li>
         <li>
-          <Link to="#">Blog</Link>
+          <Link to="/city">City</Link>
         </li>
         <li>
-          <Link to="#">News</Link>
+          <Link to="/budget">Budget planner</Link>
         </li>
         <li>
-          <Link to="#">Contact</Link>
+          <Link to="/contact">Contact</Link>
         </li>
       </ul>
 

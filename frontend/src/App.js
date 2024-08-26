@@ -16,7 +16,11 @@ import Profile from "./components/Profile";
 import ApartmentForm from "./components/ApartmentForm";
 import List from "./components/List";
 import ApartmentDetails from "./components/ApartmentDetails";
+import Contact from "./components/Contact";
+import FAQ from "./components/FAQ";
 import MyBooking from "./components/MyBooking";
+import CityGuide from "./components/CityGuide";
+import TravelBudgetPlanner from "./components/TravelBudgetPlanner";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
@@ -59,6 +63,8 @@ function App() {
             element={<Login setToken={setToken} setUser={setUser} />}
           />
           <Route path="/register" element={<Register />} />
+          <Route path="/city" element={<CityGuide />} />
+          <Route path="/budget" element={<TravelBudgetPlanner />} />
           <Route
             path="/profile"
             element={user ? <Profile user={user} /> : <Navigate to="/login" />}
@@ -71,6 +77,8 @@ function App() {
             path="/addApartment"
             element={user ? <ApartmentForm /> : <Navigate to="/login" />}
           />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/Searchitem" element={<List />} />
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
           <Route
@@ -79,6 +87,12 @@ function App() {
               user ? <MyBooking user={user} /> : <Navigate to="/login" />
             }
           />
+          {/* <Route path="/profile" element={<Profile />} />
+          <Route path="/Weather" element={<Weather />} />
+          <Route path="/addApartment" element={<ApartmentForm />} />
+          <Route path="/Searchitem" element={<List />} />
+          <Route path="/apartment/:id" element={<ApartmentDetails />} /> */}
+          {/* أضف المزيد من المسارات حسب الحاجة */}
         </Routes>
       </div>
     </Router>

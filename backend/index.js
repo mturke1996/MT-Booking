@@ -449,15 +449,14 @@ app.get("/api/apartments/:id/reviews", (req, res) => {
 });
 
 // إضافة تقييم لشقة
-app.post("/api/apartments/:id/reviews", authenticateToken, (req, res) => {
-  const { kommentar, bewertung } = req.body;
+app.post("/api/apartments/:id/reviews", (req, res) => {
+  const { kommentar, bewertung, benutzerId } = req.body;
   const apartmentId = req.params.id;
-  const benutzerId = req.user.username; // استخدام اسم المستخدم من التوكن
 
-  if (!kommentar || !bewertung) {
+  if (!kommentar || !bewertung || !benutzerId) {
     return res
       .status(400)
-      .json({ error: "Kommentar and bewertung are required" });
+      .json({ error: "kommentar, bewertung, and benutzerId are required" });
   }
 
   db.run(
@@ -468,15 +467,13 @@ app.post("/api/apartments/:id/reviews", authenticateToken, (req, res) => {
         console.error("Error adding review:", err.message);
         return res.status(500).json({ error: err.message });
       }
-      res
-        .status(201)
-        .json({
-          bewertungId: this.lastID,
-          apartmentId,
-          benutzerId,
-          bewertung,
-          kommentar,
-        });
+      res.status(201).json({
+        bewertungId: this.lastID,
+        apartmentId,
+        benutzerId,
+        bewertung,
+        kommentar,
+      });
     }
   );
 });

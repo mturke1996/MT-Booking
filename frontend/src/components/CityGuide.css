@@ -1,0 +1,48 @@
+.city-guide-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .city-list {
+    flex: 1;
+    padding-right: 20px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .city-item {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+  }
+  
+  .city-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .city-item.active {
+    background-color: #007BFF;
+    color: #fff;
+  }
+  
+  .city-details {
+    flex: 2;
+    padding-left: 20px;
+  }
+  
+  .city-details img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .city-details p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
