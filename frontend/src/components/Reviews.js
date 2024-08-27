@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const Reviews = ({ apartmentId }) => {
   const [reviews, setReviews] = useState([]);
-  const [newReview, setNewReview] = useState({ bewertung: 5, kommentar: '' });
+  const [newReview, setNewReview] = useState({ bewertung: 5, kommentar: '', benutzerId: '' }); // إضافة benutzerId هنا
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -23,27 +23,20 @@ const Reviews = ({ apartmentId }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!user) {
       alert('You must be logged in to submit a review.');
       return;
     }
-    
-    // تحقق من وجود التوكن في localStorage
-    const token = localStorage.getItem('authToken');
 
     axios.post(`http://localhost:5000/api/apartments/${apartmentId}/reviews`, {
-      benutzerId: user.username, // اسم المستخدم
+      benutzerId: user.username, // استخدام اسم المستخدم مباشرة من user
       bewertung: newReview.bewertung,
       kommentar: newReview.kommentar
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}` // إرسال التوكن في رأس الطلب
-      }
     })
       .then(response => {
-        // إضافة المراجعة الجديدة إلى القائمة المحلية
         setReviews([...reviews, response.data]);
-        setNewReview({ bewertung: 5, kommentar: '' });
+        setNewReview({ bewertung: 5, kommentar: '', benutzerId: '' }); // إعادة تعيين benutzerId
       })
       .catch(error => {
         console.error('Error posting review:', error);
@@ -58,7 +51,7 @@ const Reviews = ({ apartmentId }) => {
           <div key={review.bewertungId} className="review-card mb-4 p-4 bg-white rounded-lg shadow-md">
             <p className="text-gray-800 mb-2">{review.kommentar}</p>
             <p className="text-yellow-500 font-bold">Bewertung: {review.bewertung} / 5</p>
-            <p className="text-gray-600">By: {review.benutzerId}</p> {/* عرض اسم المستخدم */}
+            <p className="text-gray-600">By: {review.benutzerId}</p>
           </div>
         ))
       ) : (
