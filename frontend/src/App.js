@@ -25,7 +25,7 @@ import CityGuide from "./components/CityGuide";
 import TravelBudgetPlanner from "./components/TravelBudgetPlanner";
 import CheckoutForm from "./components/CheckoutForm";
 
-
+// استبدل YOUR_STRIPE_PUBLIC_KEY بمفتاح النشر الخاص بك من Stripe
 const stripePromise = loadStripe('YOUR_STRIPE_PUBLIC_KEY');
 
 function App() {
@@ -76,7 +76,7 @@ function App() {
             element={user ? <Profile user={user} /> : <Navigate to="/login" />}
           />
           <Route
-            path="/Weather"
+            path="/weather"
             element={user ? <Weather /> : <Navigate to="/login" />}
           />
           <Route
@@ -85,7 +85,7 @@ function App() {
           />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
-          <Route path="/Searchitem" element={<List />} />
+          <Route path="/searchitem" element={<List />} />
           <Route path="/apartment/:id" element={<ApartmentDetails />} />
           <Route
             path="/mybooking"
@@ -94,12 +94,17 @@ function App() {
             }
           />
           <Route
-            path="/Payment"
+            path="/payment"
             element={
-              user ? <CheckoutForm user={user} /> : <Navigate to="/login" />
+              user ? (
+                <Elements stripe={stripePromise}>
+                  <CheckoutForm />
+                </Elements>
+              ) : (
+                <Navigate to="/login" />
+              )
             }
           />
-       
         </Routes>
       </div>
     </Router>
