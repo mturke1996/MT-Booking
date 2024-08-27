@@ -36,11 +36,7 @@ function authenticateToken(req, res, next) {
 }
 
 // Connect to SQLite database
-
-// تحديد مسار قاعدة البيانات من متغيرات البيئة أو استخدام مسار افتراضي
 const dbPath = process.env.DATABASE_PATH || "./mtbookig-bank.db";
-
-// الاتصال بقاعدة البيانات SQLite
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Database connection error:", err.message);
