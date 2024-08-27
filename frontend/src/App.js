@@ -62,46 +62,45 @@ function App() {
     <Router>
       <div className="App">
         <Navbar user={user} onLogout={handleLogout} />
-        <Elements stripe={stripePromise}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/login"
-              element={<Login setToken={setToken} setUser={setUser} />}
-            />
-            <Route path="/register" element={<Register />} />
-            <Route path="/city" element={<CityGuide />} />
-            <Route path="/budget" element={<TravelBudgetPlanner />} />
-            <Route
-              path="/profile"
-              element={user ? <Profile user={user} /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/Weather"
-              element={user ? <Weather /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/addApartment"
-              element={user ? <ApartmentForm /> : <Navigate to="/login" />}
-            />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/Searchitem" element={<List />} />
-            <Route path="/apartment/:id" element={<ApartmentDetails />} />
-            <Route
-              path="/mybooking"
-              element={
-                user ? <MyBooking user={user} /> : <Navigate to="/login" />
-              }
-            />
-            <Route
-              path="/Payment"
-              element={
-                user ? <CheckoutForm user={user} /> : <Navigate to="/login" />
-              }
-            />
-          </Routes>
-        </Elements>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/login"
+            element={<Login setToken={setToken} setUser={setUser} />}
+          />
+          <Route path="/register" element={<Register />} />
+          <Route path="/city" element={<CityGuide />} />
+          <Route path="/budget" element={<TravelBudgetPlanner />} />
+          <Route
+            path="/profile"
+            element={user ? <Profile user={user} /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/Weather"
+            element={user ? <Weather /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/addApartment"
+            element={user ? <ApartmentForm /> : <Navigate to="/login" />}
+          />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/Searchitem" element={<List />} />
+          <Route path="/apartment/:id" element={<ApartmentDetails />} />
+          <Route
+            path="/mybooking"
+            element={
+              user ? <MyBooking user={user} /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="//Payment"
+            element={
+              user ? <CheckoutForm user={user} /> : <Navigate to="/login" />
+            }
+          />
+       
+        </Routes>
       </div>
     </Router>
   );
