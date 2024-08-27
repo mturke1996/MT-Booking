@@ -8,40 +8,48 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const Port = 5000;
 
-// سر توقيع بسيط لـ JWT
+// Simple JWT secret key
 const secretKey = "my_simple_secret";
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-// مثال على معالج خطأ في Express.js
+// Example error handler in Express.js
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-// Middleware للتحقق من صحة التوكن
+// Middleware to authenticate token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (!token) return res.sendStatus(401); // لا يوجد توكن
+  if (!token) return res.sendStatus(401); // No token
 
   jwt.verify(token, secretKey, (err, user) => {
-    if (err) return res.sendStatus(403); // التوكن غير صالح
-    req.user = user; // تخزين بيانات المستخدم
+    if (err) return res.sendStatus(403); // Invalid token
+    req.user = user; // Store user data
     next();
   });
 }
 
+// Connect to SQLite database
+
+// تحديد مسار قاعدة البيانات من متغيرات البيئة أو استخدام مسار افتراضي
+const dbPath = process.env.DATABASE_PATH || "./mtbookig-bank.db";
+
 // الاتصال بقاعدة البيانات SQLite
-const db = new sqlite3.Database("./mtbookig-bank.db", (err) => {
-  if (err) console.error("Database connection error:", err.message);
-  else console.log("Connected to the database successfully.");
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error("Database connection error:", err.message);
+  } else {
+    console.log("Connected to the database successfully.");
+  }
 });
 
-// تسجيل مستخدم جديد
+// Register a new user
 app.post("/register", (req, res) => {
   const { username, password, email, name, lastname } = req.body;
 
@@ -49,7 +57,7 @@ app.post("/register", (req, res) => {
     return res.status(400).send("Username and password are required");
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 10); // استخدام جولات تشفير أكثر أمانًا
+  const hashedPassword = bcrypt.hashSync(password, 10); // Use more secure hash rounds
   db.run(
     "INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)",
     [username, hashedPassword, email, name, lastname],
@@ -64,7 +72,7 @@ app.post("/register", (req, res) => {
   );
 });
 
-// تسجيل الدخول
+// Login
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -84,7 +92,7 @@ app.post("/login", (req, res) => {
         const token = jwt.sign(
           { id: user.id, username: user.username },
           secretKey,
-          { expiresIn: "1h" } // التوكن صالح لمدة ساعة
+          { expiresIn: "1h" } // Token valid for 1 hour
         );
         res.json({ message: "You are successfully logged in", token });
       } else {
@@ -94,7 +102,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-// استرجاع بيانات المستخدم بناءً على التوكن
+// Get user data based on token
 app.get("/user", authenticateToken, (req, res) => {
   const userId = req.user.id;
 
@@ -114,7 +122,7 @@ app.get("/user", authenticateToken, (req, res) => {
   );
 });
 
-// استرجاع بيانات المستخدم بناءً على الـ user_id
+// Get user data based on user_id
 app.get("/user/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
 
@@ -137,7 +145,8 @@ app.get("/user/:user_id", (req, res) => {
     }
   );
 });
-// إضافة تفاصيل المستخدم الجديدة بناءً على الـ user_id
+
+// Add new user details based on user_id
 app.post("/user/details", (req, res) => {
   const {
     user_id,
@@ -149,24 +158,24 @@ app.post("/user/details", (req, res) => {
     bio,
   } = req.body;
 
-  // التحقق من وجود userId
+  // Check for user_id
   if (!user_id) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
-  // بناء الاستعلام لإدراج التفاصيل
+  // Build query to insert details
   const query = `
     INSERT INTO user_details (user_id, phone, birthdate, profession, address, profile_picture, bio)
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  // تنفيذ الاستعلام
+  // Execute query
   db.run(
     query,
     [user_id, phone, birthdate, profession, address, profile_picture, bio],
     function (err) {
       if (err) {
-        console.error("Error adding user details:", err.message); // تسجيل الخطأ
+        console.error("Error adding user details:", err.message); // Log error
         return res.status(500).json({ message: "Internal server error" });
       }
       res
@@ -176,7 +185,7 @@ app.post("/user/details", (req, res) => {
   );
 });
 
-// استرجاع تفاصيل المستخدم بناءً على الـ user_id
+// Get user details based on user_id
 app.get("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
   db.get(
@@ -195,7 +204,7 @@ app.get("/user/details/:user_id", (req, res) => {
   );
 });
 
-// تحديث تفاصيل المستخدم// تحديث تفاصيل المستخدم بناءً على الـ user_id في الـ URL
+// Update user details based on user_id in URL
 app.put("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
   const { phone, birthdate, profession, address, profile_picture, bio } =
@@ -205,12 +214,12 @@ app.put("/user/details/:user_id", (req, res) => {
     return res.status(400).json({ message: "Invalid User ID" });
   }
 
-  // إعداد الاستعلام الأساسي
+  // Prepare base query
   let query = "UPDATE user_details SET ";
   const updates = [];
   const params = [];
 
-  // تحقق من الحقول المقدمة وأضفها إلى الاستعلام
+  // Check for provided fields and add them to the query
   if (phone) {
     updates.push("phone = ?");
     params.push(phone);
@@ -240,7 +249,7 @@ app.put("/user/details/:user_id", (req, res) => {
     return res.status(400).json({ message: "No fields to update" });
   }
 
-  // أضف شرط التحديث للمستخدم
+  // Add user update condition
   query += updates.join(", ") + " WHERE user_id = ?";
   params.push(userId);
 
@@ -269,7 +278,7 @@ app.delete("/user/details/:id", (req, res) => {
   });
 });
 
-// إضافة شقة جديدة
+// Add a new apartment
 app.post("/api/apartments", (req, res) => {
   const {
     Adresse,
@@ -318,7 +327,7 @@ app.post("/api/apartments", (req, res) => {
   );
 });
 
-// الحصول على جميع الشقق
+// Get all apartments
 app.get("/api/apartments", (req, res) => {
   const query = "SELECT * FROM Wohnungen";
 
@@ -332,7 +341,7 @@ app.get("/api/apartments", (req, res) => {
   });
 });
 
-// الحصول على تفاصيل شقة حسب ID
+// Get apartment details by ID
 app.get("/api/apartments/:id", (req, res) => {
   const { id } = req.params;
   const query = 'SELECT * FROM Wohnungen WHERE "Wohnungs-ID" = ?';
@@ -353,7 +362,7 @@ app.post("/api/bookings", (req, res) => {
   const { apartmentId, startDate, endDate, adult, children, room, username } =
     req.body;
 
-  // تسجيل البيانات المستلمة للتأكد من صحتها
+  // Log received data for verification
   console.log("Received booking data:", req.body);
 
   if (
@@ -392,10 +401,9 @@ app.post("/api/bookings", (req, res) => {
   );
 });
 
-// الحصول على جميع الحجوزات
-
+// Get all bookings
 app.get("/api/bookings", (req, res) => {
-  const { username } = req.query; 
+  const { username } = req.query;
 
   let query = "SELECT * FROM bookings";
   let params = [];
@@ -415,7 +423,7 @@ app.get("/api/bookings", (req, res) => {
   });
 });
 
-// حذف حجز
+// Delete booking
 app.delete("/api/bookings/:id", (req, res) => {
   const { id } = req.params;
   const query = "DELETE FROM bookings WHERE id = ?";
@@ -432,7 +440,7 @@ app.delete("/api/bookings/:id", (req, res) => {
   });
 });
 
-// الحصول على مراجعات الشقة
+// Get reviews for an apartment
 app.get("/api/apartments/:id/reviews", (req, res) => {
   const apartmentId = req.params.id;
   db.all(
@@ -448,7 +456,7 @@ app.get("/api/apartments/:id/reviews", (req, res) => {
   );
 });
 
-// إضافة تقييم لشقة
+// Add a review for an apartment
 app.post("/api/apartments/:id/reviews", (req, res) => {
   const { kommentar, bewertung, benutzerId } = req.body;
   const apartmentId = req.params.id;
@@ -478,7 +486,7 @@ app.post("/api/apartments/:id/reviews", (req, res) => {
   );
 });
 
-// بدء تشغيل الخادم
+// Start server
 app.listen(Port, () => {
   console.log(`Server running at http://localhost:${Port}/`);
 });
