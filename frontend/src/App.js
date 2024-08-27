@@ -6,6 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import axios from "axios";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
@@ -21,6 +23,10 @@ import FAQ from "./components/FAQ";
 import MyBooking from "./components/MyBooking";
 import CityGuide from "./components/CityGuide";
 import TravelBudgetPlanner from "./components/TravelBudgetPlanner";
+import CheckoutForm from "./components/CheckoutForm";
+
+
+const stripePromise = loadStripe('YOUR_STRIPE_PUBLIC_KEY');
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
@@ -87,7 +93,7 @@ function App() {
               user ? <MyBooking user={user} /> : <Navigate to="/login" />
             }
           />
-      
+       
         </Routes>
       </div>
     </Router>

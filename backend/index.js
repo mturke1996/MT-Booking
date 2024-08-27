@@ -395,7 +395,7 @@ app.post("/api/bookings", (req, res) => {
 // الحصول على جميع الحجوزات
 
 app.get("/api/bookings", (req, res) => {
-  const { username } = req.query; // تأكد من أن username يتم تمريره كمعلمة استعلام
+  const { username } = req.query; 
 
   let query = "SELECT * FROM bookings";
   let params = [];

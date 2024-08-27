@@ -17,7 +17,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="container" style={{marginTop:"100px"}}>
+    <div className="container" style={{ marginTop: "100px" }}>
       <h1>Contact Us</h1>
       <div className="map-container">
         <iframe
@@ -32,8 +32,6 @@ export default function Contact() {
           tabIndex="0"
         />
       </div>
-
-      {/* Social Media Links */}
       <div className="social-media">
         <h2>Connect with Us</h2>
         <div
@@ -81,8 +79,6 @@ export default function Contact() {
           <strong>Office Hours:</strong> Monday - Friday, 9:00 AM - 5:00 PM
         </p>
       </div>
-
-      {/* Multiple Contact Methods */}
       <div className="contact-methods">
         <h2>Contact Methods</h2>
         <div className="contact-methods-list">
