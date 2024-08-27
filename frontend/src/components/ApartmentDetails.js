@@ -8,7 +8,7 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
-import Reviews from './Reviews';
+import Reviews from "./Reviews";
 import "../App.css";
 
 const ApartmentDetails = () => {
@@ -28,9 +28,8 @@ const ApartmentDetails = () => {
     children: 0,
     room: 1,
   });
-  const [bookingMessage, setBookingMessage] = useState(""); // State for booking message
+  const [bookingMessage, setBookingMessage] = useState("");
 
-  // Retrieve user from localStorage or another source
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -59,26 +58,28 @@ const ApartmentDetails = () => {
       setBookingMessage("You need to be logged in to make a booking.");
       return;
     }
-  
-    axios.post('http://localhost:5000/api/bookings', {
-      apartmentId: id,
-      username: user.username,  // Ensure this is set correctly
-      startDate: format(date[0].startDate, "yyyy-MM-dd"),
-      endDate: format(date[0].endDate, "yyyy-MM-dd"),
-      adult: options.adult,
-      children: options.children,
-      room: options.room
-    })
-    .then(response => {
-      console.log('Booking successful:', response.data);
-      setBookingMessage("Your booking was successful!");
-    })
-    .catch(error => {
-      console.error('Error booking apartment:', error);
-      setBookingMessage("There was an error with your booking. Please try again.");
-    });
+
+    axios
+      .post("http://localhost:5000/api/bookings", {
+        apartmentId: id,
+        username: user.username,
+        startDate: format(date[0].startDate, "yyyy-MM-dd"),
+        endDate: format(date[0].endDate, "yyyy-MM-dd"),
+        adult: options.adult,
+        children: options.children,
+        room: options.room,
+      })
+      .then((response) => {
+        console.log("Booking successful:", response.data);
+        setBookingMessage("Your booking was successful!");
+      })
+      .catch((error) => {
+        console.error("Error booking apartment:", error);
+        setBookingMessage(
+          "There was an error with your booking. Please try again."
+        );
+      });
   };
-  
 
   const renderAmenities = () => {
     const amenities = [
@@ -150,7 +151,8 @@ const ApartmentDetails = () => {
                   <strong>Size:</strong> {apartment["Fläche (m²)"]} m²
                 </p>
                 <p>
-                  <strong>Rent:</strong> {apartment["Monatliche Miete"]} €/per Night
+                  <strong>Rent:</strong> {apartment["Monatliche Miete"]} €/per
+                  Night
                 </p>
                 <p className="mt-4">
                   <strong>Description:</strong> {apartment.Beschreibung}
@@ -161,13 +163,13 @@ const ApartmentDetails = () => {
               <h3 className="text-2xl font-semibold mb-4">Amenities</h3>
               {renderAmenities()}
             </div>
-            <br/>
-            <br/>
-            <br/>
-            <hr/>
+            <br />
+            <br />
+            <br />
+            <hr />
             <div className="reviews-section mt-8">
               <h3 className="text-2xl font-semibold mb-4">Reviews</h3>
-              <br/>
+              <br />
               <Reviews apartmentId={id} />
             </div>
           </div>

@@ -1,0 +1,122 @@
+.checkout-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-top: 100px;
+}
+
+.checkout-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.payment-methods {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.payment-method-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: #555;
+}
+
+.payment-method-label input {
+  margin-right: 10px;
+}
+
+.payment-method-radio:checked + i {
+  color: #0070ba;
+}
+
+.fa-credit-card,
+.fa-paypal {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.stripe-form,
+.paypal-container {
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+.card-element {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #0070ba;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit-button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.paypal-container {
+  text-align: center;
+}
+
+.paypal-login {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.paypal-login-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.paypal-input {
+  display: block;
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.paypal-login-button {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #0070ba;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}

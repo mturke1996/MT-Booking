@@ -147,7 +147,7 @@ const MyBooking = ({ user }) => {
                           onClick={() => handlePay(booking.id)}
                           className="pay-button button"
                         >
-                          Pay
+                          <Link to={"/Payment"}>Pay</Link>
                         </button>
                         <button
                           onClick={() => handleDelete(booking.id)}

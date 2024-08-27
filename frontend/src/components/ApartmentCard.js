@@ -13,7 +13,7 @@ const ApartmentCard = ({ id }) => {
     if (id) {
       axios.get(`http://localhost:5000/api/apartments/${id}`)
         .then(response => {
-          console.log('Fetched apartment:', response.data); // Debugging line
+          console.log('Fetched apartment:', response.data); 
           setApartment(response.data);
           setLoading(false);
         })
