@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const sqlite3 = require("sqlite3");
+const Database = require("better-sqlite3");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -37,13 +37,7 @@ function authenticateToken(req, res, next) {
 
 // Connect to SQLite database
 const dbPath = process.env.DATABASE_PATH || "./mtbookig-bank.db";
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error("Database connection error:", err.message);
-  } else {
-    console.log("Connected to the database successfully.");
-  }
-});
+const db = new Database(dbPath, { verbose: console.log });
 
 // Register a new user
 app.post("/register", (req, res) => {
@@ -54,18 +48,15 @@ app.post("/register", (req, res) => {
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10); // Use more secure hash rounds
-  db.run(
-    "INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)",
-    [username, hashedPassword, email, name, lastname],
-    function (err) {
-      if (err) {
-        console.error("Error inserting user:", err.message);
-        res.status(500).send("Internal server error");
-      } else {
-        res.json({ id: this.lastID, username });
-      }
-    }
-  );
+  const stmt = db.prepare("INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)");
+  
+  try {
+    const result = stmt.run(username, hashedPassword, email, name, lastname);
+    res.json({ id: result.lastInsertRowid, username });
+  } catch (err) {
+    console.error("Error inserting user:", err.message);
+    res.status(500).send("Internal server error");
+  }
 });
 
 // Login
@@ -76,46 +67,42 @@ app.post("/login", (req, res) => {
     return res.status(400).send("Username and password are required");
   }
 
-  db.get("SELECT * FROM users WHERE username = ?", [username], (err, user) => {
-    if (err) {
-      console.error("Database error:", err.message);
-      res.status(500).send("Internal server error");
-    } else if (!user) {
-      res.status(400).send("Invalid username or password");
-    } else {
-      const isValid = bcrypt.compareSync(password, user.password);
-      if (isValid) {
-        const token = jwt.sign(
-          { id: user.id, username: user.username },
-          secretKey,
-          { expiresIn: "1h" } // Token valid for 1 hour
-        );
-        res.json({ message: "You are successfully logged in", token });
-      } else {
-        res.status(400).send("Invalid username or password");
-      }
+  const stmt = db.prepare("SELECT * FROM users WHERE username = ?");
+  
+  try {
+    const user = stmt.get(username);
+    if (!user) {
+      return res.status(400).send("Invalid username or password");
     }
-  });
+
+    const isValid = bcrypt.compareSync(password, user.password);
+    if (isValid) {
+      const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: "1h" });
+      res.json({ message: "You are successfully logged in", token });
+    } else {
+      res.status(400).send("Invalid username or password");
+    }
+  } catch (err) {
+    console.error("Database error:", err.message);
+    res.status(500).send("Internal server error");
+  }
 });
 
 // Get user data based on token
 app.get("/user", authenticateToken, (req, res) => {
   const userId = req.user.id;
-
-  db.get(
-    "SELECT id, username, email, name, lastname FROM users WHERE id = ?",
-    [userId],
-    (err, user) => {
-      if (err) {
-        console.error("Error fetching user data:", err.message);
-        return res.status(500).send("Internal server error");
-      }
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-      res.json(user);
+  const stmt = db.prepare("SELECT id, username, email, name, lastname FROM users WHERE id = ?");
+  
+  try {
+    const user = stmt.get(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
     }
-  );
+    res.json(user);
+  } catch (err) {
+    console.error("Error fetching user data:", err.message);
+    res.status(500).send("Internal server error");
+  }
 });
 
 // Get user data based on user_id
@@ -126,96 +113,72 @@ app.get("/user/:user_id", (req, res) => {
     return res.status(400).json({ message: "Invalid user ID" });
   }
 
-  db.get(
-    "SELECT id, username, email, name, lastname FROM users WHERE id = ?",
-    [userId],
-    (err, user) => {
-      if (err) {
-        console.error("Error fetching user data:", err.message);
-        return res.status(500).send("Internal server error");
-      }
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-      res.json(user);
+  const stmt = db.prepare("SELECT id, username, email, name, lastname FROM users WHERE id = ?");
+  
+  try {
+    const user = stmt.get(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
     }
-  );
+    res.json(user);
+  } catch (err) {
+    console.error("Error fetching user data:", err.message);
+    res.status(500).send("Internal server error");
+  }
 });
 
 // Add new user details based on user_id
 app.post("/user/details", (req, res) => {
-  const {
-    user_id,
-    phone,
-    birthdate,
-    profession,
-    address,
-    profile_picture,
-    bio,
-  } = req.body;
+  const { user_id, phone, birthdate, profession, address, profile_picture, bio } = req.body;
 
-  // Check for user_id
   if (!user_id) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
-  // Build query to insert details
-  const query = `
+  const stmt = db.prepare(`
     INSERT INTO user_details (user_id, phone, birthdate, profession, address, profile_picture, bio)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
+  `);
 
-  // Execute query
-  db.run(
-    query,
-    [user_id, phone, birthdate, profession, address, profile_picture, bio],
-    function (err) {
-      if (err) {
-        console.error("Error adding user details:", err.message); // Log error
-        return res.status(500).json({ message: "Internal server error" });
-      }
-      res
-        .status(201)
-        .json({ message: "User details added successfully", id: this.lastID });
-    }
-  );
+  try {
+    const result = stmt.run(user_id, phone, birthdate, profession, address, profile_picture, bio);
+    res.status(201).json({ message: "User details added successfully", id: result.lastInsertRowid });
+  } catch (err) {
+    console.error("Error adding user details:", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Get user details based on user_id
 app.get("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
-  db.get(
-    "SELECT * FROM user_details WHERE user_id = ?",
-    [userId],
-    (err, row) => {
-      if (err) {
-        console.error("Error fetching user details:", err);
-        res.status(500).json({ message: "Internal server error" });
-      } else if (!row) {
-        res.status(404).json({ message: "User details not found" });
-      } else {
-        res.json(row);
-      }
+  const stmt = db.prepare("SELECT * FROM user_details WHERE user_id = ?");
+  
+  try {
+    const row = stmt.get(userId);
+    if (!row) {
+      return res.status(404).json({ message: "User details not found" });
     }
-  );
+    res.json(row);
+  } catch (err) {
+    console.error("Error fetching user details:", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Update user details based on user_id in URL
 app.put("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
-  const { phone, birthdate, profession, address, profile_picture, bio } =
-    req.body;
+  const { phone, birthdate, profession, address, profile_picture, bio } = req.body;
 
   if (isNaN(userId)) {
     return res.status(400).json({ message: "Invalid User ID" });
   }
 
-  // Prepare base query
   let query = "UPDATE user_details SET ";
   const updates = [];
   const params = [];
 
-  // Check for provided fields and add them to the query
   if (phone) {
     updates.push("phone = ?");
     params.push(phone);
@@ -245,33 +208,34 @@ app.put("/user/details/:user_id", (req, res) => {
     return res.status(400).json({ message: "No fields to update" });
   }
 
-  // Add user update condition
   query += updates.join(", ") + " WHERE user_id = ?";
   params.push(userId);
 
-  db.run(query, params, function (err) {
-    if (err) {
-      console.error("Error updating user details:", err.message);
-      return res.status(500).json({ message: "Internal server error" });
-    }
+  const stmt = db.prepare(query);
+
+  try {
+    stmt.run(params);
     res.json({ message: "User details updated successfully" });
-  });
+  } catch (err) {
+    console.error("Error updating user details:", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 app.delete("/user/details/:id", (req, res) => {
   const { id } = req.params;
-  const query = "DELETE FROM user_details WHERE id = ?";
+  const stmt = db.prepare("DELETE FROM user_details WHERE id = ?");
 
-  db.run(query, [id], function (err) {
-    if (err) {
-      console.error("Error deleting booking:", err.message);
-      return res.status(500).json({ error: "Database error" });
+  try {
+    const result = stmt.run(id);
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "User details not found" });
     }
-    if (this.changes === 0) {
-      return res.status(404).json({ error: "Booking not found" });
-    }
-    res.status(200).json({ message: "Booking deleted successfully" });
-  });
+    res.status(200).json({ message: "User details deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting user details:", err.message);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Add a new apartment
@@ -290,14 +254,13 @@ app.post("/api/apartments", (req, res) => {
     Wohnungstyp,
   } = req.body;
 
-  const query = `
-      INSERT INTO Wohnungen (Adresse, Zimmeranzahl, "Fläche (m²)", "Monatliche Miete", Status, img1, img2, img3, img4, Beschreibung, Wohnungstyp)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+  const stmt = db.prepare(`
+    INSERT INTO Wohnungen (Adresse, Zimmeranzahl, "Fläche (m²)", "Monatliche Miete", Status, img1, img2, img3, img4, Beschreibung, Wohnungstyp)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
 
-  db.run(
-    query,
-    [
+  try {
+    const result = stmt.run(
       Adresse,
       Zimmeranzahl,
       Flaeche,
@@ -308,68 +271,49 @@ app.post("/api/apartments", (req, res) => {
       img3,
       img4,
       Beschreibung,
-      Wohnungstyp,
-    ],
-    function (err) {
-      if (err) {
-        console.error("Error inserting data:", err);
-        res.status(500).json({ error: "Database error" });
-      } else {
-        res
-          .status(200)
-          .json({ message: "Apartment added successfully", id: this.lastID });
-      }
-    }
-  );
+      Wohnungstyp
+    );
+    res.status(200).json({ message: "Apartment added successfully", id: result.lastInsertRowid });
+  } catch (err) {
+    console.error("Error inserting data:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Get all apartments
 app.get("/api/apartments", (req, res) => {
-  const query = "SELECT * FROM Wohnungen";
+  const stmt = db.prepare("SELECT * FROM Wohnungen");
 
-  db.all(query, [], (err, rows) => {
-    if (err) {
-      console.error("Error fetching data:", err);
-      res.status(500).json({ error: "Database error" });
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  try {
+    const rows = stmt.all();
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Get apartment details by ID
 app.get("/api/apartments/:id", (req, res) => {
   const { id } = req.params;
-  const query = 'SELECT * FROM Wohnungen WHERE "Wohnungs-ID" = ?';
+  const stmt = db.prepare('SELECT * FROM Wohnungen WHERE "Wohnungs-ID" = ?');
 
-  db.get(query, [id], (err, row) => {
-    if (err) {
-      console.error("Error fetching apartment details:", err);
-      res.status(500).json({ error: "Database error" });
-    } else if (!row) {
-      res.status(404).json({ error: "Apartment not found" });
-    } else {
-      res.status(200).json(row);
+  try {
+    const row = stmt.get(id);
+    if (!row) {
+      return res.status(404).json({ error: "Apartment not found" });
     }
-  });
+    res.status(200).json(row);
+  } catch (err) {
+    console.error("Error fetching apartment details:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 app.post("/api/bookings", (req, res) => {
-  const { apartmentId, startDate, endDate, adult, children, room, username } =
-    req.body;
+  const { apartmentId, startDate, endDate, adult, children, room, username } = req.body;
 
-  // Log received data for verification
-  console.log("Received booking data:", req.body);
-
-  if (
-    !apartmentId ||
-    !startDate ||
-    !endDate ||
-    !adult ||
-    !children ||
-    !room ||
-    !username
-  ) {
+  if (!apartmentId || !startDate || !endDate || !adult || !children || !room || !username) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -377,30 +321,24 @@ app.post("/api/bookings", (req, res) => {
     return res.status(400).json({ error: "Invalid date format" });
   }
 
-  const query = `
+  const stmt = db.prepare(`
     INSERT INTO bookings (apartmentId, startDate, endDate, adult, children, room, username)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
+  `);
 
-  db.run(
-    query,
-    [apartmentId, startDate, endDate, adult, children, room, username],
-    function (err) {
-      if (err) {
-        console.error("Error inserting booking:", err.message);
-        return res.status(500).json({ error: "Database error" });
-      }
-      res
-        .status(200)
-        .json({ message: "Booking added successfully", id: this.lastID });
-    }
-  );
+  try {
+    const result = stmt.run(apartmentId, startDate, endDate, adult, children, room, username);
+    res.status(200).json({ message: "Booking added successfully", id: result.lastInsertRowid });
+  } catch (err) {
+    console.error("Error inserting booking:", err.message);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Get all bookings
 app.get("/api/bookings", (req, res) => {
   const { username } = req.query;
-
+  
   let query = "SELECT * FROM bookings";
   let params = [];
 
@@ -409,47 +347,46 @@ app.get("/api/bookings", (req, res) => {
     params.push(username);
   }
 
-  db.all(query, params, (err, rows) => {
-    if (err) {
-      console.error("Error fetching bookings:", err);
-      res.status(500).json({ error: "Database error" });
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  const stmt = db.prepare(query);
+
+  try {
+    const rows = stmt.all(params);
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error("Error fetching bookings:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Delete booking
 app.delete("/api/bookings/:id", (req, res) => {
   const { id } = req.params;
-  const query = "DELETE FROM bookings WHERE id = ?";
+  const stmt = db.prepare("DELETE FROM bookings WHERE id = ?");
 
-  db.run(query, [id], function (err) {
-    if (err) {
-      console.error("Error deleting booking:", err.message);
-      return res.status(500).json({ error: "Database error" });
-    }
-    if (this.changes === 0) {
+  try {
+    const result = stmt.run(id);
+    if (result.changes === 0) {
       return res.status(404).json({ error: "Booking not found" });
     }
     res.status(200).json({ message: "Booking deleted successfully" });
-  });
+  } catch (err) {
+    console.error("Error deleting booking:", err.message);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Get reviews for an apartment
 app.get("/api/apartments/:id/reviews", (req, res) => {
   const apartmentId = req.params.id;
-  db.all(
-    "SELECT * FROM Reviews WHERE apartmentId = ?",
-    [apartmentId],
-    (err, rows) => {
-      if (err) {
-        console.error("Error fetching reviews:", err.message);
-        return res.status(500).json({ error: err.message });
-      }
-      res.status(200).json(rows);
-    }
-  );
+  const stmt = db.prepare("SELECT * FROM Reviews WHERE apartmentId = ?");
+
+  try {
+    const rows = stmt.all(apartmentId);
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error("Error fetching reviews:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Add a review for an apartment
@@ -458,28 +395,24 @@ app.post("/api/apartments/:id/reviews", (req, res) => {
   const apartmentId = req.params.id;
 
   if (!kommentar || !bewertung || !benutzerId) {
-    return res
-      .status(400)
-      .json({ error: "kommentar, bewertung, and benutzerId are required" });
+    return res.status(400).json({ error: "kommentar, bewertung, and benutzerId are required" });
   }
 
-  db.run(
-    "INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)",
-    [apartmentId, benutzerId, bewertung, kommentar],
-    function (err) {
-      if (err) {
-        console.error("Error adding review:", err.message);
-        return res.status(500).json({ error: err.message });
-      }
-      res.status(201).json({
-        bewertungId: this.lastID,
-        apartmentId,
-        benutzerId,
-        bewertung,
-        kommentar,
-      });
-    }
-  );
+  const stmt = db.prepare("INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)");
+
+  try {
+    const result = stmt.run(apartmentId, benutzerId, bewertung, kommentar);
+    res.status(201).json({
+      bewertungId: result.lastInsertRowid,
+      apartmentId,
+      benutzerId,
+      bewertung,
+      kommentar,
+    });
+  } catch (err) {
+    console.error("Error adding review:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Start server
