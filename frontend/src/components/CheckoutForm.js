@@ -13,7 +13,7 @@ const CheckoutForm = () => {
 
   const handleStripeSubmit = async (e) => {
     e.preventDefault();
-    // إلغاء تنفيذ فعلي للدفع في هذه النسخة المعروضة
+    
   };
 
   return (
@@ -68,7 +68,7 @@ const CheckoutForm = () => {
                 return actions.order.create({
                   purchase_units: [{
                     amount: {
-                      value: '0.01', // قيمة الدفع
+                      value: '0.01',
                     },
                   }],
                 });
