@@ -94,7 +94,7 @@ function App() {
             }
           />
           <Route
-            path="//Payment"
+            path="/Payment"
             element={
               user ? <CheckoutForm user={user} /> : <Navigate to="/login" />
             }
