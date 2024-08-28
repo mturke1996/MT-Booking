@@ -21,6 +21,11 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
+bcrypt.hash("myPassword", 10, function (err, hash) {
+  if (err) throw err;
+  console.log(hash);
+});
+
 // Middleware to authenticate token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -168,12 +173,10 @@ app.post("/user/details", (req, res) => {
       profile_picture,
       bio
     );
-    res
-      .status(201)
-      .json({
-        message: "User details added successfully",
-        id: result.lastInsertRowid,
-      });
+    res.status(201).json({
+      message: "User details added successfully",
+      id: result.lastInsertRowid,
+    });
   } catch (err) {
     console.error("Error adding user details:", err.message);
     res.status(500).json({ message: "Internal server error" });
@@ -305,12 +308,10 @@ app.post("/api/apartments", (req, res) => {
       Beschreibung,
       Wohnungstyp
     );
-    res
-      .status(200)
-      .json({
-        message: "Apartment added successfully",
-        id: result.lastInsertRowid,
-      });
+    res.status(200).json({
+      message: "Apartment added successfully",
+      id: result.lastInsertRowid,
+    });
   } catch (err) {
     console.error("Error inserting data:", err);
     res.status(500).json({ error: "Database error" });
@@ -382,12 +383,10 @@ app.post("/api/bookings", (req, res) => {
       room,
       username
     );
-    res
-      .status(200)
-      .json({
-        message: "Booking added successfully",
-        id: result.lastInsertRowid,
-      });
+    res.status(200).json({
+      message: "Booking added successfully",
+      id: result.lastInsertRowid,
+    });
   } catch (err) {
     console.error("Error inserting booking:", err.message);
     res.status(500).json({ error: "Database error" });
