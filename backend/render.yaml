@@ -10,5 +10,5 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE_URL
-        value: your_database_url_here
+      - key: DATABASE_PATH
+        value: ./mtbookig-bank.db

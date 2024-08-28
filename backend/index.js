@@ -41,7 +41,8 @@ function authenticateToken(req, res, next) {
 }
 
 // Connect to SQLite database
-const db = new sqlite3.Database("./mtbookig-bank.db", (err) => {
+const dbPath = process.env.DATABASE_PATH || "./mtbookig-bank.db";
+const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Error opening database:", err.message);
   } else {
@@ -57,10 +58,10 @@ app.post("/register", (req, res) => {
     return res.status(400).send("Username and password are required");
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 10); // Use more secure hash rounds
+  const hashedPassword = bcrypt.hashSync(password, 10);
   const query = `INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)`;
 
-  db.run(query, [username, hashedPassword, email, name, lastname], function(err) {
+  db.run(query, [username, hashedPassword, email, name, lastname], function (err) {
     if (err) {
       console.error("Error inserting user:", err.message);
       res.status(500).send("Internal server error");
@@ -162,25 +163,21 @@ app.post("/user/details", (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(query, [
-    user_id,
-    phone,
-    birthdate,
-    profession,
-    address,
-    profile_picture,
-    bio
-  ], function(err) {
-    if (err) {
-      console.error("Error adding user details:", err.message);
-      res.status(500).json({ message: "Internal server error" });
-    } else {
-      res.status(201).json({
-        message: "User details added successfully",
-        id: this.lastID,
-      });
+  db.run(
+    query,
+    [user_id, phone, birthdate, profession, address, profile_picture, bio],
+    function (err) {
+      if (err) {
+        console.error("Error adding user details:", err.message);
+        res.status(500).json({ message: "Internal server error" });
+      } else {
+        res.status(201).json({
+          message: "User details added successfully",
+          id: this.lastID,
+        });
+      }
     }
-  });
+  );
 });
 
 // Get user details based on user_id
@@ -203,7 +200,8 @@ app.get("/user/details/:user_id", (req, res) => {
 // Update user details based on user_id in URL
 app.put("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
-  const { phone, birthdate, profession, address, profile_picture, bio } = req.body;
+  const { phone, birthdate, profession, address, profile_picture, bio } =
+    req.body;
 
   if (isNaN(userId)) {
     return res.status(400).json({ message: "Invalid User ID" });
@@ -260,7 +258,7 @@ app.delete("/user/details/:id", (req, res) => {
   const { id } = req.params;
   const query = `DELETE FROM user_details WHERE id = ?`;
 
-  db.run(query, [id], function(err) {
+  db.run(query, [id], function (err) {
     if (err) {
       console.error("Error deleting user details:", err.message);
       res.status(500).json({ error: "Database error" });
@@ -293,29 +291,33 @@ app.post("/api/apartments", (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(query, [
-    Adresse,
-    Zimmeranzahl,
-    Flaeche,
-    Miete,
-    Status,
-    img1,
-    img2,
-    img3,
-    img4,
-    Beschreibung,
-    Wohnungstyp
-  ], function(err) {
-    if (err) {
-      console.error("Error inserting data:", err.message);
-      res.status(500).json({ error: "Database error" });
-    } else {
-      res.status(200).json({
-        message: "Apartment added successfully",
-        id: this.lastID,
-      });
+  db.run(
+    query,
+    [
+      Adresse,
+      Zimmeranzahl,
+      Flaeche,
+      Miete,
+      Status,
+      img1,
+      img2,
+      img3,
+      img4,
+      Beschreibung,
+      Wohnungstyp,
+    ],
+    function (err) {
+      if (err) {
+        console.error("Error inserting apartment data:", err.message);
+        res.status(500).json({ error: "Database error" });
+      } else {
+        res.status(201).json({
+          message: "Apartment added successfully",
+          id: this.lastID,
+        });
+      }
     }
-  });
+  );
 });
 
 // Get all apartments
@@ -324,7 +326,7 @@ app.get("/api/apartments", (req, res) => {
 
   db.all(query, [], (err, rows) => {
     if (err) {
-      console.error("Error fetching data:", err.message);
+      console.error("Error fetching apartments:", err.message);
       res.status(500).json({ error: "Database error" });
     } else {
       res.status(200).json(rows);
@@ -351,7 +353,8 @@ app.get("/api/apartments/:id", (req, res) => {
 
 // Add a booking
 app.post("/api/bookings", (req, res) => {
-  const { apartmentId, startDate, endDate, adult, children, room, username } = req.body;
+  const { apartmentId, startDate, endDate, adult, children, room, username } =
+    req.body;
 
   if (!apartmentId || !startDate || !endDate || !adult || !children || !room || !username) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -366,25 +369,21 @@ app.post("/api/bookings", (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(query, [
-    apartmentId,
-    startDate,
-    endDate,
-    adult,
-    children,
-    room,
-    username
-  ], function(err) {
-    if (err) {
-      console.error("Error inserting booking:", err.message);
-      res.status(500).json({ error: "Database error" });
-    } else {
-      res.status(200).json({
-        message: "Booking added successfully",
-        id: this.lastID,
-      });
+  db.run(
+    query,
+    [apartmentId, startDate, endDate, adult, children, room, username],
+    function (err) {
+      if (err) {
+        console.error("Error inserting booking:", err.message);
+        res.status(500).json({ error: "Database error" });
+      } else {
+        res.status(201).json({
+          message: "Booking added successfully",
+          id: this.lastID,
+        });
+      }
     }
-  });
+  );
 });
 
 // Get all bookings
@@ -414,7 +413,7 @@ app.delete("/api/bookings/:id", (req, res) => {
   const { id } = req.params;
   const query = `DELETE FROM bookings WHERE id = ?`;
 
-  db.run(query, [id], function(err) {
+  db.run(query, [id], function (err) {
     if (err) {
       console.error("Error deleting booking:", err.message);
       res.status(500).json({ error: "Database error" });
@@ -434,7 +433,7 @@ app.get("/api/apartments/:id/reviews", (req, res) => {
   db.all(query, [apartmentId], (err, rows) => {
     if (err) {
       console.error("Error fetching reviews:", err.message);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: "Database error" });
     } else {
       res.status(200).json(rows);
     }
@@ -447,32 +446,29 @@ app.post("/api/apartments/:id/reviews", (req, res) => {
   const apartmentId = req.params.id;
 
   if (!kommentar || !bewertung || !benutzerId) {
-    return res
-      .status(400)
-      .json({ error: "kommentar, bewertung, and benutzerId are required" });
+    return res.status(400).json({ error: "kommentar, bewertung, and benutzerId are required" });
   }
 
   const query = `INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)`;
 
-  db.run(query, [
-    apartmentId,
-    benutzerId,
-    bewertung,
-    kommentar
-  ], function(err) {
-    if (err) {
-      console.error("Error adding review:", err.message);
-      res.status(500).json({ error: err.message });
-    } else {
-      res.status(201).json({
-        bewertungId: this.lastID,
-        apartmentId,
-        benutzerId,
-        bewertung,
-        kommentar,
-      });
+  db.run(
+    query,
+    [apartmentId, benutzerId, bewertung, kommentar],
+    function (err) {
+      if (err) {
+        console.error("Error adding review:", err.message);
+        res.status(500).json({ error: "Database error" });
+      } else {
+        res.status(201).json({
+          bewertungId: this.lastID,
+          apartmentId,
+          benutzerId,
+          bewertung,
+          kommentar,
+        });
+      }
     }
-  });
+  );
 });
 
 // Start server
