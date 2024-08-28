@@ -41,7 +41,7 @@ function authenticateToken(req, res, next) {
 }
 
 // Connect to SQLite database
-const dbPath = process.env.DATABASE_PATH || "./mtbookig-bank.db";
+const dbPath = "./mtbookig-bank.db";
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Error opening database:", err.message);
@@ -61,14 +61,18 @@ app.post("/register", (req, res) => {
   const hashedPassword = bcrypt.hashSync(password, 10);
   const query = `INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)`;
 
-  db.run(query, [username, hashedPassword, email, name, lastname], function (err) {
-    if (err) {
-      console.error("Error inserting user:", err.message);
-      res.status(500).send("Internal server error");
-    } else {
-      res.json({ id: this.lastID, username });
+  db.run(
+    query,
+    [username, hashedPassword, email, name, lastname],
+    function (err) {
+      if (err) {
+        console.error("Error inserting user:", err.message);
+        res.status(500).send("Internal server error");
+      } else {
+        res.json({ id: this.lastID, username });
+      }
     }
-  });
+  );
 });
 
 // Login
@@ -356,7 +360,15 @@ app.post("/api/bookings", (req, res) => {
   const { apartmentId, startDate, endDate, adult, children, room, username } =
     req.body;
 
-  if (!apartmentId || !startDate || !endDate || !adult || !children || !room || !username) {
+  if (
+    !apartmentId ||
+    !startDate ||
+    !endDate ||
+    !adult ||
+    !children ||
+    !room ||
+    !username
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -446,7 +458,9 @@ app.post("/api/apartments/:id/reviews", (req, res) => {
   const apartmentId = req.params.id;
 
   if (!kommentar || !bewertung || !benutzerId) {
-    return res.status(400).json({ error: "kommentar, bewertung, and benutzerId are required" });
+    return res
+      .status(400)
+      .json({ error: "kommentar, bewertung, and benutzerId are required" });
   }
 
   const query = `INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)`;
