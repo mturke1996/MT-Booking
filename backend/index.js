@@ -6,7 +6,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const app = express();
-const Port = 5000;
+// Use the PORT environment variable or default to 5000 for local development
+const PORT = process.env.PORT || 5000;
 
 // Simple JWT secret key
 const secretKey = "my_simple_secret";
@@ -48,6 +49,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
   } else {
     console.log("Connected to the SQLite database.");
   }
+});
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the backend!');
 });
 
 // Register a new user
@@ -252,240 +257,34 @@ app.put("/user/details/:user_id", (req, res) => {
       console.error("Error updating user details:", err.message);
       res.status(500).json({ message: "Internal server error" });
     } else {
-      res.json({ message: "User details updated successfully" });
+      res.status(200).json({ message: "User details updated successfully" });
     }
   });
 });
 
-// Delete user details
-app.delete("/user/details/:id", (req, res) => {
-  const { id } = req.params;
-  const query = `DELETE FROM user_details WHERE id = ?`;
+// Delete user based on user_id
+app.delete("/user/:user_id", (req, res) => {
+  const userId = parseInt(req.params.user_id, 10);
 
-  db.run(query, [id], function (err) {
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: "Invalid user ID" });
+  }
+
+  const query = `DELETE FROM users WHERE id = ?`;
+
+  db.run(query, [userId], function (err) {
     if (err) {
-      console.error("Error deleting user details:", err.message);
-      res.status(500).json({ error: "Database error" });
+      console.error("Error deleting user:", err.message);
+      res.status(500).json({ message: "Internal server error" });
     } else if (this.changes === 0) {
-      res.status(404).json({ error: "User details not found" });
+      res.status(404).json({ message: "User not found" });
     } else {
-      res.status(200).json({ message: "User details deleted successfully" });
+      res.status(200).json({ message: "User deleted successfully" });
     }
   });
 });
 
-// Add a new apartment
-app.post("/api/apartments", (req, res) => {
-  const {
-    Adresse,
-    Zimmeranzahl,
-    "Fläche (m²)": Flaeche,
-    "Monatliche Miete": Miete,
-    Status,
-    img1,
-    img2,
-    img3,
-    img4,
-    Beschreibung,
-    Wohnungstyp,
-  } = req.body;
-
-  const query = `
-    INSERT INTO Wohnungen (Adresse, Zimmeranzahl, "Fläche (m²)", "Monatliche Miete", Status, img1, img2, img3, img4, Beschreibung, Wohnungstyp)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.run(
-    query,
-    [
-      Adresse,
-      Zimmeranzahl,
-      Flaeche,
-      Miete,
-      Status,
-      img1,
-      img2,
-      img3,
-      img4,
-      Beschreibung,
-      Wohnungstyp,
-    ],
-    function (err) {
-      if (err) {
-        console.error("Error inserting apartment data:", err.message);
-        res.status(500).json({ error: "Database error" });
-      } else {
-        res.status(201).json({
-          message: "Apartment added successfully",
-          id: this.lastID,
-        });
-      }
-    }
-  );
-});
-
-// Get all apartments
-app.get("/api/apartments", (req, res) => {
-  const query = `SELECT * FROM Wohnungen`;
-
-  db.all(query, [], (err, rows) => {
-    if (err) {
-      console.error("Error fetching apartments:", err.message);
-      res.status(500).json({ error: "Database error" });
-    } else {
-      res.status(200).json(rows);
-    }
-  });
-});
-
-// Get apartment details by ID
-app.get("/api/apartments/:id", (req, res) => {
-  const { id } = req.params;
-  const query = `SELECT * FROM Wohnungen WHERE "Wohnungs-ID" = ?`;
-
-  db.get(query, [id], (err, row) => {
-    if (err) {
-      console.error("Error fetching apartment details:", err.message);
-      res.status(500).json({ error: "Database error" });
-    } else if (!row) {
-      res.status(404).json({ error: "Apartment not found" });
-    } else {
-      res.status(200).json(row);
-    }
-  });
-});
-
-// Add a booking
-app.post("/api/bookings", (req, res) => {
-  const { apartmentId, startDate, endDate, adult, children, room, username } =
-    req.body;
-
-  if (
-    !apartmentId ||
-    !startDate ||
-    !endDate ||
-    !adult ||
-    !children ||
-    !room ||
-    !username
-  ) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  if (isNaN(Date.parse(startDate)) || isNaN(Date.parse(endDate))) {
-    return res.status(400).json({ error: "Invalid date format" });
-  }
-
-  const query = `
-    INSERT INTO bookings (apartmentId, startDate, endDate, adult, children, room, username)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.run(
-    query,
-    [apartmentId, startDate, endDate, adult, children, room, username],
-    function (err) {
-      if (err) {
-        console.error("Error inserting booking:", err.message);
-        res.status(500).json({ error: "Database error" });
-      } else {
-        res.status(201).json({
-          message: "Booking added successfully",
-          id: this.lastID,
-        });
-      }
-    }
-  );
-});
-
-// Get all bookings
-app.get("/api/bookings", (req, res) => {
-  const { username } = req.query;
-
-  let query = "SELECT * FROM bookings";
-  let params = [];
-
-  if (username) {
-    query += " WHERE username = ?";
-    params.push(username);
-  }
-
-  db.all(query, params, (err, rows) => {
-    if (err) {
-      console.error("Error fetching bookings:", err.message);
-      res.status(500).json({ error: "Database error" });
-    } else {
-      res.status(200).json(rows);
-    }
-  });
-});
-
-// Delete booking
-app.delete("/api/bookings/:id", (req, res) => {
-  const { id } = req.params;
-  const query = `DELETE FROM bookings WHERE id = ?`;
-
-  db.run(query, [id], function (err) {
-    if (err) {
-      console.error("Error deleting booking:", err.message);
-      res.status(500).json({ error: "Database error" });
-    } else if (this.changes === 0) {
-      res.status(404).json({ error: "Booking not found" });
-    } else {
-      res.status(200).json({ message: "Booking deleted successfully" });
-    }
-  });
-});
-
-// Get reviews for an apartment
-app.get("/api/apartments/:id/reviews", (req, res) => {
-  const apartmentId = req.params.id;
-  const query = `SELECT * FROM Reviews WHERE apartmentId = ?`;
-
-  db.all(query, [apartmentId], (err, rows) => {
-    if (err) {
-      console.error("Error fetching reviews:", err.message);
-      res.status(500).json({ error: "Database error" });
-    } else {
-      res.status(200).json(rows);
-    }
-  });
-});
-
-// Add a review for an apartment
-app.post("/api/apartments/:id/reviews", (req, res) => {
-  const { kommentar, bewertung, benutzerId } = req.body;
-  const apartmentId = req.params.id;
-
-  if (!kommentar || !bewertung || !benutzerId) {
-    return res
-      .status(400)
-      .json({ error: "kommentar, bewertung, and benutzerId are required" });
-  }
-
-  const query = `INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)`;
-
-  db.run(
-    query,
-    [apartmentId, benutzerId, bewertung, kommentar],
-    function (err) {
-      if (err) {
-        console.error("Error adding review:", err.message);
-        res.status(500).json({ error: "Database error" });
-      } else {
-        res.status(201).json({
-          bewertungId: this.lastID,
-          apartmentId,
-          benutzerId,
-          bewertung,
-          kommentar,
-        });
-      }
-    }
-  );
-});
-
-// Start server
-app.listen(Port, () => {
-  console.log(`Server running at http://localhost:${Port}/`);
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
