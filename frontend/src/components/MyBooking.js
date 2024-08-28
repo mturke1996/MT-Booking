@@ -10,7 +10,7 @@ const MyBooking = ({ user }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/bookings")
+      .get("https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/bookings")
       .then((response) => {
         setBookings(response.data);
       })
@@ -30,7 +30,7 @@ const MyBooking = ({ user }) => {
         try {
           const responses = await Promise.all(
             apartmentIds.map((id) =>
-              axios.get(`http://localhost:5000/api/apartments/${id}`)
+              axios.get(`https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/apartments/${id}`)
             )
           );
           const apartmentsData = responses.reduce((acc, response) => {
@@ -50,7 +50,7 @@ const MyBooking = ({ user }) => {
 
   const handleDelete = async (bookingId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`);
+      await axios.delete(`https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/bookings/${bookingId}`);
       setFilteredBookings(filteredBookings.filter((b) => b.id !== bookingId));
     } catch (error) {
       console.error("Error deleting booking:", error);

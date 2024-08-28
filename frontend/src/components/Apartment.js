@@ -10,7 +10,7 @@ export default function Apartment() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/apartments")
+      .get("https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/apartments")
       .then((response) => {
         const allApartments = response.data;
         const selectedIndices = [0, 3, 4, 6, 12, 14];

@@ -28,7 +28,7 @@ function List() {
     setIsLoading(true);
     setError(null);
 
-    fetch(`http://localhost:5000/api/apartments`)
+    fetch(`https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/apartments`)
       .then((response) => response.json())
       .then((data) => {
         const filteredData = data.filter((apartment) =>

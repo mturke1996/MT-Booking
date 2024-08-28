@@ -55,6 +55,10 @@ app.get('/', (req, res) => {
   res.send('Welcome to the backend!');
 });
 
+app.get('/api/example', (req, res) => {
+  res.json({ message: 'Hello from example endpoint' });
+});
+
 // Register a new user
 app.post("/register", (req, res) => {
   const { username, password, email, name, lastname } = req.body;
