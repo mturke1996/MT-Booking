@@ -1,0 +1,21 @@
+# Exported from Render on 2024-08-28T16:49:26Z
+services:
+- type: web
+  name: MT-Booking
+  runtime: node
+  repo: https://github.com/mturke1996/MT-Booking
+  plan: free
+  envVars:
+  - key: DB_NAME
+    sync: false
+  - key: DB_PASSWORD
+    sync: false
+  - key: DB_USER
+    sync: false
+  - key: DB_HOST
+    sync: false
+  region: oregon
+  buildCommand: yarn
+  startCommand: node index.js
+  rootDir: server
+version: "1"
