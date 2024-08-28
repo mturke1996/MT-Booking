@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const Database = require("better-sqlite3");
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const app = express();
@@ -48,8 +48,10 @@ app.post("/register", (req, res) => {
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10); // Use more secure hash rounds
-  const stmt = db.prepare("INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)");
-  
+  const stmt = db.prepare(
+    "INSERT INTO users (username, password, email, name, lastname) VALUES (?, ?, ?, ?, ?)"
+  );
+
   try {
     const result = stmt.run(username, hashedPassword, email, name, lastname);
     res.json({ id: result.lastInsertRowid, username });
@@ -68,7 +70,7 @@ app.post("/login", (req, res) => {
   }
 
   const stmt = db.prepare("SELECT * FROM users WHERE username = ?");
-  
+
   try {
     const user = stmt.get(username);
     if (!user) {
@@ -77,7 +79,11 @@ app.post("/login", (req, res) => {
 
     const isValid = bcrypt.compareSync(password, user.password);
     if (isValid) {
-      const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: "1h" });
+      const token = jwt.sign(
+        { id: user.id, username: user.username },
+        secretKey,
+        { expiresIn: "1h" }
+      );
       res.json({ message: "You are successfully logged in", token });
     } else {
       res.status(400).send("Invalid username or password");
@@ -91,8 +97,10 @@ app.post("/login", (req, res) => {
 // Get user data based on token
 app.get("/user", authenticateToken, (req, res) => {
   const userId = req.user.id;
-  const stmt = db.prepare("SELECT id, username, email, name, lastname FROM users WHERE id = ?");
-  
+  const stmt = db.prepare(
+    "SELECT id, username, email, name, lastname FROM users WHERE id = ?"
+  );
+
   try {
     const user = stmt.get(userId);
     if (!user) {
@@ -113,8 +121,10 @@ app.get("/user/:user_id", (req, res) => {
     return res.status(400).json({ message: "Invalid user ID" });
   }
 
-  const stmt = db.prepare("SELECT id, username, email, name, lastname FROM users WHERE id = ?");
-  
+  const stmt = db.prepare(
+    "SELECT id, username, email, name, lastname FROM users WHERE id = ?"
+  );
+
   try {
     const user = stmt.get(userId);
     if (!user) {
@@ -129,7 +139,15 @@ app.get("/user/:user_id", (req, res) => {
 
 // Add new user details based on user_id
 app.post("/user/details", (req, res) => {
-  const { user_id, phone, birthdate, profession, address, profile_picture, bio } = req.body;
+  const {
+    user_id,
+    phone,
+    birthdate,
+    profession,
+    address,
+    profile_picture,
+    bio,
+  } = req.body;
 
   if (!user_id) {
     return res.status(400).json({ message: "User ID is required" });
@@ -141,8 +159,21 @@ app.post("/user/details", (req, res) => {
   `);
 
   try {
-    const result = stmt.run(user_id, phone, birthdate, profession, address, profile_picture, bio);
-    res.status(201).json({ message: "User details added successfully", id: result.lastInsertRowid });
+    const result = stmt.run(
+      user_id,
+      phone,
+      birthdate,
+      profession,
+      address,
+      profile_picture,
+      bio
+    );
+    res
+      .status(201)
+      .json({
+        message: "User details added successfully",
+        id: result.lastInsertRowid,
+      });
   } catch (err) {
     console.error("Error adding user details:", err.message);
     res.status(500).json({ message: "Internal server error" });
@@ -153,7 +184,7 @@ app.post("/user/details", (req, res) => {
 app.get("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
   const stmt = db.prepare("SELECT * FROM user_details WHERE user_id = ?");
-  
+
   try {
     const row = stmt.get(userId);
     if (!row) {
@@ -169,7 +200,8 @@ app.get("/user/details/:user_id", (req, res) => {
 // Update user details based on user_id in URL
 app.put("/user/details/:user_id", (req, res) => {
   const userId = parseInt(req.params.user_id, 10);
-  const { phone, birthdate, profession, address, profile_picture, bio } = req.body;
+  const { phone, birthdate, profession, address, profile_picture, bio } =
+    req.body;
 
   if (isNaN(userId)) {
     return res.status(400).json({ message: "Invalid User ID" });
@@ -273,7 +305,12 @@ app.post("/api/apartments", (req, res) => {
       Beschreibung,
       Wohnungstyp
     );
-    res.status(200).json({ message: "Apartment added successfully", id: result.lastInsertRowid });
+    res
+      .status(200)
+      .json({
+        message: "Apartment added successfully",
+        id: result.lastInsertRowid,
+      });
   } catch (err) {
     console.error("Error inserting data:", err);
     res.status(500).json({ error: "Database error" });
@@ -311,9 +348,18 @@ app.get("/api/apartments/:id", (req, res) => {
 });
 
 app.post("/api/bookings", (req, res) => {
-  const { apartmentId, startDate, endDate, adult, children, room, username } = req.body;
+  const { apartmentId, startDate, endDate, adult, children, room, username } =
+    req.body;
 
-  if (!apartmentId || !startDate || !endDate || !adult || !children || !room || !username) {
+  if (
+    !apartmentId ||
+    !startDate ||
+    !endDate ||
+    !adult ||
+    !children ||
+    !room ||
+    !username
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -327,8 +373,21 @@ app.post("/api/bookings", (req, res) => {
   `);
 
   try {
-    const result = stmt.run(apartmentId, startDate, endDate, adult, children, room, username);
-    res.status(200).json({ message: "Booking added successfully", id: result.lastInsertRowid });
+    const result = stmt.run(
+      apartmentId,
+      startDate,
+      endDate,
+      adult,
+      children,
+      room,
+      username
+    );
+    res
+      .status(200)
+      .json({
+        message: "Booking added successfully",
+        id: result.lastInsertRowid,
+      });
   } catch (err) {
     console.error("Error inserting booking:", err.message);
     res.status(500).json({ error: "Database error" });
@@ -338,7 +397,7 @@ app.post("/api/bookings", (req, res) => {
 // Get all bookings
 app.get("/api/bookings", (req, res) => {
   const { username } = req.query;
-  
+
   let query = "SELECT * FROM bookings";
   let params = [];
 
@@ -395,10 +454,14 @@ app.post("/api/apartments/:id/reviews", (req, res) => {
   const apartmentId = req.params.id;
 
   if (!kommentar || !bewertung || !benutzerId) {
-    return res.status(400).json({ error: "kommentar, bewertung, and benutzerId are required" });
+    return res
+      .status(400)
+      .json({ error: "kommentar, bewertung, and benutzerId are required" });
   }
 
-  const stmt = db.prepare("INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)");
+  const stmt = db.prepare(
+    "INSERT INTO Reviews (apartmentId, benutzerId, bewertung, kommentar) VALUES (?, ?, ?, ?)"
+  );
 
   try {
     const result = stmt.run(apartmentId, benutzerId, bewertung, kommentar);
