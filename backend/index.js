@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const sqlite3 = require("sqlite3").verbose();
+const Database = require("better-sqlite3");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -42,13 +42,7 @@ function authenticateToken(req, res, next) {
 
 // Connect to SQLite database
 const dbPath = process.env.DATABASE_PATH || "./mtbookig-bank.db";
-const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
-  if (err) {
-    console.error("Error opening database:", err.message);
-  } else {
-    console.log("Connected to the SQLite database.");
-  }
-});
+const db = new Database(dbPath, { verbose: console.log });
 
 // Register a new user
 app.post("/register", (req, res) => {
