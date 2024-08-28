@@ -11,7 +11,7 @@ const ApartmentCard = ({ id }) => {
 
   useEffect(() => {
     if (id) {
-      axios.get(`https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/apartments/${id}`)
+      axios.get(`http://localhost:5000/api/apartments/${id}`)
         .then(response => {
           console.log('Fetched apartment:', response.data); 
           setApartment(response.data);

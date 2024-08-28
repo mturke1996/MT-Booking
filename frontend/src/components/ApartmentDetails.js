@@ -34,7 +34,7 @@ const ApartmentDetails = () => {
 
   useEffect(() => {
     axios
-      .get(`https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/apartments/${id}`)
+      .get(`http://localhost:5000/api/apartments/${id}`)
       .then((response) => {
         setApartment(response.data);
         setImages([
@@ -60,7 +60,7 @@ const ApartmentDetails = () => {
     }
 
     axios
-      .post("https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/bookings", {
+      .post("http://localhost:5000/api/bookings", {
         apartmentId: id,
         username: user.username,
         startDate: format(date[0].startDate, "yyyy-MM-dd"),

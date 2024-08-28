@@ -479,4 +479,4 @@ app.post("/api/apartments/:id/reviews", (req, res) => {
 app.listen(Port, () => {
   console.log(`Server running at http://localhost:${Port}/`);
 });
-module.exports = app;
+

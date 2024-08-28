@@ -10,7 +10,7 @@ const MyBooking = ({ user }) => {
 
   useEffect(() => {
     axios
-      .get("https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/bookings")
+      .get("http://localhost:5000/api/bookings")
       .then((response) => {
         setBookings(response.data);
       })
@@ -30,7 +30,7 @@ const MyBooking = ({ user }) => {
         try {
           const responses = await Promise.all(
             apartmentIds.map((id) =>
-              axios.get(`https://mt-booking-backend-j8zefnd77-mturke1996s-projects.vercel.app/api/apartments/${id}`)
+              axios.get(`http://localhost:5000/api/apartments/${id}`)
             )
           );
           const apartmentsData = responses.reduce((acc, response) => {
