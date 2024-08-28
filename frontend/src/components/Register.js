@@ -15,7 +15,7 @@ export default function Register() {
 
   const register = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/register", {
+      const response = await axios.post("https://mt-booking.onrender.com/register", {
         username,
         password,
         name,

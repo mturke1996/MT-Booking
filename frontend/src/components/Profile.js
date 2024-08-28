@@ -23,7 +23,7 @@ export default function Profile({ user }) {
   useEffect(() => {
     if (user) {
       axios
-        .get(`http://localhost:5000/users/${user.Id}`)
+        .get(`https://mt-booking.onrender.com/users/${user.Id}`)
         .then((response) => {
           setUserData(response.data);
         })
@@ -40,7 +40,7 @@ export default function Profile({ user }) {
   useEffect(() => {
     if (user) {
       axios
-        .get(`http://localhost:5000/user/details/${user.id}`)
+        .get(`https://mt-booking.onrender.com/user/details/${user.id}`)
         .then((response) => {
           setProfileData(response.data);
         })
@@ -59,7 +59,7 @@ export default function Profile({ user }) {
 
     if (isEditing) {
       axios
-        .put(`http://localhost:5000/user/details/${user.id}`, profileData)
+        .put(`https://mt-booking.onrender.com/user/details/${user.id}`, profileData)
         .then((response) => {
           setProfileData(response.data);
           setIsEditing(false);
@@ -81,7 +81,7 @@ export default function Profile({ user }) {
 
     if (isAddingNew) {
       axios
-        .post("http://localhost:5000/user/details", {
+        .post("https://mt-booking.onrender.com/user/details", {
           ...profileData,
           user_id: user.id,
         })

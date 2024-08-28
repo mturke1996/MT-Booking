@@ -10,7 +10,7 @@ export default function Login({ setToken, setUser }) {
 
   const login = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/login", {
+      const response = await axios.post("https://mt-booking.onrender.com/login", {
         username,
         password,
       });
@@ -23,7 +23,7 @@ export default function Login({ setToken, setUser }) {
       setToken(token);
 
       // استدعاء API للحصول على بيانات المستخدم بعد تسجيل الدخول
-      const userResponse = await axios.get("http://localhost:5000/user", {
+      const userResponse = await axios.get("https://mt-booking.onrender.com/user", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

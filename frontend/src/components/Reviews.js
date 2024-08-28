@@ -12,7 +12,7 @@ const Reviews = ({ apartmentId }) => {
     setUser(storedUser);
 
     // جلب التقييمات من الخادم
-    axios.get(`http://localhost:5000/api/apartments/${apartmentId}/reviews`)
+    axios.get(`https://mt-booking.onrender.com/api/apartments/${apartmentId}/reviews`)
       .then(response => {
         setReviews(response.data);
       })
@@ -29,7 +29,7 @@ const Reviews = ({ apartmentId }) => {
       return;
     }
 
-    axios.post(`http://localhost:5000/api/apartments/${apartmentId}/reviews`, {
+    axios.post(`https://mt-booking.onrender.com/api/apartments/${apartmentId}/reviews`, {
       benutzerId: user.username, // استخدام اسم المستخدم مباشرة من user
       bewertung: newReview.bewertung,
       kommentar: newReview.kommentar
