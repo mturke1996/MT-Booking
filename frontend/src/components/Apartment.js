@@ -12,14 +12,7 @@ const Apartment = () => {
     const fetchApartments = async () => {
       try {
         const response = await axios.get("https://mt-booking.onrender.com/api/apartments");
-        const allApartments = response.data;
-
-        if (Array.isArray(allApartments)) {
-          // Set all retrieved apartments to state
-          setApartments(allApartments);
-        } else {
-          console.warn("API returned unexpected data format.");
-        }
+        setApartments(response.data);
       } catch (error) {
         console.error("Error fetching apartments:", error);
         setError("Error fetching apartments. Please try again later.");
@@ -50,7 +43,7 @@ const Apartment = () => {
           {apartments.length > 0 ? (
             apartments.map((apartment) => (
               <div key={apartment._id} className="custom-col-4">
-                <ApartmentCard apartment={apartment} />
+                <ApartmentCard id={apartment._id} />
               </div>
             ))
           ) : (
