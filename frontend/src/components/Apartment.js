@@ -14,16 +14,26 @@ export default function Apartment() {
         const response = await axios.get("https://mt-booking.onrender.com/api/apartments");
         const allApartments = response.data;
 
-        // Check if allApartments is an array and has at least 15 items
-        if (Array.isArray(allApartments) && allApartments.length >= 15) {
-          const selectedIndices = ["66d063be1e5fee2817f80d8b", "66d063e01e5fee2817f80d8f", "66d063f61e5fee2817f80d93", "66d064fe1e5fee2817f80dbb", "66d0658b1e5fee2817f80dcf", "66d065ea1e5fee2817f80de1"];
-          const selectedApartments = selectedIndices
-            .filter(index => index < allApartments.length)
-            .map(index => allApartments[index]);
+        // Check if allApartments is an array
+        if (Array.isArray(allApartments)) {
+          // Define the selected IDs
+          const selectedIndices = [
+            "66d063be1e5fee2817f80d8b",
+            "66d063e01e5fee2817f80d8f",
+            "66d063f61e5fee2817f80d93",
+            "66d064fe1e5fee2817f80dbb",
+            "66d0658b1e5fee2817f80dcf",
+            "66d065ea1e5fee2817f80de1"
+          ];
+
+          // Filter apartments by ID
+          const selectedApartments = allApartments.filter(apartment =>
+            selectedIndices.includes(apartment._id)
+          );
 
           setApartments(selectedApartments);
         } else {
-          console.warn("API returned unexpected data or insufficient data.");
+          console.warn("API returned unexpected data format.");
         }
       } catch (error) {
         console.error("Error fetching apartments:", error);
