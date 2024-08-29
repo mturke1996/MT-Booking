@@ -52,36 +52,24 @@ export default function Apartment() {
         <div className="custom-row">
           {apartments.length > 0 ? (
             <>
-              {apartments[0] && (
-                <div className="custom-col-4">
-                  <ApartmentCard apartment={apartments[0]} />
-                </div>
-              )}
-              {apartments[1] && (
-                <div className="custom-col-4">
-                  <ApartmentCard apartment={apartments[1]} />
-                </div>
-              )}
-              {apartments[2] && (
-                <div className="custom-col-4">
-                  <ApartmentCard apartment={apartments[2]} />
-                </div>
-              )}
-              {apartments[3] && (
-                <div className="custom-col-4">
-                  <ApartmentCard apartment={apartments[3]} />
-                </div>
-              )}
-              {apartments[4] && (
-                <div className="custom-col-4">
-                  <ApartmentCard apartment={apartments[4]} />
-                </div>
-              )}
-              {apartments[5] && (
-                <div className="custom-col-4">
-                  <ApartmentCard apartment={apartments[5]} />
-                </div>
-              )}
+              <div className="custom-col-4">
+                <ApartmentCard apartment={apartments[0]} />
+              </div>
+              <div className="custom-col-4">
+                <ApartmentCard apartment={apartments[1]} />
+              </div>
+              <div className="custom-col-4">
+                <ApartmentCard apartment={apartments[2]} />
+              </div>
+              <div className="custom-col-4">
+                <ApartmentCard apartment={apartments[3]} />
+              </div>
+              <div className="custom-col-4">
+                <ApartmentCard apartment={apartments[4]} />
+              </div>
+              <div className="custom-col-4">
+                <ApartmentCard apartment={apartments[5]} />
+              </div>
             </>
           ) : (
             <div>No apartments available</div>
