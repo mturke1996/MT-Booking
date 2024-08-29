@@ -7,38 +7,21 @@ export default function Apartment() {
   const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchApartments = async () => {
       try {
-        const response = await axios.get(
-          "https://mt-booking.onrender.com/api/apartments"
-        );
-        console.log("API Response:", response.data); // Debugging line to inspect the response
+        const response = await axios.get("https://mt-booking.onrender.com/api/apartments");
         const allApartments = response.data;
 
-        // Check if allApartments is an array
-        if (Array.isArray(allApartments)) {
-          console.log("Number of Apartments:", allApartments.length); // Debugging line to check the number of items
+        if (Array.isArray(allApartments) && allApartments.length > 0) {
+          // Shuffle the array and select the first 6 apartments
+          const shuffledApartments = allApartments.sort(() => 0.5 - Math.random());
+          const selectedApartments = shuffledApartments.slice(0, 6);
 
-          // Define the selected IDs
-          const selectedIndices = [
-            "66d063be1e5fee2817f80d8b",
-            "66d063e01e5fee2817f80d8f",
-            "66d063f61e5fee2817f80d93",
-            "66d064fe1e5fee2817f80dbb",
-            "66d0658b1e5fee2817f80dcf",
-            "66d065ea1e5fee2817f80de1",
-          ];
-
-          // Filter apartments by ID
-          const selectedApartments = allApartments.filter((apartment) =>
-            selectedIndices.includes(apartment._id)
-          );
-
-          console.log("Selected Apartments:", selectedApartments); // Debugging line to check filtered apartments
           setApartments(selectedApartments);
         } else {
-          console.warn("API returned unexpected data format.");
+          console.warn("API returned unexpected data format or no data.");
         }
       } catch (error) {
         console.error("Error fetching apartments:", error);
@@ -68,11 +51,38 @@ export default function Apartment() {
         </div>
         <div className="custom-row">
           {apartments.length > 0 ? (
-            apartments.map((apartment) => (
-              <div key={apartment._id} className="custom-col-4">
-                <ApartmentCard apartment={apartment} />
-              </div>
-            ))
+            <>
+              {apartments[0] && (
+                <div className="custom-col-4">
+                  <ApartmentCard apartment={apartments[0]} />
+                </div>
+              )}
+              {apartments[1] && (
+                <div className="custom-col-4">
+                  <ApartmentCard apartment={apartments[1]} />
+                </div>
+              )}
+              {apartments[2] && (
+                <div className="custom-col-4">
+                  <ApartmentCard apartment={apartments[2]} />
+                </div>
+              )}
+              {apartments[3] && (
+                <div className="custom-col-4">
+                  <ApartmentCard apartment={apartments[3]} />
+                </div>
+              )}
+              {apartments[4] && (
+                <div className="custom-col-4">
+                  <ApartmentCard apartment={apartments[4]} />
+                </div>
+              )}
+              {apartments[5] && (
+                <div className="custom-col-4">
+                  <ApartmentCard apartment={apartments[5]} />
+                </div>
+              )}
+            </>
           ) : (
             <div>No apartments available</div>
           )}
