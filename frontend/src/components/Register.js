@@ -11,9 +11,18 @@ export default function Register() {
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState(""); // إضافة حالة لتخزين رسائل الخطأ
   const navigate = useNavigate();
 
-  const register = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // منع إعادة تحميل الصفحة عند الإرسال
+
+    // التحقق من صحة البيانات
+    if (!username || !password || !name || !lastname || !email) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
     try {
       const response = await axios.post("https://mt-booking.onrender.com/register", {
         username,
@@ -26,7 +35,7 @@ export default function Register() {
       navigate("/login");
     } catch (error) {
       console.error("Registration error:", error);
-      alert("Registration failed, please try again.");
+      setError("Registration failed. Please try again.");
     }
   };
 
@@ -34,44 +43,47 @@ export default function Register() {
     <div className="register-container">
       <div className="register-box">
         <h2>Register</h2>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          aria-label="Username"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          aria-label="Password"
-        />
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="First name"
-          aria-label="First name"
-        />
-        <input
-          type="text"
-          value={lastname}
-          onChange={(e) => setLastname(e.target.value)}
-          placeholder="Last name"
-          aria-label="Last name"
-        />
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          aria-label="Email"
-        />
-        <button onClick={register} className="register-button">
-          Register
-        </button>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            aria-label="Username"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            aria-label="Password"
+          />
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="First name"
+            aria-label="First name"
+          />
+          <input
+            type="text"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
+            placeholder="Last name"
+            aria-label="Last name"
+          />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            aria-label="Email"
+          />
+          {error && <p className="error-message">{error}</p>} {/* عرض رسالة الخطأ */}
+          <button type="submit" className="register-button">
+            Register
+          </button>
+        </form>
       </div>
     </div>
   );

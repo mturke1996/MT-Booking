@@ -6,9 +6,22 @@ import "../App.css";
 export default function Login({ setToken, setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // إضافة حالة لتخزين رسائل الخطأ
+  const [loading, setLoading] = useState(false); // حالة لتحميل المستخدم
   const navigate = useNavigate();
 
-  const login = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // منع إعادة تحميل الصفحة عند الإرسال
+
+    // التحقق من صحة البيانات
+    if (!username || !password) {
+      setError("Please enter both username and password.");
+      return;
+    }
+
+    setLoading(true);
+    setError(""); // مسح الرسالة السابقة
+
     try {
       const response = await axios.post("https://mt-booking.onrender.com/login", {
         username,
@@ -29,13 +42,14 @@ export default function Login({ setToken, setUser }) {
 
       setUser(userResponse.data); // تخزين بيانات المستخدم في الحالة
 
-    
       localStorage.setItem("user", JSON.stringify(userResponse.data));
 
       navigate("/"); 
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login failed, please try again.");
+      setError("Login failed. Please try again."); // تعيين رسالة الخطأ
+    } finally {
+      setLoading(false); // إيقاف التحميل بعد الانتهاء
     }
   };
 
@@ -47,29 +61,32 @@ export default function Login({ setToken, setUser }) {
         >
           Login
         </h4>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          aria-label="Username"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          aria-label="Password"
-        />
-        <button onClick={login} className="login-button">
-          Login
-        </button>
-        <p className="register-link" style={{ color: "black" }}>
-          Don't have an account?{" "}
-          <Link to="/register" style={{ color: "blue" }}>
-            Register here
-          </Link>
-        </p>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            aria-label="Username"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            aria-label="Password"
+          />
+          {error && <p className="error-message">{error}</p>} {/* عرض رسالة الخطأ */}
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+          <p className="register-link" style={{ color: "black" }}>
+            Don't have an account?{" "}
+            <Link to="/register" style={{ color: "blue" }}>
+              Register here
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
   );
