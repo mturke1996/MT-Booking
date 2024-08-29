@@ -3,7 +3,12 @@ import ApartmentCard from "./ApartmentCard";
 import axios from "axios";
 import "../App.css";
 
-export default function Apartment() {
+// Helper function to shuffle an array
+const shuffleArray = (array) => {
+  return array.sort(() => Math.random() - 0.5);
+};
+
+const Apartment = () => {
   const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,11 +20,8 @@ export default function Apartment() {
         const allApartments = response.data;
 
         if (Array.isArray(allApartments) && allApartments.length > 0) {
-          // Shuffle the array to randomize the order
-          const shuffledApartments = allApartments.sort(() => 0.5 - Math.random());
-          // Select the first 6 apartments from the shuffled list
+          const shuffledApartments = shuffleArray(allApartments);
           const selectedApartments = shuffledApartments.slice(0, 6);
-
           setApartments(selectedApartments);
         } else {
           console.warn("API returned unexpected data format or no data.");
@@ -51,27 +53,19 @@ export default function Apartment() {
           </div>
         </div>
         <div className="custom-row">
-          {/* Display 6 apartments */}
-          <div className="custom-col-4">
-            {apartments[0] && <ApartmentCard apartment={apartments[0]} />}
-          </div>
-          <div className="custom-col-4">
-            {apartments[1] && <ApartmentCard apartment={apartments[1]} />}
-          </div>
-          <div className="custom-col-4">
-            {apartments[2] && <ApartmentCard apartment={apartments[2]} />}
-          </div>
-          <div className="custom-col-4">
-            {apartments[3] && <ApartmentCard apartment={apartments[3]} />}
-          </div>
-          <div className="custom-col-4">
-            {apartments[4] && <ApartmentCard apartment={apartments[4]} />}
-          </div>
-          <div className="custom-col-4">
-            {apartments[5] && <ApartmentCard apartment={apartments[5]} />}
-          </div>
+          {apartments.length > 0 ? (
+            apartments.map((apartment, index) => (
+              <div key={apartment._id} className="custom-col-4">
+                <ApartmentCard apartment={apartment} />
+              </div>
+            ))
+          ) : (
+            <div>No apartments available</div>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Apartment;
