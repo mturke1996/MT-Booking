@@ -55,9 +55,9 @@ const Apartment = () => {
         </div>
         <div className="custom-row">
           {apartments.length > 0 ? (
-            apartments.map((apartments) => (
-              <div key={apartments._id} className="custom-col-4">
-                <ApartmentCard apartment={apartments} />
+            apartments.map((apartment) => (
+              <div key={apartment._id} className="custom-col-4">
+                <ApartmentCard apartment={apartment} />
               </div>
             ))
           ) : (
