@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     if (token && !user) {
       axios
-        .get("http://localhost:5000/user", {
+        .get("https://mt-booking.onrender.com/user", {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
