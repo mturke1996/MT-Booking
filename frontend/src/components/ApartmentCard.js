@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // استيراد Link
+import { Link } from "react-router-dom";
 import "../App.css";
 
 const ApartmentCard = ({ id }) => {
@@ -12,14 +12,18 @@ const ApartmentCard = ({ id }) => {
     if (id) {
       axios.get(`https://mt-booking.onrender.com/api/apartments/${id}`)
         .then(response => {
+          console.log('Fetched apartment:', response.data);
           setApartment(response.data);
           setLoading(false);
         })
         .catch(error => {
           console.error('Error fetching apartment:', error);
-          setError(error.message);
+          setError('Error fetching apartment. Please try again later.');
           setLoading(false);
         });
+    } else {
+      setError('No apartment ID provided.');
+      setLoading(false);
     }
   }, [id]);
 
