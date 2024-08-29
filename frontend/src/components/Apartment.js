@@ -15,8 +15,9 @@ export default function Apartment() {
         const allApartments = response.data;
 
         if (Array.isArray(allApartments) && allApartments.length > 0) {
-          // Shuffle the array and select the first 6 apartments
+          // Shuffle the array to randomize the order
           const shuffledApartments = allApartments.sort(() => 0.5 - Math.random());
+          // Select the first 6 apartments from the shuffled list
           const selectedApartments = shuffledApartments.slice(0, 6);
 
           setApartments(selectedApartments);
