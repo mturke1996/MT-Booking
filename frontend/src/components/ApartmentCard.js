@@ -12,7 +12,6 @@ const ApartmentCard = ({ id }) => {
     if (id) {
       axios.get(`https://mt-booking.onrender.com/api/apartments/${id}`)
         .then(response => {
-          console.log('Fetched apartment:', response.data); 
           setApartment(response.data);
           setLoading(false);
         })
