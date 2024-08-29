@@ -3,11 +3,6 @@ import ApartmentCard from "./ApartmentCard";
 import axios from "axios";
 import "../App.css";
 
-// Helper function to shuffle an array
-const shuffleArray = (array) => {
-  return array.sort(() => Math.random() - 0.5);
-};
-
 const Apartment = () => {
   const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,13 +14,11 @@ const Apartment = () => {
         const response = await axios.get("https://mt-booking.onrender.com/api/apartments");
         const allApartments = response.data;
 
-        if (Array.isArray(allApartments) && allApartments.length > 0) {
-          // Shuffle and select 6 random apartments
-          const shuffledApartments = shuffleArray(allApartments);
-          const selectedApartments = shuffledApartments.slice(0, 6);
-          setApartments(selectedApartments);
+        if (Array.isArray(allApartments)) {
+          // Set all retrieved apartments to state
+          setApartments(allApartments);
         } else {
-          console.warn("API returned unexpected data format or no data.");
+          console.warn("API returned unexpected data format.");
         }
       } catch (error) {
         console.error("Error fetching apartments:", error);
