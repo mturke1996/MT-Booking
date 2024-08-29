@@ -16,7 +16,7 @@ export default function Apartment() {
 
         // Check if allApartments is an array and has at least 15 items
         if (Array.isArray(allApartments) && allApartments.length >= 15) {
-          const selectedIndices = [0, 3, 4, 6, 12, 14];
+          const selectedIndices = ["66d063be1e5fee2817f80d8b", "66d063e01e5fee2817f80d8f", "66d063f61e5fee2817f80d93", "66d064fe1e5fee2817f80dbb", "66d0658b1e5fee2817f80dcf", "66d065ea1e5fee2817f80de1"];
           const selectedApartments = selectedIndices
             .filter(index => index < allApartments.length)
             .map(index => allApartments[index]);
