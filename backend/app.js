@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const Port = 5000;
 
-const dbPath = path.resolve(__dirname, "mtbookig-bajnk.db");
+const dbPath = path.resolve(__dirname, "mtbookig-bank.db");
 // console.log(__dirname)
 // Simple JWT secret key
 const secretKey = "my_simple_secret";
