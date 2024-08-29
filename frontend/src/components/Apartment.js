@@ -1,59 +1,58 @@
 import React, { useEffect, useState } from "react";
+import ApartmentCard from "./ApartmentCard";
 import axios from "axios";
-import { Link } from "react-router-dom"; // استيراد Link
 import "../App.css";
 
-const ApartmentCard = ({ id }) => {
-  const [apartment, setApartment] = useState(null);
+const Apartment = () => {
+  const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (id) {
-      axios.get(`https://mt-booking.onrender.com/api/apartments/${id}`)
-        .then(response => {
-          console.log('Fetched apartment:', response.data); 
-          setApartment(response.data);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching apartment:', error);
-          setError(error.message);
-          setLoading(false);
-        });
-    }
-  }, [id]);
+    const fetchApartments = async () => {
+      try {
+        const response = await axios.get("https://mt-booking.onrender.com/api/apartments");
+        setApartments(response.data);
+      } catch (error) {
+        console.error("Error fetching apartments:", error);
+        setError("Error fetching apartments. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApartments();
+  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  if (!apartment) return <div>No apartment found</div>;
-
   return (
-    <Link to={`/apartment/${id}`} className="apartment-link">
-      <div className="apartment-box">
-        <div className="apartment-image">
-          <img src={apartment.img1} alt={apartment.Adresse} />
-        </div>
-        <div className="apartment-info">
-          <div className="apartment-title">
-            <p>{apartment.Adresse}</p>
+    <div className="apartments">
+      <div className="container">
+        <div className="custom-row">
+          <div className="custom-col-12">
+            <h2>
+              More Than 500+
+              <br />
+              Apartments for Rent
+            </h2>
           </div>
         </div>
-        <div className="apartment-details">
-          <div className="price">
-            <p>${apartment.Miete}</p>
-          </div>
-          <div className="details-item">
-            <p>{apartment.Zimmeranzahl} BD</p>
-          </div>
-          <div className="details-item">
-            <p>{apartment.Flaeche} m²</p>
-          </div>
+        <div className="custom-row">
+          {apartments.length > 0 ? (
+            apartments.map((apartment) => (
+              <div key={apartment._id} className="custom-col-4">
+                <ApartmentCard id={apartment._id} />
+              </div>
+            ))
+          ) : (
+            <div>No apartments available</div>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   );
-}
+};
 
-export default ApartmentCard;
+export default Apartment;
