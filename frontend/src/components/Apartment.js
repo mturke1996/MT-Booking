@@ -4,7 +4,7 @@ import axios from "axios";
 import "../App.css";
 
 export default function Apartment() {
-  const [apartmentIds, setApartmentIds] = useState([]);
+  const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -14,10 +14,10 @@ export default function Apartment() {
       .then((response) => {
         const allApartments = response.data;
         const selectedIndices = [0, 3, 4, 6, 12, 14];
-        const selectedIds = selectedIndices.map(
-          (index) => allApartments[index]["Wohnungs-ID"]
+        const selectedApartments = selectedIndices.map(
+          (index) => allApartments[index]
         );
-        setApartmentIds(selectedIds);
+        setApartments(selectedApartments);
         setLoading(false);
       })
       .catch((error) => {
@@ -43,9 +43,9 @@ export default function Apartment() {
           </div>
         </div>
         <div className="custom-row">
-          {apartmentIds.map((id) => (
-            <div key={id} className="custom-col-4">
-              <ApartmentCard id={id} />
+          {apartments.map((apartment) => (
+            <div key={apartment._id} className="custom-col-4">
+              <ApartmentCard apartment={apartment} />
             </div>
           ))}
         </div>

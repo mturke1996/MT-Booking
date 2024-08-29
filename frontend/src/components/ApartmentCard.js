@@ -1,4 +1,3 @@
-// src/components/ApartmentCard.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom"; // استيراد Link
@@ -43,10 +42,13 @@ const ApartmentCard = ({ id }) => {
         </div>
         <div className="apartment-details">
           <div className="price">
-            <p>${apartment["Monatliche Miete"]}</p>
+            <p>${apartment.Miete}</p>
           </div>
           <div className="details-item">
             <p>{apartment.Zimmeranzahl} BD</p>
+          </div>
+          <div className="details-item">
+            <p>{apartment.Flaeche} m²</p>
           </div>
         </div>
       </div>
