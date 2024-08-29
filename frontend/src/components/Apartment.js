@@ -20,6 +20,7 @@ const Apartment = () => {
         const allApartments = response.data;
 
         if (Array.isArray(allApartments) && allApartments.length > 0) {
+          // Shuffle and select 6 random apartments
           const shuffledApartments = shuffleArray(allApartments);
           const selectedApartments = shuffledApartments.slice(0, 6);
           setApartments(selectedApartments);
@@ -54,9 +55,9 @@ const Apartment = () => {
         </div>
         <div className="custom-row">
           {apartments.length > 0 ? (
-            apartments.map((apartment, index) => (
-              <div key={apartment._id} className="custom-col-4">
-                <ApartmentCard apartment={apartment} />
+            apartments.map((apartments) => (
+              <div key={apartments._id} className="custom-col-4">
+                <ApartmentCard apartment={apartments} />
               </div>
             ))
           ) : (
