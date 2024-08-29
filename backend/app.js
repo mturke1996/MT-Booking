@@ -2,12 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 const bodyParser = require("body-parser");
+const path =  require("path");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const app = express();
 const Port = 5000;
 
+const dbPath = path.resolve(__dirname, "mtbookig-bajnk.db");
+// console.log(__dirname)
 // Simple JWT secret key
 const secretKey = "my_simple_secret";
 
@@ -41,7 +44,7 @@ function authenticateToken(req, res, next) {
 }
 
 // Connect to SQLite database
-const db = new sqlite3.Database("./mtbookig-bank.db", (err) => {
+const db = new sqlite3.Database(dbPath,sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error("Error opening database:", err.message);
   } else {
