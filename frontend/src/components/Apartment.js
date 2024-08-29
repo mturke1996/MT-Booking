@@ -51,30 +51,25 @@ export default function Apartment() {
           </div>
         </div>
         <div className="custom-row">
-          {apartments.length > 0 ? (
-            <>
-              <div className="custom-col-4">
-                <ApartmentCard apartment={apartments[0]} />
-              </div>
-              <div className="custom-col-4">
-                <ApartmentCard apartment={apartments[1]} />
-              </div>
-              <div className="custom-col-4">
-                <ApartmentCard apartment={apartments[2]} />
-              </div>
-              <div className="custom-col-4">
-                <ApartmentCard apartment={apartments[3]} />
-              </div>
-              <div className="custom-col-4">
-                <ApartmentCard apartment={apartments[4]} />
-              </div>
-              <div className="custom-col-4">
-                <ApartmentCard apartment={apartments[5]} />
-              </div>
-            </>
-          ) : (
-            <div>No apartments available</div>
-          )}
+          {/* Display 6 apartments */}
+          <div className="custom-col-4">
+            {apartments[0] && <ApartmentCard apartment={apartments[0]} />}
+          </div>
+          <div className="custom-col-4">
+            {apartments[1] && <ApartmentCard apartment={apartments[1]} />}
+          </div>
+          <div className="custom-col-4">
+            {apartments[2] && <ApartmentCard apartment={apartments[2]} />}
+          </div>
+          <div className="custom-col-4">
+            {apartments[3] && <ApartmentCard apartment={apartments[3]} />}
+          </div>
+          <div className="custom-col-4">
+            {apartments[4] && <ApartmentCard apartment={apartments[4]} />}
+          </div>
+          <div className="custom-col-4">
+            {apartments[5] && <ApartmentCard apartment={apartments[5]} />}
+          </div>
         </div>
       </div>
     </div>
