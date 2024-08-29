@@ -28,13 +28,15 @@ const ApartmentDetails = () => {
     room: 1,
   });
   const [bookingMessage, setBookingMessage] = useState("");
-  const [loading, setLoading] = useState(false); // إدارة حالة التحميل
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(""); // State for error messages
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const fetchApartment = async () => {
       setLoading(true);
+      setError(""); // Reset error on new fetch
       try {
         const response = await axios.get(`https://mt-booking.onrender.com/api/apartments/${id}`);
         setApartment(response.data);
@@ -46,6 +48,7 @@ const ApartmentDetails = () => {
         ]);
       } catch (error) {
         console.error("Error fetching apartment details:", error);
+        setError("Failed to load apartment details. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -82,7 +85,6 @@ const ApartmentDetails = () => {
         children: options.children,
         room: options.room,
       });
-      console.log("Booking successful:", response.data);
       setBookingMessage("Your booking was successful!");
     } catch (error) {
       console.error("Error booking apartment:", error);
@@ -99,7 +101,7 @@ const ApartmentDetails = () => {
       { icon: "🏊", label: "Pool" },
       { icon: "🐾", label: "Pets Allowed" },
       { icon: "🛏️", label: `${apartment?.Zimmeranzahl} Bedrooms` },
-      { icon: "📷", label: "überwachung" },
+      { icon: "📷", label: "Überwachung" },
     ];
 
     return (
@@ -114,19 +116,9 @@ const ApartmentDetails = () => {
     );
   };
 
-  if (loading)
-    return (
-      <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>
-        Loading...
-      </p>
-    );
-
-  if (!apartment)
-    return (
-      <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>
-        Apartment not found.
-      </p>
-    );
+  if (loading) return <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>Loading...</p>;
+  if (error) return <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>{error}</p>;
+  if (!apartment) return <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>Apartment not found.</p>;
 
   return (
     <div className="listContainer">
@@ -136,35 +128,26 @@ const ApartmentDetails = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="carousel-container relative">
               <Carousel showThumbs={false} infiniteLoop autoPlay>
-                {images.map(
-                  (img, index) =>
-                    img && (
-                      <div key={index} className="carousel-item rounded-lg overflow-hidden">
-                        <img
-                          src={img}
-                          alt={`Apartment image ${index + 1}`}
-                          className="carousel-image w-full h-64 object-cover"
-                        />
-                      </div>
-                    )
-                )}
+                {images.map((img, index) => (
+                  img && (
+                    <div key={index} className="carousel-item rounded-lg overflow-hidden">
+                      <img
+                        src={img}
+                        alt={`Apartment image ${index + 1}`}
+                        className="carousel-image w-full h-64 object-cover"
+                      />
+                    </div>
+                  )
+                ))}
               </Carousel>
             </div>
             <div className="details-info" style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
                 <h3 className="text-2xl font-semibold mb-4">Details</h3>
-                <p>
-                  <strong>Rooms:</strong> {apartment.Zimmeranzahl}
-                </p>
-                <p>
-                  <strong>Size:</strong> {apartment["Fläche (m²)"]} m²
-                </p>
-                <p>
-                  <strong>Rent:</strong> {apartment["Monatliche Miete"]} €/per Night
-                </p>
-                <p className="mt-4">
-                  <strong>Description:</strong> {apartment.Beschreibung}
-                </p>
+                <p><strong>Rooms:</strong> {apartment.Zimmeranzahl}</p>
+                <p><strong>Size:</strong> {apartment["Fläche (m²)"]} m²</p>
+                <p><strong>Rent:</strong> {apartment["Monatliche Miete"]} €/per Night</p>
+                <p className="mt-4"><strong>Description:</strong> {apartment.Beschreibung}</p>
               </div>
             </div>
             <div className="amenities-section">
@@ -208,9 +191,7 @@ const ApartmentDetails = () => {
                     min={1}
                     className="lsOptionInput"
                     value={options.adult}
-                    onChange={(e) =>
-                      setOptions({ ...options, adult: e.target.value })
-                    }
+                    onChange={(e) => setOptions({ ...options, adult: Number(e.target.value) })}
                   />
                 </div>
                 <div className="lsOptionItem">
@@ -220,9 +201,7 @@ const ApartmentDetails = () => {
                     min={0}
                     className="lsOptionInput"
                     value={options.children}
-                    onChange={(e) =>
-                      setOptions({ ...options, children: e.target.value })
-                    }
+                    onChange={(e) => setOptions({ ...options, children: Number(e.target.value) })}
                   />
                 </div>
                 <div className="lsOptionItem">
@@ -232,9 +211,7 @@ const ApartmentDetails = () => {
                     min={1}
                     className="lsOptionInput"
                     value={options.room}
-                    onChange={(e) =>
-                      setOptions({ ...options, room: e.target.value })
-                    }
+                    onChange={(e) => setOptions({ ...options, room: Number(e.target.value) })}
                   />
                 </div>
               </div>
