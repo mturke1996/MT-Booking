@@ -147,10 +147,9 @@ const MyBooking = ({ user }) => {
                       </div>
                       <div>
                         <button
-                          onClick={() => handlePay(booking._id)}
                           className="pay-button button"
                         >
-                          Pay
+                         <Link to={"/payment"} >Pay</Link>
                         </button>
                       </div>
                       <div>
