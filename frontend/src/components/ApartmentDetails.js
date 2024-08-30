@@ -11,7 +11,7 @@ import Reviews from "./Reviews";
 import "../App.css";
 
 const ApartmentDetails = () => {
-  const { id } = useParams(); // Fetching the apartment ID from URL params
+  const { id } = useParams();
   const [apartment, setApartment] = useState(null);
   const [images, setImages] = useState([]);
   const [date, setDate] = useState([
@@ -29,14 +29,14 @@ const ApartmentDetails = () => {
   });
   const [bookingMessage, setBookingMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(""); // State for error messages
+  const [error, setError] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const fetchApartment = async () => {
       setLoading(true);
-      setError(""); // Reset error on new fetch
+      setError("");
       try {
         const response = await axios.get(`https://mt-booking.onrender.com/api/apartments/${id}`);
         setApartment(response.data);
@@ -66,35 +66,35 @@ const ApartmentDetails = () => {
       setBookingMessage("You need to be logged in to make a booking.");
       return;
     }
-  
+
     if (!date[0].startDate || !date[0].endDate) {
       setBookingMessage("Please select valid dates.");
       return;
     }
-  
+
     setLoading(true);
     setBookingMessage("");
-  
+
     try {
       const response = await axios.post("https://mt-booking.onrender.com/api/bookings", {
         apartmentId: id,
-        username: user.username,
-        startDate: format(date[0].startDate, "yyyy-MM-dd"),
-        endDate: format(date[0].endDate, "yyyy-MM-dd"),
+        startDate: date[0].startDate.toISOString(),
+        endDate: date[0].endDate.toISOString(),
         adult: options.adult,
         children: options.children,
         room: options.room,
+        username: user.username,
       });
-  
-      if (response.status === 200) {
+
+      if (response.status === 201) {
         setBookingMessage("Your booking was successful!");
       } else {
         setBookingMessage("Unexpected response from the server.");
       }
     } catch (error) {
       console.error("Error booking apartment:", error);
-      if (error.response && error.response.status === 404) {
-        setBookingMessage("The booking endpoint was not found.");
+      if (error.response && error.response.data) {
+        setBookingMessage(`Error: ${error.response.data.message || 'An unexpected error occurred.'}`);
       } else {
         setBookingMessage("There was an error with your booking. Please try again.");
       }
@@ -102,7 +102,7 @@ const ApartmentDetails = () => {
       setLoading(false);
     }
   };
-  
+
   const renderAmenities = () => {
     const amenities = [
       { icon: "🌐", label: "Wi-Fi" },
@@ -110,7 +110,7 @@ const ApartmentDetails = () => {
       { icon: "🏊", label: "Pool" },
       { icon: "🐾", label: "Pets Allowed" },
       { icon: "🛏️", label: `${apartment?.Zimmeranzahl || 0} Bedrooms` },
-      { icon: "📷", label: "Überwachung" },
+      { icon: "📷", label: "Surveillance" },
     ];
 
     return (
@@ -125,9 +125,9 @@ const ApartmentDetails = () => {
     );
   };
 
-  if (loading) return <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>Loading...</p>;
-  if (error) return <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>{error}</p>;
-  if (!apartment) return <p className="loading" style={{ marginTop: "300px", textAlign: "center" }}>Apartment not found.</p>;
+  if (loading) return <p className="loading">Loading...</p>;
+  if (error) return <p className="loading">{error}</p>;
+  if (!apartment) return <p className="loading">Apartment not found.</p>;
 
   return (
     <div className="listContainer">
@@ -150,14 +150,12 @@ const ApartmentDetails = () => {
                 ))}
               </Carousel>
             </div>
-            <div className="details-info" style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <h3 className="text-2xl font-semibold mb-4">Details</h3>
-                <p><strong>Rooms:</strong> {apartment.Zimmeranzahl}</p>
-                <p><strong>Size:</strong> {apartment["Fläche (m²)"]} m²</p>
-                <p><strong>Rent:</strong> {apartment["Monatliche Miete"]} €/per Night</p>
-                <p className="mt-4"><strong>Description:</strong> {apartment.Beschreibung}</p>
-              </div>
+            <div className="details-info">
+              <h3 className="text-2xl font-semibold mb-4">Details</h3>
+              <p><strong>Rooms:</strong> {apartment.Zimmeranzahl}</p>
+              <p><strong>Size:</strong> {apartment["Fläche (m²)"]} m²</p>
+              <p><strong>Rent:</strong> {apartment["Monatliche Miete"]} €/per Night</p>
+              <p className="mt-4"><strong>Description:</strong> {apartment.Beschreibung}</p>
             </div>
             <div className="amenities-section">
               <h3 className="text-2xl font-semibold mb-4">Amenities</h3>
@@ -166,7 +164,7 @@ const ApartmentDetails = () => {
             <hr />
             <div className="reviews-section mt-8">
               <h3 className="text-2xl font-semibold mb-4">Reviews</h3>
-              <Reviews apartmentId={id} /> {/* Ensure apartmentId is passed correctly */}
+              <Reviews apartmentId={id} />
             </div>
           </div>
         </div>
@@ -226,15 +224,13 @@ const ApartmentDetails = () => {
               </div>
             </div>
             <button
-              className="search-button"
               onClick={handleSearchSubmit}
+              className="book-button mt-4 w-full bg-blue-500 text-white p-2 rounded"
               disabled={loading}
             >
-              {loading ? "Processing..." : "Book Now"}
+              {loading ? "Booking..." : "Book Now"}
             </button>
-            {bookingMessage && (
-              <p className="booking-message mt-4">{bookingMessage}</p>
-            )}
+            {bookingMessage && <p className="mt-2">{bookingMessage}</p>}
           </div>
         </div>
       </div>

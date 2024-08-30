@@ -88,12 +88,11 @@ const bookingSchema = new mongoose.Schema({
   username: String,
 });
 
-
 const reviewSchema = new mongoose.Schema({
   apartmentId: mongoose.Schema.Types.ObjectId,
   benutzerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // نربط المراجعة بنموذج المستخدم
+    ref: "User", // نربط المراجعة بنموذج المستخدم
   },
   bewertung: Number,
   kommentar: String,
@@ -188,7 +187,15 @@ app.get("/user", authenticateToken, (req, res) => {
 
 // Add new user details based on user_id
 app.post("/api/user/details", (req, res) => {
-  const { user_id, phone, birthdate, profession, address, profile_picture, bio } = req.body;
+  const {
+    user_id,
+    phone,
+    birthdate,
+    profession,
+    address,
+    profile_picture,
+    bio,
+  } = req.body;
 
   if (!user_id) {
     return res.status(400).json({ message: "User ID is required" });
@@ -207,7 +214,9 @@ app.post("/api/user/details", (req, res) => {
   newUserDetails
     .save()
     .then((details) =>
-      res.status(201).json({ message: "User details added successfully", id: details._id })
+      res
+        .status(201)
+        .json({ message: "User details added successfully", id: details._id })
     )
     .catch((err) => {
       console.error("Error adding user details:", err.message);
@@ -348,31 +357,80 @@ app.delete("/api/apartments/:id", (req, res) => {
 
 // Add a new booking
 app.post("/api/bookings", async (req, res) => {
-  try {
-    const bookings = req.body;
+  const { apartmentId, username, startDate, endDate, adult, children, room } =
+    req.body;
 
-    // التحقق من أن البيانات تحتوي على عناصر
-    if (!Array.isArray(bookings) || bookings.length === 0) {
-      return res.status(400).json({ error: "No bookings data provided" });
+  // التحقق من أن جميع الحقول المطلوبة موجودة
+  if (
+    !apartmentId ||
+    !username ||
+    !startDate ||
+    !endDate ||
+    !adult ||
+    !children ||
+    !room
+  ) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // التحقق من صحة تواريخ البدء والانتهاء
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) {
+    return res
+      .status(400)
+      .json({
+        error: "Invalid date format or end date must be after start date",
+      });
+  }
+
+  try {
+    // تحقق من وجود المستخدم
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const result = await Booking.insertMany(bookings);
-    res.status(201).json({ message: "Bookings added successfully", bookings: result });
+    // إنشاء حجز جديد
+    const booking = new Booking({
+      apartmentId,
+      username,
+      startDate: start,
+      endDate: end,
+      adult,
+      children,
+      room,
+    });
+
+    // حفظ الحجز في قاعدة البيانات
+    const savedBooking = await booking.save();
+    res
+      .status(201)
+      .json({ message: "Booking added successfully", booking: savedBooking });
   } catch (error) {
-    console.error("Error adding bookings:", error);
+    console.error("Error adding booking:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+app.get("/api/bookings", async (req, res) => {
+  const { username } = req.query;
 
-// Get all bookings
-app.get("/api/bookings", (req, res) => {
-  Booking.find()
-    .then((bookings) => res.json(bookings))
-    .catch((err) => {
-      console.error("Error fetching data:", err.message);
-      res.status(500).json({ error: "Database error" });
-    });
+  try {
+    let query = {};
+    let params = [];
+
+    if (username) {
+      query.username = username;
+    }
+
+    const bookings = await Booking.find(query);
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Get booking by ID
@@ -406,22 +464,22 @@ app.put("/api/bookings/:id", (req, res) => {
     });
 });
 
-// Delete booking by ID
-app.delete("/api/bookings/:id", (req, res) => {
-  const id = req.params.id;
+// Delete booking
+app.delete("/api/bookings/:id", async (req, res) => {
+  const { id } = req.params;
 
-  Booking.findByIdAndDelete(id)
-    .then((result) => {
-      if (!result) {
-        res.status(404).json({ error: "Booking not found" });
-      } else {
-        res.status(200).json({ message: "Booking deleted successfully" });
-      }
-    })
-    .catch((err) => {
-      console.error("Error deleting data:", err.message);
-      res.status(500).json({ error: "Database error" });
-    });
+  try {
+    const result = await Booking.findByIdAndDelete(id);
+
+    if (!result) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    res.status(200).json({ message: "Booking deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Add a new review
@@ -451,7 +509,7 @@ app.post("/api/reviews", (req, res) => {
 // Get all reviews
 app.get("/api/reviews", (req, res) => {
   Review.find({ apartmentId: req.query.apartmentId })
-    .populate('benutzerId', 'username') // نستخدم populate لجلب اسم المستخدم
+    .populate("benutzerId", "username") // نستخدم populate لجلب اسم المستخدم
     .then((reviews) => res.json(reviews))
     .catch((err) => {
       console.error("Error fetching data:", err.message);
@@ -464,7 +522,7 @@ app.get("/api/reviews/:id", (req, res) => {
   const id = req.params.id;
 
   Review.findById(id)
-    .populate('benutzerId', 'username') // نستخدم populate لجلب اسم المستخدم
+    .populate("benutzerId", "username") // نستخدم populate لجلب اسم المستخدم
     .then((review) => {
       if (!review) {
         res.status(404).json({ error: "Review not found" });
