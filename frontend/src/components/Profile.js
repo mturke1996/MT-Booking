@@ -13,34 +13,12 @@ export default function Profile({ user }) {
     phone: "",
     bio: "",
   });
-  const [userData, setUserData] = useState({
-    name: "",
-    lastname: "",
-    email: "",
-  });
-
-  // جلب بيانات المستخدم الأساسية
-  useEffect(() => {
-    if (user) {
-      axios
-        .get(`https://mt-booking.onrender.com/users/${user.Id}`)
-        .then((response) => {
-          setUserData(response.data);
-        })
-        .catch((error) => {
-          console.error(
-            "Error fetching user data:",
-            error.response?.data.message || error.message
-          );
-        });
-    }
-  }, [user]);
 
   // جلب بيانات تفاصيل المستخدم
   useEffect(() => {
-    if (user) {
+    if (user && user._id) {
       axios
-        .get(`https://mt-booking.onrender.com/user/details/${user.id}`)
+        .get(`https://mt-booking.onrender.com/user/details/${user._id}`)
         .then((response) => {
           setProfileData(response.data);
         })
@@ -55,11 +33,11 @@ export default function Profile({ user }) {
 
   // تحديث بيانات المستخدم
   const handleEditClick = () => {
-    if (!user) return;
+    if (!user || !user._id) return;
 
     if (isEditing) {
       axios
-        .put(`https://mt-booking.onrender.com/user/details/${user.id}`, profileData)
+        .put(`https://mt-booking.onrender.com/user/details/${user._id}`, profileData)
         .then((response) => {
           setProfileData(response.data);
           setIsEditing(false);
@@ -77,13 +55,13 @@ export default function Profile({ user }) {
 
   // إضافة بيانات جديدة للمستخدم
   const handleAddNewClick = () => {
-    if (!user) return;
+    if (!user || !user._id) return;
 
     if (isAddingNew) {
       axios
-        .post("https://mt-booking.onrender.com/user/details", {
+        .post(`https://mt-booking.onrender.com/api/user/details`, {
           ...profileData,
-          user_id: user.id,
+          user_id: user._id,
         })
         .then((response) => {
           setProfileData(response.data);
@@ -114,7 +92,7 @@ export default function Profile({ user }) {
       <div className="profile-left">
         <img
           className="profile-picture"
-          src={profileData.profile_picture}
+          src={profileData.profile_picture || "/path/to/default-picture.jpg"}
           alt="Profile"
         />
         {(isEditing || isAddingNew) && (
@@ -129,7 +107,7 @@ export default function Profile({ user }) {
       </div>
       <div className="profile-right">
         <h1 className="profile-name">
-          {user.name} {user.lastname}
+          {user?.name} {user?.lastname}
         </h1>
         <p className="profile-title">
           {profileData.profession || "Web Developer | Designer"}
@@ -139,14 +117,14 @@ export default function Profile({ user }) {
           <button
             className="profile-button"
             onClick={handleEditClick}
-            disabled={!user?.id}
+            disabled={!user?._id}
           >
             {isEditing ? "Save Profile" : "Edit Profile"}
           </button>
           <button
             className="profile-button"
             onClick={handleAddNewClick}
-            disabled={!user?.id}
+            disabled={!user?._id}
           >
             {isAddingNew ? "Save New Details" : "Add New Details"}
           </button>
@@ -155,7 +133,7 @@ export default function Profile({ user }) {
         <div className="profile-info">
           <div className="info-item">
             <span className="info-label">Email:</span>
-            <span className="info-value">{user.email}</span>
+            <span className="info-value">{user?.email}</span>
           </div>
           <div className="info-item">
             <span className="info-label">Phone:</span>
@@ -167,7 +145,7 @@ export default function Profile({ user }) {
                 onChange={handleInputChange}
               />
             ) : (
-              <span className="info-value">{profileData.phone}</span>
+              <span className="info-value">{profileData.phone || "N/A"}</span>
             )}
           </div>
           <div className="info-item">
@@ -180,7 +158,7 @@ export default function Profile({ user }) {
                 onChange={handleInputChange}
               />
             ) : (
-              <span className="info-value">{profileData.birthdate}</span>
+              <span className="info-value">{profileData.birthdate || "N/A"}</span>
             )}
           </div>
           <div className="info-item">
@@ -193,7 +171,7 @@ export default function Profile({ user }) {
                 onChange={handleInputChange}
               />
             ) : (
-              <span className="info-value">{profileData.profession}</span>
+              <span className="info-value">{profileData.profession || "N/A"}</span>
             )}
           </div>
           <div className="info-item">
@@ -206,7 +184,7 @@ export default function Profile({ user }) {
                 onChange={handleInputChange}
               />
             ) : (
-              <span className="info-value">{profileData.address}</span>
+              <span className="info-value">{profileData.address || "N/A"}</span>
             )}
           </div>
           <div className="info-item">
@@ -218,7 +196,7 @@ export default function Profile({ user }) {
                 onChange={handleInputChange}
               />
             ) : (
-              <span className="info-value">{profileData.bio}</span>
+              <span className="info-value">{profileData.bio || "N/A"}</span>
             )}
           </div>
         </div>

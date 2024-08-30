@@ -1,71 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Reviews.css'; // افترض أننا أضفنا بعض الأنماط في ملف Reviews.css
 
 const Reviews = ({ apartmentId }) => {
   const [reviews, setReviews] = useState([]);
-  const [newReview, setNewReview] = useState({ bewertung: 5, kommentar: '', benutzerId: '' }); // إضافة benutzerId هنا
+  const [newReview, setNewReview] = useState({ bewertung: 5, kommentar: '' });
   const [user, setUser] = useState(null);
 
+  // تحميل بيانات المستخدم من localStorage عند تحميل المكون
   useEffect(() => {
-    // جلب المستخدم من الـ localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
+  }, []);
 
-    // جلب التقييمات من الخادم
-    axios.get(`https://mt-booking.onrender.com/api/apartments/${apartmentId}/reviews`)
-      .then(response => {
-        setReviews(response.data);
-      })
-      .catch(error => {
+  // تحميل التقييمات عند تحميل المكون
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        // جلب التقييمات من الخادم
+        const reviewsResponse = await axios.get(`https://mt-booking.onrender.com/api/reviews?apartmentId=${apartmentId}`);
+        setReviews(reviewsResponse.data);
+      } catch (error) {
         console.error('Error fetching reviews:', error);
-      });
+      }
+    };
+
+    fetchReviews();
   }, [apartmentId]);
 
-  const handleSubmit = (e) => {
+  // إرسال تقييم جديد
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!user) {
+    if (!user || !user._id) {
       alert('You must be logged in to submit a review.');
       return;
     }
 
-    axios.post(`https://mt-booking.onrender.com/api/apartments/${apartmentId}/reviews`, {
-      benutzerId: user.username, // استخدام اسم المستخدم مباشرة من user
-      bewertung: newReview.bewertung,
-      kommentar: newReview.kommentar
-    })
-      .then(response => {
-        setReviews([...reviews, response.data]);
-        setNewReview({ bewertung: 5, kommentar: '', benutzerId: '' }); // إعادة تعيين benutzerId
-      })
-      .catch(error => {
-        console.error('Error posting review:', error);
+    try {
+      const response = await axios.post(`https://mt-booking.onrender.com/api/reviews`, {
+        apartmentId: apartmentId,
+        benutzerId: user._id, // إرسال معرف المستخدم
+        bewertung: newReview.bewertung,
+        kommentar: newReview.kommentar
       });
+
+      setReviews([...reviews, response.data]); // إضافة التقييم الجديد إلى القائمة
+      setNewReview({ bewertung: 5, kommentar: '' }); // إعادة تعيين النموذج
+    } catch (error) {
+      console.error('Error posting review:', error);
+      alert('Failed to submit review. Please try again later.');
+    }
   };
 
   return (
     <div className="reviews-container">
-      <h3 className="text-2xl font-semibold mb-4">Bewertungen</h3>
+      <h3 className="reviews-title">Bewertungen</h3>
       {reviews.length > 0 ? (
         reviews.map(review => (
-          <div key={review.bewertungId} className="review-card mb-4 p-4 bg-white rounded-lg shadow-md">
-            <p className="text-gray-800 mb-2">{review.kommentar}</p>
-            <p className="text-yellow-500 font-bold">Bewertung: {review.bewertung} / 5</p>
-            <p className="text-gray-600">By: {review.benutzerId}</p>
+          <div key={review._id} className="review-card">
+            <p className="review-comment">{review.kommentar}</p>
+            <p className="review-rating">Bewertung: {review.bewertung} / 5</p>
+            <p className="review-username">By: {user.username}</p>
           </div>
         ))
       ) : (
-        <p className="text-gray-500">Keine Bewertungen vorhanden.</p>
+        <p className="no-reviews">Keine Bewertungen vorhanden.</p>
       )}
-      <form onSubmit={handleSubmit} className="review-form mt-6 p-4 bg-white rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="review-form">
         <textarea
           value={newReview.kommentar}
           onChange={e => setNewReview({ ...newReview, kommentar: e.target.value })}
           placeholder="Deine Bewertung"
-          className="w-full p-2 border border-gray-300 rounded mb-2"
+          className="review-textarea"
         />
-        <div className="flex items-center mb-2">
-          <label htmlFor="bewertung" className="mr-2">Bewertung:</label>
+        <div className="review-rating-container">
+          <label htmlFor="bewertung" className="review-rating-label">Bewertung:</label>
           <input
             type="number"
             id="bewertung"
@@ -73,10 +83,10 @@ const Reviews = ({ apartmentId }) => {
             onChange={e => setNewReview({ ...newReview, bewertung: parseInt(e.target.value, 10) })}
             min="1"
             max="5"
-            className="w-16 p-2 border border-gray-300 rounded"
+            className="review-rating-input"
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Bewertung abgeben</button>
+        <button type="submit" className="review-submit-button">Bewertung abgeben</button>
       </form>
     </div>
   );

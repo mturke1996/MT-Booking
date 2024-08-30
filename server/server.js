@@ -88,9 +88,13 @@ const bookingSchema = new mongoose.Schema({
   username: String,
 });
 
+
 const reviewSchema = new mongoose.Schema({
   apartmentId: mongoose.Schema.Types.ObjectId,
-  benutzerId: mongoose.Schema.Types.ObjectId,
+  benutzerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // نربط المراجعة بنموذج المستخدم
+  },
   bewertung: Number,
   kommentar: String,
 });
@@ -183,16 +187,8 @@ app.get("/user", authenticateToken, (req, res) => {
 });
 
 // Add new user details based on user_id
-app.post("/user/details", (req, res) => {
-  const {
-    user_id,
-    phone,
-    birthdate,
-    profession,
-    address,
-    profile_picture,
-    bio,
-  } = req.body;
+app.post("/api/user/details", (req, res) => {
+  const { user_id, phone, birthdate, profession, address, profile_picture, bio } = req.body;
 
   if (!user_id) {
     return res.status(400).json({ message: "User ID is required" });
@@ -211,9 +207,7 @@ app.post("/user/details", (req, res) => {
   newUserDetails
     .save()
     .then((details) =>
-      res
-        .status(201)
-        .json({ message: "User details added successfully", id: details._id })
+      res.status(201).json({ message: "User details added successfully", id: details._id })
     )
     .catch((err) => {
       console.error("Error adding user details:", err.message);
@@ -273,7 +267,7 @@ app.delete("/user/details/:id", (req, res) => {
 });
 
 // Add a new apartment
-app.post("/api/apartmentss", async (req, res) => {
+app.post("/api/apartments", async (req, res) => {
   const apartments = req.body;
 
   // التحقق من أن البيانات تحتوي على عناصر
@@ -353,19 +347,23 @@ app.delete("/api/apartments/:id", (req, res) => {
 });
 
 // Add a new booking
-app.post("/api/apartments", async (req, res) => {
+app.post("/api/bookings", async (req, res) => {
   try {
-    const apartments = req.body; // تأكد من أن الطلب يحتوي على مصفوفة من العناصر
-    if (!Array.isArray(apartments)) {
-      return res.status(400).send("Invalid data format");
+    const bookings = req.body;
+
+    // التحقق من أن البيانات تحتوي على عناصر
+    if (!Array.isArray(bookings) || bookings.length === 0) {
+      return res.status(400).json({ error: "No bookings data provided" });
     }
 
-    const result = await Apartment.insertMany(apartments); // استخدام insertMany لإدخال مجموعة من العناصر
-    res.status(201).send(result);
+    const result = await Booking.insertMany(bookings);
+    res.status(201).json({ message: "Bookings added successfully", bookings: result });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error adding bookings:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // Get all bookings
 app.get("/api/bookings", (req, res) => {
@@ -452,7 +450,8 @@ app.post("/api/reviews", (req, res) => {
 
 // Get all reviews
 app.get("/api/reviews", (req, res) => {
-  Review.find()
+  Review.find({ apartmentId: req.query.apartmentId })
+    .populate('benutzerId', 'username') // نستخدم populate لجلب اسم المستخدم
     .then((reviews) => res.json(reviews))
     .catch((err) => {
       console.error("Error fetching data:", err.message);
@@ -465,6 +464,7 @@ app.get("/api/reviews/:id", (req, res) => {
   const id = req.params.id;
 
   Review.findById(id)
+    .populate('benutzerId', 'username') // نستخدم populate لجلب اسم المستخدم
     .then((review) => {
       if (!review) {
         res.status(404).json({ error: "Review not found" });

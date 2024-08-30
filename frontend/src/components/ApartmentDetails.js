@@ -11,7 +11,7 @@ import Reviews from "./Reviews";
 import "../App.css";
 
 const ApartmentDetails = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Fetching the apartment ID from URL params
   const [apartment, setApartment] = useState(null);
   const [images, setImages] = useState([]);
   const [date, setDate] = useState([
@@ -66,15 +66,15 @@ const ApartmentDetails = () => {
       setBookingMessage("You need to be logged in to make a booking.");
       return;
     }
-
+  
     if (!date[0].startDate || !date[0].endDate) {
       setBookingMessage("Please select valid dates.");
       return;
     }
-
+  
     setLoading(true);
     setBookingMessage("");
-    
+  
     try {
       const response = await axios.post("https://mt-booking.onrender.com/api/bookings", {
         apartmentId: id,
@@ -85,22 +85,31 @@ const ApartmentDetails = () => {
         children: options.children,
         room: options.room,
       });
-      setBookingMessage("Your booking was successful!");
+  
+      if (response.status === 200) {
+        setBookingMessage("Your booking was successful!");
+      } else {
+        setBookingMessage("Unexpected response from the server.");
+      }
     } catch (error) {
       console.error("Error booking apartment:", error);
-      setBookingMessage("There was an error with your booking. Please try again.");
+      if (error.response && error.response.status === 404) {
+        setBookingMessage("The booking endpoint was not found.");
+      } else {
+        setBookingMessage("There was an error with your booking. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
-
+  
   const renderAmenities = () => {
     const amenities = [
       { icon: "🌐", label: "Wi-Fi" },
       { icon: "🅿️", label: "Parking" },
       { icon: "🏊", label: "Pool" },
       { icon: "🐾", label: "Pets Allowed" },
-      { icon: "🛏️", label: `${apartment?.Zimmeranzahl} Bedrooms` },
+      { icon: "🛏️", label: `${apartment?.Zimmeranzahl || 0} Bedrooms` },
       { icon: "📷", label: "Überwachung" },
     ];
 
@@ -157,7 +166,7 @@ const ApartmentDetails = () => {
             <hr />
             <div className="reviews-section mt-8">
               <h3 className="text-2xl font-semibold mb-4">Reviews</h3>
-              <Reviews apartmentId={id} />
+              <Reviews apartmentId={id} /> {/* Ensure apartmentId is passed correctly */}
             </div>
           </div>
         </div>

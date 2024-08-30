@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import "../App.css";
 
 const SearchItem = ({ apartment }) => {
+  if (!apartment || !apartment.Adresse || !apartment.img1) {
+    console.error("Missing apartment data:", apartment);
+    return null;
+  }
+
   return (
     <div className="searchItem">
       <img src={apartment.img1} alt={apartment.Adresse} className="siImg" />
@@ -12,7 +17,7 @@ const SearchItem = ({ apartment }) => {
         <span className="siTaxiOp">Free airport taxi</span>
         <span className="siSubtitle">{apartment.Beschreibung}</span>
         <span className="siFeatures">
-          {`Rooms: ${apartment.Zimmeranzahl} • Area: ${apartment["Fläche (m²)"]}m²`}
+          {`Rooms: ${apartment.Zimmeranzahl} • Area: ${apartment.Flaeche}m²`}
         </span>
         <span className="siCancelOp">Free cancellation</span>
         <span className="siCancelOpSubtitle">
@@ -28,7 +33,7 @@ const SearchItem = ({ apartment }) => {
           <span className="siPrice">{`${apartment["Monatliche Miete"]}€`}</span>
           <span className="siTaxOp">Includes taxes and fees</span>
           <button className="siCheckButton">
-            <Link to={`/apartment/${apartment["Wohnungs-ID"]}`}>
+            <Link to={`/apartment/${apartment._id}`}>
               See availability
             </Link>
           </button>
