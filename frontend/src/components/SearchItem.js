@@ -30,7 +30,7 @@ const SearchItem = ({ apartment }) => {
           <button>{apartment.rating || 8.9}</button>{" "}
         </div>
         <div className="siDetailTexts">
-          <span className="siPrice">{`${apartment["Monatliche Miete"]}€`}</span>
+          <span className="siPrice">{`${apartment.Miete}€`}</span>
           <span className="siTaxOp">Includes taxes and fees</span>
           <button className="siCheckButton">
             <Link to={`/apartment/${apartment._id}`}>
