@@ -33,8 +33,8 @@ const SearchItem = ({ apartment }) => {
           <span className="siPrice">{`${apartment.Miete}€`}</span>
           <span className="siTaxOp">Includes taxes and fees</span>
           <button className="siCheckButton">
-            <Link to={`/apartment/${apartment._id}`} style={{color: "white"}}}>
-              See availability
+            <Link to={`/apartment/${apartment._id}`}>
+              <h2 style={{ color: "white" }}>See availability</h2>
             </Link>
           </button>
         </div>
