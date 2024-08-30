@@ -34,7 +34,7 @@ const SearchItem = ({ apartment }) => {
           <span className="siTaxOp">Includes taxes and fees</span>
           <button className="siCheckButton">
             <Link to={`/apartment/${apartment._id}`}>
-              <h2 style={{ color: "white" }}>See availability</h2>
+              <h6 style={{ color: "white" }}>See availability</h6>
             </Link>
           </button>
         </div>
