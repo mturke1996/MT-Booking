@@ -9,6 +9,7 @@ const MyBooking = ({ user }) => {
   const [apartments, setApartments] = useState({});
 
   useEffect(() => {
+    // Fetching bookings data
     axios
       .get("https://mt-booking.onrender.com/api/bookings")
       .then((response) => {
@@ -20,12 +21,14 @@ const MyBooking = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    if (user.username) {
+    if (user?.username) {
+      // Filter bookings by the current user
       const filtered = bookings.filter(
         (booking) => booking.username === user.username
       );
       setFilteredBookings(filtered);
 
+      // Fetch apartment details for the filtered bookings
       const fetchApartmentDetails = async (apartmentIds) => {
         try {
           const responses = await Promise.all(
@@ -34,7 +37,7 @@ const MyBooking = ({ user }) => {
             )
           );
           const apartmentsData = responses.reduce((acc, response) => {
-            acc[response.data["Wohnungs-ID"]] = response.data;
+            acc[response.data._id] = response.data; // Use _id as key
             return acc;
           }, {});
           setApartments(apartmentsData);
@@ -51,13 +54,14 @@ const MyBooking = ({ user }) => {
   const handleDelete = async (bookingId) => {
     try {
       await axios.delete(`https://mt-booking.onrender.com/api/bookings/${bookingId}`);
-      setFilteredBookings(filteredBookings.filter((b) => b.id !== bookingId));
+      setFilteredBookings(filteredBookings.filter((b) => b._id !== bookingId)); // Use _id as key
     } catch (error) {
       console.error("Error deleting booking:", error);
     }
   };
 
   const handlePay = (bookingId) => {
+    // Handle payment initiation
     console.log("Initiate payment for booking:", bookingId);
   };
 
@@ -77,7 +81,7 @@ const MyBooking = ({ user }) => {
                   src={apartment.img1}
                   alt={apartment.Adresse}
                   className="siImg"
-                  style={{ height: "350px", width: "40%" }}
+                  style={{ height: "500px", width: "40%" }}
                 />
                 <div className="siDesc">
                   <h1 className="siTitle text-2xl font-semibold mb-2">
@@ -94,7 +98,7 @@ const MyBooking = ({ user }) => {
                   </p>
                   <p className="siFeatures mt-2 text-gray-600">
                     {`Rooms: ${apartment.Zimmeranzahl || "N/A"} • Area: ${
-                      apartment["Fläche (m²)"] || "N/A"
+                      apartment.Flaeche || "N/A"
                     } m²`}
                   </p>
                   <p className="siCancelOp mt-2 text-gray-600">
@@ -108,26 +112,25 @@ const MyBooking = ({ user }) => {
                   <div className="siRating flex items-center mb-2">
                     <span className="text-gray-600 text-sm">Excellent</span>
                     <button className="ml-2 bg-blue-500 text-white px-2 py-1 rounded text-sm">
-                      {apartment.rating || 8.9}
+                      {apartment.rating || "N/A"}
                     </button>
                   </div>
                   <div className="siDetailTexts">
                     <span className="siPrice text-2xl font-bold">{`${
-                      apartment["Monatliche Miete"] || "N/A"
+                      apartment.Miete || "N/A"
                     }€ per night`}</span>
                     <span className="siTaxOp block text-gray-500 text-sm">
                       Includes taxes and fees
                     </span>
                     <div className="booking-info mt-4">
                       <p>
-                        <strong>Check-in:</strong> {booking.startDate}
+                        <strong>Check-in:</strong> {new Date(booking.startDate).toLocaleDateString()}
                       </p>
                       <p>
-                        <strong>Check-out:</strong> {booking.endDate}
+                        <strong>Check-out:</strong> {new Date(booking.endDate).toLocaleDateString()}
                       </p>
                       <p>
-                        <strong>Guests:</strong> {booking.adult} Adults,{" "}
-                        {booking.children} Children
+                        <strong>Guests:</strong> {booking.adult} Adults, {booking.children} Children
                       </p>
                       <p>
                         <strong>Room:</strong> {booking.room} Room(s)
@@ -136,7 +139,7 @@ const MyBooking = ({ user }) => {
                     <div className="flex mt-4 space-x-2">
                       <div>
                         <Link
-                          to={`/apartment/${apartment["Wohnungs-ID"]}`}
+                          to={`/apartment/${apartment._id}`}
                           className="siCheckButton button"
                         >
                           See availability
@@ -144,13 +147,15 @@ const MyBooking = ({ user }) => {
                       </div>
                       <div>
                         <button
-                          onClick={() => handlePay(booking.id)}
+                          onClick={() => handlePay(booking._id)}
                           className="pay-button button"
                         >
-                          <Link to={"/Payment"}>Pay</Link>
+                          Pay
                         </button>
+                      </div>
+                      <div>
                         <button
-                          onClick={() => handleDelete(booking.id)}
+                          onClick={() => handleDelete(booking._id)}
                           className="delete-button button"
                         >
                           Delete
@@ -163,9 +168,7 @@ const MyBooking = ({ user }) => {
             );
           })
         ) : (
-          <p className="text-gray-500 text-center">
-            No bookings found for {user.username}.
-          </p>
+          <p>No bookings found for this user.</p>
         )}
       </div>
     </div>

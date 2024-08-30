@@ -10,6 +10,10 @@ function Navbar({ user, onLogout }) {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -18,19 +22,19 @@ function Navbar({ user, onLogout }) {
 
       <ul className="navbar-links">
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/" onClick={closeMenu}>Home</Link>
         </li>
         <li>
-          <Link to="/Weather">Weather</Link>
+          <Link to="/Weather" onClick={closeMenu}>Weather</Link>
         </li>
         <li>
-          <Link to="/city">City</Link>
+          <Link to="/city" onClick={closeMenu}>City</Link>
         </li>
         <li>
-          <Link to="/budget">Budget planner</Link>
+          <Link to="/budget" onClick={closeMenu}>Budget planner</Link>
         </li>
         <li>
-          <Link to="/contact">Contact</Link>
+          <Link to="/contact" onClick={closeMenu}>Contact</Link>
         </li>
       </ul>
 
@@ -51,22 +55,22 @@ function Navbar({ user, onLogout }) {
                 className={`dropdown-menu ${isMenuOpen ? "visible" : "hidden"}`}
               >
                 <li>
-                  <Link to="/profile" className="profile-link">
+                  <Link to="/profile" className="profile-link" onClick={closeMenu}>
                     My Profile
                   </Link>
                 </li>
                 <li>
-                  <Link to="/myBooking" className="profile-link">
+                  <Link to="/myBooking" className="profile-link" onClick={closeMenu}>
                     My Booking
                   </Link>
                 </li>
                 <li>
-                  <Link to="/addApartment" className="profile-link">
+                  <Link to="/addApartment" className="profile-link" onClick={closeMenu}>
                     Add New Apartment
                   </Link>
                 </li>
                 <li>
-                  <button onClick={onLogout} className="logout-button">
+                  <button onClick={() => { onLogout(); closeMenu(); }} className="logout-button">
                     Logout
                   </button>
                 </li>
@@ -87,46 +91,46 @@ function Navbar({ user, onLogout }) {
       {isMenuOpen && (
         <ul className="mobile-menu">
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={closeMenu}>Home</Link>
           </li>
           <li>
-            <Link to="/Weather">Weather</Link>
+            <Link to="/Weather" onClick={closeMenu}>Weather</Link>
           </li>
           <li>
-          <Link to="/city">City</Link>
-        </li>
-        <li>
-          <Link to="/budget">Budget planner</Link>
-        </li>
-        <li>
-          <Link to="/contact">Contact</Link>
-        </li>
+            <Link to="/city" onClick={closeMenu}>City</Link>
+          </li>
+          <li>
+            <Link to="/budget" onClick={closeMenu}>Budget planner</Link>
+          </li>
+          <li>
+            <Link to="/contact" onClick={closeMenu}>Contact</Link>
+          </li>
           {user ? (
             <>
               <li>
-                <Link to="/profile" className="profile-link">
+                <Link to="/profile" className="profile-link" onClick={closeMenu}>
                   My Profile
                 </Link>
               </li>
               <li>
-                <Link to="/myBooking" className="profile-link">
+                <Link to="/myBooking" className="profile-link" onClick={closeMenu}>
                   My Booking
                 </Link>
               </li>
               <li>
-                <Link to="/addApartment" className="profile-link">
+                <Link to="/addApartment" className="profile-link" onClick={closeMenu}>
                   Add New Apartment
                 </Link>
               </li>
               <li>
-                <button onClick={onLogout} className="logout-button">
+                <button onClick={() => { onLogout(); closeMenu(); }} className="logout-button">
                   Logout
                 </button>
               </li>
             </>
           ) : (
             <li>
-              <Link to="/login" className="login-button mobile-login-button">
+              <Link to="/login" className="login-button mobile-login-button" onClick={closeMenu}>
                 Login
               </Link>
             </li>

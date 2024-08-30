@@ -378,11 +378,9 @@ app.post("/api/bookings", async (req, res) => {
   const end = new Date(endDate);
 
   if (isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) {
-    return res
-      .status(400)
-      .json({
-        error: "Invalid date format or end date must be after start date",
-      });
+    return res.status(400).json({
+      error: "Invalid date format or end date must be after start date",
+    });
   }
 
   try {
